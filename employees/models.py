@@ -2,21 +2,20 @@ from django.db import models
 
 from django.utils.translation import gettext_lazy as _
 
+class EmployeeType(models.TextChoices):
+    DEPUTY = 'DEPUTY', _('Αναπληρωτής')
+    REGULAR = 'REGULAR', _('Μόνιμος')
+    HOURLYPAID = 'HOURLYPAID', _('Ωρομίσθιος')
+    ADMINISTRATIVE = 'ADMINISTRATIVE', _('Διοικητικός')
+
+class MaritalStatusType(models.TextChoices):
+    UNKNOWN = 'UNKNOWN', _('Άγνωστο')
+    SINGLE = 'SINGLE', _('Άγαμος')
+    MARRIED = 'MARRIED', _('Έγγαμος')
+    DIVORCED = 'DIVORCED', _('Διαζευγμένος')
+    WIDOWER = 'WIDOWER', _('Χηρεία')
 
 class Employee(models.Model):
-
-    class EmployeeType(models.TextChoices):
-        DEPUTY = 'DEPUTY', _('Αναπληρωτής')
-        REGULAR = 'REGULAR', _('Μόνιμος')
-        HOURLYPAID = 'HOURLYPAID', _('Ωρομίσθιος')
-        ADMINISTRATIVE = 'ADMINISTRATIVE', _('Διοικητικός')
-
-    class MaritalStatusType(models.TextChoices):
-        UNKNOWN = 'UNKNOWN', _('Άγνωστο')
-        SINGLE = 'SINGLE', _('Άγαμος')
-        MARRIED = 'MARRIED', _('Έγγαμος')
-        DIVORCED = 'DIVORCED', _('Διαζευγμένος')
-        WIDOWER = 'WIDOWER', _('Χηρεία')
 
     big_family = models.BooleanField(db_column='BIG_FAMILY')
     comment = models.CharField(db_column='COMMENT', max_length=256)
