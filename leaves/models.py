@@ -28,7 +28,7 @@ class LeaveType(models.Model):
                                   max_length=32, db_column='BASIC_TYPE')
 
     def __str__(self):
-        return f"{ self.legacy_code } - {self.description}"
+        return f"(#{self.legacy_code}) - {self.description}"
 
 
 
