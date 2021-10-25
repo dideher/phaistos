@@ -32,14 +32,13 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
-
     'rest_auth',
     'rest_auth.registration',
-
     'crispy_forms',
-
+    'api',
     'employees',
     'leaves'
+
 ]
 
 MIDDLEWARE = [
