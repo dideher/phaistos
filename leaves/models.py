@@ -54,3 +54,6 @@ class Leave(models.Model):
         indexes = [
             models.Index(fields=['employee', 'leave_type',]),
         ]
+
+    def __str__(self):
+        return f"[{self.leave_type}] - {self.effective_number_of_days} : {self.date_from} - {self.date_until}"

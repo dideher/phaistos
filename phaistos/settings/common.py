@@ -25,7 +25,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
-
     'rest_framework',
     'rest_framework.authtoken',
     'users',
@@ -35,6 +34,7 @@ INSTALLED_APPS = [
     'rest_auth',
     'rest_auth.registration',
     'crispy_forms',
+    'django_filters',
     'api',
     'employees',
     'leaves'

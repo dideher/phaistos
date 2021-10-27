@@ -1,0 +1,14 @@
+{% load employee_extras %}
+
+<h1>{{ employee }}</h1>
+<p>{{ employee.last_name }}</p>
+<p>{{ employee.first_name }}</p>
+<p>{{ employee.father_name }}</p>
+<p>{{ employee.specialization }}</p>
+<p>{{ employee.employee_type }}</p>
+<p>{{ now|date }}</p>
+
+<h1>Leaves</h1>
+{% show_leaves %}
+
+

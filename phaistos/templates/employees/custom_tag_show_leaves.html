@@ -1,0 +1,6 @@
+{% for leave in leaves %}
+    <li><a href="#">{{ leave }}</a></li>
+{% empty %}
+    <li>No Leaves yet.</li>
+{% endfor %}
+</ul>

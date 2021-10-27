@@ -12,7 +12,7 @@ from api.views import (
 )
 
 urlpatterns = [
-    path('employees/', EmployeesAPIView.as_view(), name="employees"),
+    path('employees/', EmployeesAPIView.as_view(), name="employees-list"),
     path('employees/<int:pk>/', EmployeeDetailAPI.as_view(), name="employee-detail"),
     path('employees_import/', EmployeeImportAPIView.as_view(), name='employees-import'),
     path('specializations/', SpecializationAPIView.as_view(), name="specializations"),
