@@ -1,27 +1,60 @@
-<h1>Employees</h1>
-<ul>
-{% for employee in page_obj %}
-    <li><a href="{% url 'employees:employee-detail' employee.id %}">{{ employee }}</a></li>
-{% empty %}
-    <li>No articles yet.</li>
-{% endfor %}
-</ul>
+{% extends 'base.html' %}
 
+{% load django_bootstrap5 %}
 
-<div class="pagination">
-    <span class="step-links">
-        {% if page_obj.has_previous %}
-            <a href="?page=1">&laquo; first</a>
-            <a href="?page={{ page_obj.previous_page_number }}">previous</a>
-        {% endif %}
+{% block title %}
+    Employees
+{% endblock %}
 
-        <span class="current">
-            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
-        </span>
+{% block content %}
+    
+    <form role="form" method="get">
+        {% bootstrap_form_errors form type='non_fields' %}
 
-        {% if page_obj.has_next %}
-            <a href="?page={{ page_obj.next_page_number }}">next</a>
-            <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
-        {% endif %}
-    </span>
-</div>
+        {% bootstrap_form form layout='horizontal' size='sm' %}
+
+        {% bootstrap_button button_type="submit" content="OK" %}
+        {% bootstrap_button button_type="reset" content="Cancel" %}
+
+    </form>
+
+    <table class="table table-striped ">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">ΑΦΜ</th>
+                <th scope="col">Επώνυμο</th>
+                <th scope="col">Όνομα</th>
+                <th scope="col">Όνομα Πατρός</th>
+                <th scope="col">Ειδ.</th>
+                <th scope="col">Λεκτικό Ειδικότητας</th>
+                <th scope="col">Τύπος</th>
+                <!-- <th scope="col">Οργανική</th> -->
+                <!-- <th scope="col">Βαθμός Ε'-2</th> -->
+                <th scope="col">Ετ.Γεν.</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for employee in employees_paginated %}
+            <tr>
+                <td><a href="{% url 'employees:employee-detail' employee.id %}">{{ employee.id }}</a></td>
+                <td>{{ employee.vat_number }} </td>
+                <td>{{ employee.last_name|truncatechars:20 }}</td>
+                <td>{{ employee.first_name }}</td>
+                <td>{{ employee.father_name }}</td>
+                <td>{{ employee.specialization.code }}</td>
+                <td>{{ employee.specialization.title|truncatechars:20 }}</td>
+                <td>{{ employee.get_employee_type_display }}</td>
+                <!-- <td>n/a</td> -->
+                <!-- <td>n/a</td> -->
+                <td>{{ employee.date_of_birth|date:"d-m-Y" }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <hr>
+
+    {% bootstrap_pagination employees_paginated extra=request.GET.urlencode size="sm" %}
+
+{% endblock %}

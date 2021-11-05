@@ -25,6 +25,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
+    'django_bootstrap5',
     'rest_framework',
     'rest_framework.authtoken',
     'users',
@@ -94,9 +95,11 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'el'
 
-TIME_ZONE = 'UTC'
+LOCALE = 'el_gr@euro'
+
+TIME_ZONE = 'Europe/Athens'
 
 USE_I18N = True
 
