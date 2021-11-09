@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+
+{% load django_bootstrap5 %}
+
+{% block title %}
+    Employee Leaves List
+{% endblock %}
+
+{% block content %}
+
+    
+    <form role="form" method="get">
+        {% bootstrap_form_errors form type='non_fields' %}
+
+        {% bootstrap_form form layout='horizontal' size='sm' %}
+
+        {% bootstrap_button button_type="submit" content="OK" %}
+        {% bootstrap_button button_type="reset" content="Cancel" %}
+
+    </form>
+
+    <table class="table table-striped ">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Κωδ.Άδ.</th>
+                <th scope="col">Τύπος Άδειας</th>
+                <th scope="col">Ημέρες</th>
+                <th scope="col">Έναρξη</th>
+                <th scope="col">Λήξη</th>
+                <th scope="col">Σχολείο Οργανικής</th>
+                <th scope="col">Σχόλιο</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for leave in leaves_paginated %}
+            <tr>
+                <td>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-success">{{ leave.id }}</button>
+                        <button type="button" class="btn btn-success dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                            <span class="visually-hidden">Toggle Dropdown</span>
+                          </button>
+                          <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#">Προβολή</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#deleteLeaveModal" data-bs-delete_form_url="{% url 'leaves:leave-delete' leave.id %}" data-bs-delete_title="Να διαγραφεί η άδεια τύπου ΧΧΧΧΧΧ με έναρξη την {{ leave.date_from|date:'d-m-Y' }} και λήξη την {{ leave.date_until|date:'d-m-Y' }} του εκπαιδευτικού {{ leave.employee }} ;">Διαγραφή</a></li>
+                          </ul>
+                    </div>
+                </td>
+                <td>{{ leave.leave_type.legacy_code }} </td>
+                <td>{{ leave.leave_type.description }} </td>
+                <td>{{ leave.effective_number_of_days }}</td>
+                <td>{{ leave.date_from|date:"d-m-Y" }}</td>
+                <td>{{ leave.date_until|date:"d-m-Y" }}</td>
+                <td>&nbsp;</td>
+                <td>{{ leave.comment|truncatechars:20 }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <hr>
+
+    {% bootstrap_pagination leaves_paginated extra=request.GET.urlencode size="sm" %}
+
+
+    
+
+<!-- Modal -->
+<form class="row g-3 needs-validation" id='deleteLeaveModalForm' action='deleteLeaveModalFormAction' method='post' novalidate>{% csrf_token %}
+<div class="modal fade" id="deleteLeaveModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="deleteLeaveModal" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="staticBackdropLabel">Διαγραφή Άδειας ;</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p id="delete-leave-title">
+              .... TITLE ....
+          </p>
+          <div class="mb-3">
+            <label for="delete_comment_text" class="form-label">Σχόλιο Διαγραφής</label>
+            <textarea class="form-control" id="delete_comment_text" name="delete_comment_text" aria-describedby="delete_comment_text" rows="3" required></textarea>
+            <div id="delete_comment_text_help" class="form-text">Περιγράψτε συνοπτικά τον λόγο διαγραφής</div>
+          </div>
+        </div>
+        <div class="modal-footer">
+            <input type="hidden" id="success_url" name="success_url" value="{% url 'employees:employee-leaves-list' employee.id %}" >
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Ακύρο</button>
+          <button type="submit" class="btn btn-danger" name="submit" value="Submit">Διαγραφή Άδειας</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+
+  <script>
+    var deleteLeaveModal = document.getElementById('deleteLeaveModal');
+    
+    deleteLeaveModal.addEventListener('show.bs.modal', function (event) {
+        // Button that triggered the modal
+        var button = event.relatedTarget
+
+        // retrieve attributes
+        var delete_title = button.getAttribute('data-bs-delete_title')
+        var form_action_url = button.getAttribute('data-bs-delete_form_url')
+        
+        // update content of modal dialog
+        var delete_leave_title = deleteLeaveModal.querySelector('#delete-leave-title')
+        delete_leave_title.textContent = delete_title
+        var delete_leave_form = document.getElementById('deleteLeaveModalForm')
+
+        delete_leave_form.action = form_action_url
+        
+    })
+  </script>
+
+{% endblock %}
