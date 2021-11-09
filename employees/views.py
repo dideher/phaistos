@@ -2,12 +2,15 @@ from django.core import paginator
 from django.db.models.query import QuerySet
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.list import ListView
-from django.views.generic.detail import DetailView
+from django.views.generic.detail import DetailView, SingleObjectTemplateResponseMixin, BaseDetailView
+from django.views.generic.edit import DeletionMixin, DeleteView
 from django.contrib import messages
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 
 from employees.models import Employee, Specialization
-from employees.forms import EmployeeSearchForm
+from employees.forms import EmployeeSearchForm, LeaveSearchForm
+from leaves.models import Leave, LeaveType
+
 class EmployeeListView(LoginRequiredMixin, ListView):
 
     model = Employee
@@ -57,3 +60,62 @@ class EmployeeListView(LoginRequiredMixin, ListView):
 class EmployeeDetailView(DetailView):
 
     model = Employee
+
+
+class EmployeeLeavesListView(LoginRequiredMixin, ListView):
+
+    model = Leave
+    context_object_name = 'leaves'
+    paginator_per_page_count = 20
+    form_class = LeaveSearchForm
+    template_name = 'employees/employee_leaves_list.html'
+
+    def get_queryset(self):
+        employee_id = self.kwargs['pk']
+        if True:
+            return Leave.objects.filter(employee=employee_id, is_deleted=False).order_by('-date_from')
+        
+        
+        form = self.form_class(self.request.GET)
+
+        if form.is_valid():
+            filters = {}
+            if form.cleaned_data['last_name']:
+                filters['last_name__contains'] = form.cleaned_data['last_name'].upper()
+
+            if form.cleaned_data['first_name']:
+                filters['first_name__contains'] = form.cleaned_data['first_name'].upper()
+
+            if form.cleaned_data['enabled'] is None:
+                filters['enabled'] = form.cleaned_data['enabled']
+
+            if form.cleaned_data['employee_type'] not in [None, '']:
+                filters['employee_type'] = form.cleaned_data['employee_type']
+
+            return Leave.objects.filter(**filters).order_by('last_name', 'specialization')
+        else:
+            return Leave.objects.all().order_by('last_name', 'specialization')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        # add also the employee in the context
+        employee: Employee = Employee.objects.get(id=self.kwargs['pk'])
+        context['employee'] = employee
+        
+        context['form'] = self.form_class(initial=self.request.GET)
+        paginator = Paginator(context['leaves'], EmployeeLeavesListView.paginator_per_page_count)
+        page = self.request.GET.get("page")
+
+        try:
+            objects = paginator.page(page)
+        except PageNotAnInteger:
+            # If page is not an integer, deliver first page.
+            objects = paginator.page(1)
+        except EmptyPage:
+            # If page is out of range (e.g. 9999), deliver last page of results.
+            objects = paginator.page(paginator.num_pages)
+        context["leaves_paginated"] = objects
+        
+        return context
+

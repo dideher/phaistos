@@ -37,7 +37,11 @@
         <tbody>
         {% for employee in employees_paginated %}
             <tr>
-                <td><a href="{% url 'employees:employee-detail' employee.id %}">{{ employee.id }}</a></td>
+                <td>
+                    <a href="{% url 'employees:employee-detail' employee.id %}">{{ employee.id }} details</a>
+                    <br>
+                    <a href="{% url 'employees:employee-leaves-list' employee.id %}">{{ employee.id }} leave list</a>
+                </td>
                 <td>{{ employee.vat_number }} </td>
                 <td>{{ employee.last_name|truncatechars:20 }}</td>
                 <td>{{ employee.first_name }}</td>
