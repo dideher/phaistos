@@ -8,7 +8,8 @@ from django.contrib import messages
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 
 from employees.models import Employee, Specialization
-from employees.forms import EmployeeSearchForm, LeaveSearchForm
+from employees.forms import EmployeeSearchForm
+from leaves.forms import LeaveSearchForm
 from leaves.models import Leave, LeaveType
 
 class EmployeeListView(LoginRequiredMixin, ListView):
