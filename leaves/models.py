@@ -37,7 +37,7 @@ class Leave(models.Model):
     """
     Models an employee leave
     """
-    minoas_id = models.IntegerField(db_column='MINOAS_ID', default=None, null=False, unique=True)
+    minoas_id = models.IntegerField(db_column='MINOAS_ID', default=None, null=True)
     employee = models.ForeignKey(Employee, null=False, db_column="EMPLOYEE_ID", on_delete=models.PROTECT)
     leave_type = models.ForeignKey(LeaveType, null=False, db_column="EMPLOYEE_LEAVE_TYPE_ID", on_delete=models.PROTECT)
     is_active = models.BooleanField(db_column="IS_ACTIVE", null=False, default=True, db_index=True)

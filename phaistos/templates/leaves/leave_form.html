@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% load django_bootstrap5 %}
+
+{% block title %}
+    Employees
+{% endblock %}
+
+{% block content %}
+
+<form method="post">
+    {% csrf_token %}
+
+    
+    
+    <div class="row">
+        <div class="col">
+            {% bootstrap_field form.leave_type placeholder='bonkers' show_label=False addon_before='<span class="glyphicon glyphicon-calendar">Τύπος Άδειας</span>'%}
+        </div>
+        <div class="col">
+            {% bootstrap_field form.date_from placeholder='bonkers' show_label=False addon_before='<span class="glyphicon glyphicon-calendar">Έναρξη Άδειας</span>'%}
+        </div>
+        <div class="col">
+            {% bootstrap_field form.date_until placeholder='bonkers' show_label=False addon_before='<span class="glyphicon glyphicon-calendar">Λήξη Άδειας</span>'%}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            {% bootstrap_field form.number_of_days placeholder='bonkers' show_label=False addon_before='<span class="glyphicon glyphicon-calendar">Ημερολογιακή Διαφορά</span>'%}
+        </div>
+        <div class="col">
+            {% bootstrap_field form.effective_number_of_days placeholder='bonkers' show_label=False addon_before='<span class="glyphicon glyphicon-calendar">Πραγματική Διάρκεια</span>'%}
+        </div>
+        <div class="col">
+            {% bootstrap_field form.comment placeholder='bonkers' show_label=False addon_before='<span class="glyphicon glyphicon-calendar">Σχόλιο</span>'%}
+        </div>
+        <div class="col">
+
+        </div>
+    </div>
+    
+    {% bootstrap_button "Καταχώρηση" button_type="submit" button_class="btn-primary" %}
+    
+</form>
+
+
+{% endblock %}
