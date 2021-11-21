@@ -6,7 +6,8 @@ from django.utils.translation import gettext_lazy as _
 from django.shortcuts import get_object_or_404
 from employees.models import Employee
 
-blank_choice = [('', '---------'),]
+blank_choice = [('', '---------'), ]
+
 
 class LeaveForm(forms.ModelForm):
     
@@ -19,7 +20,7 @@ class LeaveForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         
         self.fields['leave_type'].queryset = LeaveType.objects.filter(suitable_for_employee_type=self.employee.employee_type).order_by('legacy_code')
-
+        self.fields['number_of_days'].widget.attrs['readonly'] = True
 
     def clean_leave_type(self):
         data: LeaveType = self.cleaned_data['leave_type']

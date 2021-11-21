@@ -1,18 +1,21 @@
 from django.core import paginator
+from django.http.request import HttpRequest
 from django.utils import timezone
-from django.urls import reverse_lazy
-from django.http import HttpResponseRedirect
+from django.urls import reverse_lazy, reverse
+from django.http import HttpResponseRedirect, HttpResponse, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import View
 from django.views.generic.detail import SingleObjectMixin
 from django.views.generic.edit import DeletionMixin, CreateView
+from datetime import datetime, timedelta
 
 from phaistos.mixins import JsonableResponseMixin
 
 from leaves.models import Leave
 from leaves.forms import LeaveForm
 from employees.models import Employee
+
 
 class BaseDeleteView(SingleObjectMixin, DeletionMixin, View):
 
@@ -36,11 +39,28 @@ class BaseDeleteView(SingleObjectMixin, DeletionMixin, View):
         self.object.save()
         return HttpResponseRedirect(success_url)
 
+
 class LeaveDeleteView(LoginRequiredMixin, BaseDeleteView):
 
     model = Leave
 
-    
+
+def compute_leave_calendar_duration(request: HttpRequest):
+    if request.method == 'GET':
+        
+        date_from = request.GET.get('date_from')
+        date_until = request.GET.get('date_until')
+        try:
+            date_from_date = datetime.strptime(date_from, '%d/%m/%Y')
+            date_until_date = datetime.strptime(date_until, '%d/%m/%Y')
+            return HttpResponse(1+(date_until_date.date() - date_from_date.date()).days)
+        except ValueError:
+            return HttpResponseBadRequest()
+
+    else:
+        return HttpResponseBadRequest()
+
+
 class LeaveCreateView(LoginRequiredMixin, JsonableResponseMixin, CreateView):
 
     model = Leave

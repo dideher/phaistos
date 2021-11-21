@@ -2,6 +2,10 @@
 
 {% load django_bootstrap5 %}
 
+{% block bootstrap5_extra_head %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+{% endblock %}
+
 {% block bootstrap5_content %}
     <div class="container">
         <h1>{% block title %}(no title){% endblock %}</h1>
