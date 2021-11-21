@@ -8,10 +8,9 @@
 
 {% block content %}
 
-<form method="post">
+<form id="leave_form" method="post">
     {% csrf_token %}
 
-    
     
     <div class="row">
         <div class="col">
@@ -42,6 +41,35 @@
     {% bootstrap_button "Καταχώρηση" button_type="submit" button_class="btn-primary" %}
     
 </form>
+
+<script>
+    $( "#id_date_from, #id_date_until" ).change(function() {
+        $form=$('#leave_form');
+        $date_from = $('#leave_form input[name=date_from]').val();
+        $date_until = $('#leave_form input[name=date_until]').val();
+
+        $.ajax({
+            type: "GET",
+            url: "{% url 'leaves:compute_leave_calendar_duration' %}",
+            dataType: 'html',
+            data: {
+                date_from: $date_from,
+                date_until: $date_until
+            },
+            success: function(result)
+            {
+                /* The div contains now the updated form */
+                $('#id_number_of_days').val(result);
+            },
+            error: function (error) {
+
+            }
+        });
+    
+        //don't submit the form
+        return false;
+    });
+    </script>
 
 
 {% endblock %}
