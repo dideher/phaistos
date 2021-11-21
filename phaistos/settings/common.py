@@ -35,7 +35,6 @@ INSTALLED_APPS = [
     'rest_auth',
     'rest_auth.registration',
     'crispy_forms',
-    'django_filters',
     'api',
     'employees',
     'leaves'
