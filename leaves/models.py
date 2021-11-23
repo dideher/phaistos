@@ -41,7 +41,7 @@ class Leave(models.Model):
     employee = models.ForeignKey(Employee, null=False, db_column="EMPLOYEE_ID", on_delete=models.PROTECT)
     leave_type = models.ForeignKey(LeaveType, null=False, db_column="EMPLOYEE_LEAVE_TYPE_ID", on_delete=models.PROTECT)
     is_active = models.BooleanField(db_column="IS_ACTIVE", null=False, default=True, db_index=True)
-    comment = models.TextField(db_column="COMMENT", null=True, max_length=255)
+    comment = models.TextField(db_column="COMMENT", null=True, blank=True, max_length=255)
     date_from = models.DateField(db_column="DATE_FROM", null=False)
     date_until = models.DateField(db_column="DATE_UNTIL", null=False)
     effective_number_of_days = models.IntegerField(db_column="EFFECTIVE_DAYS_COUNT", null=True)
