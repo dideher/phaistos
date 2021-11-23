@@ -46,10 +46,10 @@ class LeaveDeleteView(LoginRequiredMixin, BaseDeleteView):
 
 
 def compute_leave_calendar_duration(request: HttpRequest):
-    if request.method == 'GET':
+    if request.method == 'POST':
         
-        date_from = request.GET.get('date_from')
-        date_until = request.GET.get('date_until')
+        date_from = request.POST.get('date_from')
+        date_until = request.POST.get('date_until')
         try:
             date_from_date = datetime.strptime(date_from, '%d/%m/%Y')
             date_until_date = datetime.strptime(date_until, '%d/%m/%Y')
@@ -58,8 +58,7 @@ def compute_leave_calendar_duration(request: HttpRequest):
             return HttpResponseBadRequest()
 
     else:
-        return HttpResponseBadRequest()
-
+        return HttpResponse("")
 
 class LeaveCreateView(LoginRequiredMixin, JsonableResponseMixin, CreateView):
 
