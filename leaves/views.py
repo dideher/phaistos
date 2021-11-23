@@ -5,6 +5,7 @@ from django.urls import reverse_lazy, reverse
 from django.http import HttpResponseRedirect, HttpResponse, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib import messages
 from django.views.generic import View
 from django.views.generic.detail import SingleObjectMixin
 from django.views.generic.edit import DeletionMixin, CreateView
@@ -85,6 +86,10 @@ class LeaveCreateView(LoginRequiredMixin, JsonableResponseMixin, CreateView):
         self.object: Leave = form.save(commit=False)
         self.object.employee = self.employee
         self.object.minoas_id
+        self.object.number_of_days = (self.object.date_until - self.object.date_from).days + 1
+
+        messages.success(self.request, f'Η άδεια καταχωρήθηκε επιτυχώς')
+        
         return super().form_valid(form)
 
 
