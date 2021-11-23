@@ -47,24 +47,27 @@
         $form=$('#leave_form');
         $date_from = $('#leave_form input[name=date_from]').val();
         $date_until = $('#leave_form input[name=date_until]').val();
+        $csrf_token = $('#leave_form input[name=csrfmiddlewaretoken]').val();
+        if( $date_from && $date_until) {
+            $.ajax({
+                type: "POST",
+                url: "{% url 'leaves:compute_leave_calendar_duration' %}",
+                dataType: 'html',
+                data: {
+                    date_from: $date_from,
+                    date_until: $date_until,
+                    csrfmiddlewaretoken: $csrf_token,
+                },
+                success: function(result)
+                {
+                    /* The div contains now the updated form */
+                    $('#id_number_of_days').val(result);
+                },
+                error: function (error) {
 
-        $.ajax({
-            type: "GET",
-            url: "{% url 'leaves:compute_leave_calendar_duration' %}",
-            dataType: 'html',
-            data: {
-                date_from: $date_from,
-                date_until: $date_until
-            },
-            success: function(result)
-            {
-                /* The div contains now the updated form */
-                $('#id_number_of_days').val(result);
-            },
-            error: function (error) {
-
-            }
-        });
+                }
+            });
+        }
     
         //don't submit the form
         return false;
