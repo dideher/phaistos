@@ -1,12 +1,48 @@
-{% extends 'base.html' %}
+{% extends 'base-non-auth.html' %}
+{% load django_bootstrap5 %}
 
-{% block title %}Login{% endblock %}
+{% block title %}Ταυτοποίηση Χρήστη{% endblock %}
 
 {% block content %}
-  <h2>Login</h2>
-  <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Login</button>
-  </form>
+<form method="post">
+<div class="row align-items-center bg-light bg-gradient min-vh-100" >
+  <div class="col-md-4 mx-auto">
+    
+    <div class="card shadow">
+      
+      <div class="card-header">
+        Είσοδος στην Φαιστό
+      </div>
+      
+      <div class="card-body">
+        
+          {% csrf_token %}
+          <div class="row">
+            <div class="col">
+              {% bootstrap_field form.username placeholder='Χρήστης' show_label=True%}
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              {% bootstrap_field form.password placeholder='Κωδικός' show_label=True%}
+            </div>
+          </div>
+          <div class="row g-2">
+            <div class="col">
+              {% bootstrap_button "Είσοδος" button_type="submit" button_class="btn-primary" %}
+            </div>
+            
+          </div>
+          
+        
+      </div>
+  </div>
+    
+  
+</div>
+</div>
+</form>
+
+
+   
 {% endblock %}
