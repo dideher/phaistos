@@ -13,7 +13,7 @@ class LeaveForm(forms.ModelForm):
     
     class Meta:
         model = Leave
-        fields = [ 'date_from', 'date_until', 'leave_type', 'comment', 'number_of_days', 'effective_number_of_days']
+        fields = ['date_from', 'date_until', 'leave_type', 'comment', 'number_of_days', 'effective_number_of_days']
 
     def __init__(self, *args, **kwargs):
         self.employee: Employee = get_object_or_404(Employee, pk=kwargs.pop('employee_id'))

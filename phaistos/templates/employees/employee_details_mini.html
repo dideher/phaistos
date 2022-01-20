@@ -1,0 +1,28 @@
+
+
+<table class="table table-sm table-striped">
+    <thead>
+        <tr>
+            <th class="col-xs-3">ΑΜ / ΑΦΜ</th>
+            <th class="col-xs-3">Επώνυμο</th>
+            <th class="col-xs-3">Όνομα</th>
+            <th class="col-xs-3">Όνομα Πατρός</th>
+            <th class="col-xs-3">Τύπος</th>
+            <th class="col-xs-3">Ειδικότητα</th>
+            <th class="col-xs-3">Ημ. Γεν.</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>{{employee.vat_number}}</td>
+            <td>{{employee.last_name}}</td>
+            <td>{{ employee.first_name }}</td>
+            <td>{{ employee.father_name }}</td>
+            <td>{{ employee.get_employee_type_display }}</td>
+            <td>{{ employee.specialization.code }} {{ employee.specialization.title|truncatechars:20 }}</td>
+            <td>{{ employee.date_of_birth|date:"d-m-Y" }}</td>
+        </tr>
+    </tbody>
+</table>
+
+    

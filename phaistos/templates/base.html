@@ -7,11 +7,21 @@
 {% endblock %}
 
 {% block bootstrap5_content %}
-    <div class="container">
+
+    <div class="container min-vh-100 bg-light bg-gradient">
+        <div class="row">
+            <nav class="navbar navbar-expand-lg navbar-light bg-success">
+                <div class="container-fluid">
+                    <a class="navbar-brand" href="#">Navbar</a>
+                </div>
+            </nav>
+        </div>
+        
         <h1>{% block title %}(no title){% endblock %}</h1>
-    
+        <div class="row">
         {% autoescape off %}{% bootstrap_messages %}{% endautoescape %}
 
         {% block content %}(no content){% endblock %}
+        </div
     </div>
 {% endblock %}

@@ -61,4 +61,4 @@ class Employee(models.Model):
         ]
 
     def __str__(self):
-        return f"{ self.last_name } {self.last_name} {self.father_name}"
+        return f"{ self.last_name } {self.first_name} του {self.father_name}"

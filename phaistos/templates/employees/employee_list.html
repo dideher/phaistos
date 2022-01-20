@@ -7,58 +7,86 @@
 {% endblock %}
 
 {% block content %}
+<div class="col-md-12 mx-auto">
+    <div class="card shadow">
+        
+        <div class="card-body">
+            
+            <form role="form" method="get">
+                {% bootstrap_form_errors form type='non_fields' %}
+                <div class="row">
+                    <div class="col-md-2">
+                        {% bootstrap_field form.last_name placeholder='' show_label=True%}
+                    </div>
+                    <div class="col-md-2">
+                        {% bootstrap_field form.first_name placeholder='' show_label=True%}
+                    </div>
+                    <div class="col-md-3">
+                        {% bootstrap_field form.employee_type placeholder='' show_label=True%}
+                    </div>
+                    <div class="col-md-3">
+                        {% bootstrap_field form.enabled placeholder='' show_label=True%}
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-2">
+                        {% bootstrap_field form.vat_number placeholder='' show_label=True%}
+                    </div>
+                    <div class="col-md-2">
+                        {% bootstrap_field form.registration_id placeholder='' show_label=True%}
+                    </div>
+                    <div class="col-md-2 align-self-center">
+                        {% bootstrap_button button_type="submit" content="Αναζήτηση" %}
+                    </div>  
+                </div>
+
+            </form>
+
+            <div class="row">
+                <div class="col">
+                    <table class="table table-sm table-hover">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">ΑΦΜ</th>
+                                <th scope="col">Επώνυμο</th>
+                                <th scope="col">Όνομα</th>
+                                <th scope="col">Όνομα Πατρός</th>
+                                <th scope="col">Ειδ.</th>
+                                <th scope="col">Λεκτικό Ειδικότητας</th>
+                                <th scope="col">Τύπος</th>
+                                <!-- <th scope="col">Οργανική</th> -->
+                                <!-- <th scope="col">Βαθμός Ε'-2</th> -->
+                                <th scope="col">Ετ.Γεν.</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for employee in employees_paginated %}
+                            <tr>
+                                <td>
+                                    <a href="{% url 'employees:employee-leaves-list' employee.id %}">{{ employee.id }}</a>
+                                </td>
+                                <td>{{ employee.vat_number }} </td>
+                                <td>{{ employee.last_name|truncatechars:20 }}</td>
+                                <td>{{ employee.first_name }}</td>
+                                <td>{{ employee.father_name }}</td>
+                                <td>{{ employee.specialization.code }}</td>
+                                <td>{{ employee.specialization.title|truncatechars:20 }}</td>
+                                <td>{{ employee.get_employee_type_display }}</td>
+                                <td>{{ employee.date_of_birth|date:"d-m-Y" }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                    {% if display_paginated_pages %}
+                        {% bootstrap_pagination employees_paginated extra=request.GET.urlencode size="sm" %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
     
-    <form role="form" method="get">
-        {% bootstrap_form_errors form type='non_fields' %}
-
-        {% bootstrap_form form layout='horizontal' size='sm' %}
-
-        {% bootstrap_button button_type="submit" content="OK" %}
-        {% bootstrap_button button_type="reset" content="Cancel" %}
-
-    </form>
-
-    <table class="table table-striped ">
-        <thead class="thead-dark">
-            <tr>
-                <th scope="col">#</th>
-                <th scope="col">ΑΦΜ</th>
-                <th scope="col">Επώνυμο</th>
-                <th scope="col">Όνομα</th>
-                <th scope="col">Όνομα Πατρός</th>
-                <th scope="col">Ειδ.</th>
-                <th scope="col">Λεκτικό Ειδικότητας</th>
-                <th scope="col">Τύπος</th>
-                <!-- <th scope="col">Οργανική</th> -->
-                <!-- <th scope="col">Βαθμός Ε'-2</th> -->
-                <th scope="col">Ετ.Γεν.</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for employee in employees_paginated %}
-            <tr>
-                <td>
-                    <a href="{% url 'employees:employee-detail' employee.id %}">{{ employee.id }} details</a>
-                    <br>
-                    <a href="{% url 'employees:employee-leaves-list' employee.id %}">{{ employee.id }} leave list</a>
-                </td>
-                <td>{{ employee.vat_number }} </td>
-                <td>{{ employee.last_name|truncatechars:20 }}</td>
-                <td>{{ employee.first_name }}</td>
-                <td>{{ employee.father_name }}</td>
-                <td>{{ employee.specialization.code }}</td>
-                <td>{{ employee.specialization.title|truncatechars:20 }}</td>
-                <td>{{ employee.get_employee_type_display }}</td>
-                <!-- <td>n/a</td> -->
-                <!-- <td>n/a</td> -->
-                <td>{{ employee.date_of_birth|date:"d-m-Y" }}</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-
-    <hr>
-
-    {% bootstrap_pagination employees_paginated extra=request.GET.urlencode size="sm" %}
 
 {% endblock %}
