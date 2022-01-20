@@ -61,6 +61,7 @@ def compute_leave_calendar_duration(request: HttpRequest):
     else:
         return HttpResponse("")
 
+
 class LeaveCreateView(LoginRequiredMixin, JsonableResponseMixin, CreateView):
 
     model = Leave

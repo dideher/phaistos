@@ -1,5 +1,6 @@
 from django.core import paginator
 from django.db.models.query import QuerySet
+from django.utils import timezone
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView, SingleObjectTemplateResponseMixin, BaseDetailView
@@ -11,12 +12,17 @@ from employees.models import Employee, Specialization
 from employees.forms import EmployeeSearchForm
 from leaves.forms import LeaveSearchForm
 from leaves.models import Leave, LeaveType
+from phaistos.commons import (
+    get_regular_leaves_for_employee_established_in_year,
+    get_medical_leaves_for_employee_established_in_year,
+    compute_leaves_real_duration
+)
 
 class EmployeeListView(LoginRequiredMixin, ListView):
 
     model = Employee
     context_object_name = 'employees'
-    paginator_per_page_count = 20
+    paginator_per_page_count = 12
     form_class = EmployeeSearchForm
 
     def get_queryset(self):
@@ -53,8 +59,9 @@ class EmployeeListView(LoginRequiredMixin, ListView):
         except EmptyPage:
             # If page is out of range (e.g. 9999), deliver last page of results.
             objects = paginator.page(paginator.num_pages)
-        context["employees_paginated"] = objects
         
+        context["employees_paginated"] = objects
+        context["display_paginated_pages"] = paginator.num_pages > 1
         return context
 
 
@@ -67,7 +74,7 @@ class EmployeeLeavesListView(LoginRequiredMixin, ListView):
 
     model = Leave
     context_object_name = 'leaves'
-    paginator_per_page_count = 20
+    paginator_per_page_count = 12
     form_class = LeaveSearchForm
     template_name = 'employees/employee_leaves_list.html'
 
@@ -108,6 +115,23 @@ class EmployeeLeavesListView(LoginRequiredMixin, ListView):
         paginator = Paginator(context['leaves'], EmployeeLeavesListView.paginator_per_page_count)
         page = self.request.GET.get("page")
 
+        # compute some basic leave statistics
+        today = timezone.now().date()
+
+        context['regular_leaves_current_year'] = compute_leaves_real_duration(
+            get_regular_leaves_for_employee_established_in_year(employee=employee, year=today.year)
+        )
+        context['regular_leaves_previous_year'] = compute_leaves_real_duration(
+            get_regular_leaves_for_employee_established_in_year(employee=employee, year=today.year-1)
+        )
+        context['medical_leaves_current_year'] = compute_leaves_real_duration(
+            get_medical_leaves_for_employee_established_in_year(employee=employee, year=today.year)
+        )
+        context['medical_leaves_last_5_years'] = compute_leaves_real_duration(
+            get_medical_leaves_for_employee_established_in_year(employee=employee, year_from=today.year - 5,
+                                                                year_until=today.year)
+        )
+
         try:
             objects = paginator.page(page)
         except PageNotAnInteger:
@@ -116,7 +140,9 @@ class EmployeeLeavesListView(LoginRequiredMixin, ListView):
         except EmptyPage:
             # If page is out of range (e.g. 9999), deliver last page of results.
             objects = paginator.page(paginator.num_pages)
+        
         context["leaves_paginated"] = objects
+        context["display_paginated_pages"] = paginator.num_pages > 1
         
         return context
 

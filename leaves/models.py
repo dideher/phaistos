@@ -31,21 +31,20 @@ class LeaveType(models.Model):
         return f"(#{self.legacy_code}) - {self.description}"
 
 
-
-
 class Leave(models.Model):
     """
     Models an employee leave
     """
     minoas_id = models.IntegerField(db_column='MINOAS_ID', default=None, null=True)
     employee = models.ForeignKey(Employee, null=False, db_column="EMPLOYEE_ID", on_delete=models.PROTECT)
-    leave_type = models.ForeignKey(LeaveType, null=False, db_column="EMPLOYEE_LEAVE_TYPE_ID", on_delete=models.PROTECT)
+    leave_type = models.ForeignKey(LeaveType, null=False, db_column="EMPLOYEE_LEAVE_TYPE_ID", on_delete=models.PROTECT,
+                                   verbose_name='Έναρξη Άδειας', help_text="fsdfsdf")
     is_active = models.BooleanField(db_column="IS_ACTIVE", null=False, default=True, db_index=True)
     comment = models.TextField(db_column="COMMENT", null=True, blank=True, max_length=255)
-    date_from = models.DateField(db_column="DATE_FROM", null=False)
-    date_until = models.DateField(db_column="DATE_UNTIL", null=False)
-    effective_number_of_days = models.IntegerField(db_column="EFFECTIVE_DAYS_COUNT", null=True)
-    number_of_days = models.IntegerField(db_column="DAYS_COUNT", null=True)
+    date_from = models.DateField(db_column="DATE_FROM", null=False, verbose_name='Έναρξη Άδειας', help_text="fsdfsdf")
+    date_until = models.DateField(db_column="DATE_UNTIL", null=False, verbose_name='Λήξη Άδειας', help_text="fsdfsdf")
+    effective_number_of_days = models.IntegerField(db_column="EFFECTIVE_DAYS_COUNT", null=True, verbose_name='Έναρξη Άδειας', help_text="fsdfsdf")
+    number_of_days = models.IntegerField(db_column="DAYS_COUNT", null=True, verbose_name='Έναρξη Άδειας', help_text="fsdfsdf")
     is_deleted = models.BooleanField(db_column="IS_DELETED", null=False, default=False, db_index=True)
     deleted_on = models.DateField(db_column="DELETED_ON", null=True)
     deleted_comment = models.TextField(db_column="DELETED_COMMENT", null=True, max_length=255)
