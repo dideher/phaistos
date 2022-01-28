@@ -26,6 +26,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sites',
     'django_bootstrap5',
+    'bootstrap_modal_forms',
     'rest_framework',
     'rest_framework.authtoken',
     'users',

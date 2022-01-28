@@ -5,15 +5,19 @@ from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 from django.shortcuts import get_object_or_404
 from employees.models import Employee
+from bootstrap_modal_forms.forms import BSModalModelForm
 
 blank_choice = [('', '---------'), ]
 
 
-class LeaveForm(forms.ModelForm):
+class LeaveForm(BSModalModelForm):
     
     class Meta:
         model = Leave
         fields = ['date_from', 'date_until', 'leave_type', 'comment', 'number_of_days', 'effective_number_of_days']
+        widgets = {
+            'comment': forms.Textarea(attrs={'rows': 4}),
+        }
 
     def __init__(self, *args, **kwargs):
         self.employee: Employee = get_object_or_404(Employee, pk=kwargs.pop('employee_id'))
@@ -31,6 +35,14 @@ class LeaveForm(forms.ModelForm):
 
         return data
 
+    def clean_effective_number_of_days(self):
+        data = self.cleaned_data['effective_number_of_days']
+
+        if data <= 0:
+            raise ValidationError(_("Η διάρκεια των ημερών άδειας πρέπει να είναι μεγαλύτερη του 0"))
+
+        return data
+
     def clean_number_of_days(self):
 
         data = self.cleaned_data
@@ -40,7 +52,7 @@ class LeaveForm(forms.ModelForm):
 
         if date_from is not None and date_until is not None:
             data['number_of_days'] = ((date_until - date_from) + timedelta(days=1)).days
-        
+
         return data['number_of_days']
     
     def clean(self):
@@ -57,7 +69,8 @@ class LeaveForm(forms.ModelForm):
             self.add_error('date_until', _('Η ημ/νία λήξης της άδειας είναι προγενέστερη της έναρξης'))
 
         return cleaned_data
-            
+
+
 class LeaveSearchForm(forms.Form):
     pass
 
