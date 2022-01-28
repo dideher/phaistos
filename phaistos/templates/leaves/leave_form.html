@@ -1,48 +1,51 @@
-{% extends 'base.html' %}
+
 
 {% load django_bootstrap5 %}
 
-{% block title %}
-    Employees
-{% endblock %}
-
-{% block content %}
 
 <form id="leave_form" method="post">
     {% csrf_token %}
 
-    
-    <div class="row">
-        <div class="col">
-            Τύπος Άδειας
-            {% bootstrap_field form.leave_type placeholder='' show_label=True addon_before='<span class="glyphicon glyphicon-calendar">Τύπος Άδειας</span>'%}
-        </div>
-        <div class="col">
-            Έναρξη Άδειας
-            {% bootstrap_field form.date_from placeholder='ηη/μμ/εεεε' show_label=True %}
-        </div>
-        <div class="col">
-            {% bootstrap_field form.date_until placeholder='ηη/μμ/εεεε' show_label=False addon_before='<span class="glyphicon glyphicon-calendar">Λήξη Άδειας</span>'%}
-        </div>
+    <div class="modal-header">
+        <h5 class="modal-title">Καταχώριση Νέας Άδειας</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+        </button>
     </div>
-    <div class="row">
-        <div class="col">
-            {% bootstrap_field form.number_of_days placeholder='0' show_label=False addon_before='<span class="glyphicon glyphicon-calendar">Ημερολογιακή Διαφορά</span>'%}
-        </div>
-        <div class="col">
-            {% bootstrap_field form.effective_number_of_days placeholder='0' show_label=False addon_before='<span class="glyphicon glyphicon-calendar">Πραγματική Διάρκεια</span>'%}
-        </div>
-        <div class="col">
-            {% bootstrap_field form.comment placeholder='Σχόλια Άδειας' show_label=False addon_before='<span class="glyphicon glyphicon-calendar">Σχόλιο</span>'%}
-        </div>
-        <div class="col">
+    <div class="modal-body">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col">
+                    {% bootstrap_field form.leave_type wrapper_class='invalid' placeholder='' show_label=True %}
+                </div>
+                <div class="col">
+                    {% bootstrap_field form.date_from wrapper_class='invalid' placeholder='ηη/μμ/εεεε' show_label=True %}
+                </div>
+                <div class="col">
+                    {% bootstrap_field form.date_until wrapper_class='invalid' placeholder='ηη/μμ/εεεε' show_label=True %}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    {% bootstrap_field form.number_of_days wrapper_class='invalid' placeholder='0' show_label=True %}
+                </div>
+                <div class="col">
+                    {% bootstrap_field form.effective_number_of_days wrapper_class='invalid' placeholder='0' show_label=True %}
+                </div>
 
+            </div>
+            <div class="row">
+                <div class="col">
+                    {% bootstrap_field form.comment wrapper_class='invalid' placeholder='Σχόλια Άδειας' show_label=True %}
+                </div>
+            </div>
         </div>
     </div>
-    
-    {% bootstrap_button "Καταχώρηση" button_type="submit" button_class="btn-primary" %}
-    {% bootstrap_button "Επιστροφή" button_type="link" href="url 'employees:employee-leaves-list' employee.id" button_class="btn-secondary" %}
-    
+    <div class="modal-footer">
+        {% bootstrap_button "Καταχώριση" button_type="submit" button_class="btn-primary" %}
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Επιστροφή</button>
+    </div>
+
+
 </form>
 
 <script>
@@ -78,4 +81,3 @@
     </script>
 
 
-{% endblock %}

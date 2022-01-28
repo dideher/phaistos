@@ -8,6 +8,8 @@ Employee Leaves List
 
 {% block content %}
 
+{% include "_modal.html" %}
+
 <div class="col-md-12 mx-auto">
     <div class="card shadow">
 
@@ -66,7 +68,8 @@ Employee Leaves List
                     {% bootstrap_form form layout='horizontal' size='sm' %}
 
                     <a href="{% url 'employees:employee-list' %} " class="btn btn-success" role="button">Επιστροφή</a>
-                    <a href="{% url 'leaves:leave-create' employee.id %} " class="btn btn-primary" role="button">Είσαγωγή Άδειας</a>
+                    <button id="create-leave-button" class="btn btn-primary" type="button" name="button">Είσαγωγή Άδειας</button>
+
 
                 </form>
             </div>
@@ -189,4 +192,16 @@ Employee Leaves List
     })
   </script>
 
-    {% endblock %}
+    {% endblock content %}
+
+    {% block bootstrap5_extra_script %}
+    <script type="text/javascript">
+        $(document).ready(function()  {
+            // create new leave
+            $("#create-leave-button").modalForm({
+            formURL: "{% url 'leaves:leave-create' employee.id %}",
+            modalID: "#modal-lg"
+            });
+        });
+    </script>
+    {% endblock bootstrap5_extra_script %}
