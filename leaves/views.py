@@ -10,41 +10,32 @@ from django.views.generic import View
 from django.views.generic.detail import SingleObjectMixin
 from django.views.generic.edit import DeletionMixin, CreateView
 from datetime import datetime, timedelta
-from bootstrap_modal_forms.generic import BSModalCreateView
+from bootstrap_modal_forms.generic import BSModalCreateView, BSModalUpdateView
 
 from phaistos.mixins import JsonableResponseMixin
 
 from leaves.models import Leave
-from leaves.forms import LeaveForm
+from leaves.forms import LeaveForm, DeleteLeaveForm
 from employees.models import Employee
 
 
-class BaseDeleteView(SingleObjectMixin, DeletionMixin, View):
+class BaseDeleteView(BSModalUpdateView):
 
-    def setup(self, request, *args, **kwargs):
-
-        super().setup(request, *args, **kwargs)
-        
-        if request.POST is not None:
-            self.success_url = request.POST['success_url']
-
-    def delete(self, request, *args, **kwargs):
-        """
-        Call the delete() method on the fetched object and then redirect to the
-        success URL.
-        """
-        self.object = self.get_object()
-        success_url = self.get_success_url()
-        self.object.is_deleted = True
-        self.object.deleted_on = timezone.now()
-        self.object.deleted_comment = request.POST.get('delete_comment_text')
-        self.object.save()
-        return HttpResponseRedirect(success_url)
+    def form_valid(self, form):
+        instance = form.save(commit=False)
+        instance.is_deleted = True
+        instance.deleted_on = timezone.now()
+        return super(BaseDeleteView, self).form_valid(form)
 
 
 class LeaveDeleteView(LoginRequiredMixin, BaseDeleteView):
-
+    template_name = 'leaves/delete_leave.html'
+    form_class = DeleteLeaveForm
     model = Leave
+    success_message = 'Η διαγραφή της άδειας έγινε με επιτυχεία!'
+
+    def get_success_url(self):
+        return reverse("employees:employee-leaves-list", kwargs={"pk": self.object.employee.id})
 
 
 def compute_leave_calendar_duration(request: HttpRequest):
@@ -93,7 +84,6 @@ class LeaveCreateView(LoginRequiredMixin, JsonableResponseMixin, BSModalCreateVi
         messages.success(self.request, f'Η άδεια καταχωρήθηκε επιτυχώς')
         
         return super().form_valid(form)
-
 
     def get_success_url(self):
            return reverse("employees:employee-leaves-list", kwargs={"pk": self.employee.id})

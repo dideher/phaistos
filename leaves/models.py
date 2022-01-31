@@ -54,7 +54,9 @@ class Leave(models.Model):
                                                    'Έναρξης και Λήξεις της άδειας')
     is_deleted = models.BooleanField(db_column="IS_DELETED", null=False, default=False, db_index=True)
     deleted_on = models.DateField(db_column="DELETED_ON", null=True)
-    deleted_comment = models.TextField(db_column="DELETED_COMMENT", null=True, max_length=255)
+    deleted_comment = models.TextField(db_column="DELETED_COMMENT", verbose_name='Σχόλιο Διαγραφής',
+                                       help_text='Προαιρετικά εισάγεται σχόλιο ή περιγραφή διαγραφής της άδειας',
+                                       null=True, max_length=255)
 
     class Meta:
         indexes = [

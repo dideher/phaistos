@@ -1,0 +1,35 @@
+{% load django_bootstrap5 %}
+
+
+<form method="post" action="">
+  {% csrf_token %}
+  <div class="modal-header">
+    <h5 class="modal-title">Διαγραφή Άδειας</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+    </button>
+  </div>
+
+  <div class="modal-body">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col">
+          <p>
+            Η άδεια τύπου <code>{{leave.leave_type}}</code> με ημ/νια έναρξης <code>{{leave.date_from}}</code> και λήξης
+            <code>{{leave.date_until}}</code> του <code>{{ leave.employee }}</code> θα διαγραφεί.
+          </p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          {% bootstrap_field form.deleted_comment wrapper_class='invalid' placeholder='' show_label=True %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Ακύρο</button>
+    <button type="submit" class="btn btn-danger" name="submit" value="Submit">Διαγραφή Άδειας</button>
+  </div>
+
+</form>
