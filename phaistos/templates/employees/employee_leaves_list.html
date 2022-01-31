@@ -108,7 +108,9 @@ Employee Leaves List
                                         <ul class="dropdown-menu">
                                             <li><a class="dropdown-item" href="#">Προβολή</a></li>
                                             <li><hr class="dropdown-divider"></li>
-                                            <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#deleteLeaveModal" data-bs-delete_form_url="{% url 'leaves:leave-delete' leave.id %}" data-bs-delete_title="Να διαγραφεί η άδεια τύπου ΧΧΧΧΧΧ με έναρξη την {{ leave.date_from|date:'d-m-Y' }} και λήξη την {{ leave.date_until|date:'d-m-Y' }} του εκπαιδευτικού {{ leave.employee }} ;">Διαγραφή</a></li>
+                                            <li>
+                                                <a class="dropdown-item delete-leave" data-form-url="{% url 'leaves:leave-delete' leave.id %}">Διαγραφή</a>
+                                            </li>
                                         </ul>
                                     </div>
                                 </td>
@@ -139,64 +141,17 @@ Employee Leaves List
 
 
 
-
-
-
-    <!-- Modal -->
-    <form class="row g-3 needs-validation" id='deleteLeaveModalForm' action='deleteLeaveModalFormAction' method='post' novalidate>{% csrf_token %}
-        <div class="modal fade" id="deleteLeaveModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="deleteLeaveModal" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="staticBackdropLabel">Διαγραφή Άδειας ;</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <p id="delete-leave-title">
-                            .... TITLE ....
-                        </p>
-                        <div class="mb-3">
-                            <label for="delete_comment_text" class="form-label">Σχόλιο Διαγραφής</label>
-                            <textarea class="form-control" id="delete_comment_text" name="delete_comment_text" aria-describedby="delete_comment_text" rows="3" required></textarea>
-                            <div id="delete_comment_text_help" class="form-text">Περιγράψτε συνοπτικά τον λόγο διαγραφής</div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <input type="hidden" id="success_url" name="success_url" value="{% url 'employees:employee-leaves-list' employee.id %}" >
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Ακύρο</button>
-                        <button type="submit" class="btn btn-danger" name="submit" value="Submit">Διαγραφή Άδειας</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </form>
-
-    <script>
-    var deleteLeaveModal = document.getElementById('deleteLeaveModal');
-    
-    deleteLeaveModal.addEventListener('show.bs.modal', function (event) {
-        // Button that triggered the modal
-        var button = event.relatedTarget
-
-        // retrieve attributes
-        var delete_title = button.getAttribute('data-bs-delete_title')
-        var form_action_url = button.getAttribute('data-bs-delete_form_url')
-        
-        // update content of modal dialog
-        var delete_leave_title = deleteLeaveModal.querySelector('#delete-leave-title')
-        delete_leave_title.textContent = delete_title
-        var delete_leave_form = document.getElementById('deleteLeaveModalForm')
-
-        delete_leave_form.action = form_action_url
-        
-    })
-  </script>
-
     {% endblock content %}
 
     {% block bootstrap5_extra_script %}
     <script type="text/javascript">
         $(document).ready(function()  {
+            // delete leave
+            $(".delete-leave").each(function () {
+                $(this).modalForm({formURL: $(this).data("form-url"), isDeleteForm: true});
+            });
+
+
             // create new leave
             $("#create-leave-button").modalForm({
             formURL: "{% url 'leaves:leave-create' employee.id %}",

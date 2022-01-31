@@ -10,6 +10,16 @@ from bootstrap_modal_forms.forms import BSModalModelForm
 blank_choice = [('', '---------'), ]
 
 
+class DeleteLeaveForm(BSModalModelForm):
+
+    class Meta:
+        model = Leave
+        fields = ['deleted_comment', ]
+
+        widgets = {
+            'deleted_comment': forms.Textarea(attrs={'rows': 4}),
+        }
+
 class LeaveForm(BSModalModelForm):
     
     class Meta:
