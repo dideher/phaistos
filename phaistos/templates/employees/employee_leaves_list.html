@@ -106,7 +106,9 @@ Employee Leaves List
                                             <span class="visually-hidden">Toggle Dropdown</span>
                                         </button>
                                         <ul class="dropdown-menu">
-                                            <li><a class="dropdown-item" href="#">Προβολή</a></li>
+                                            <li>
+                                                <a class="dropdown-item view-leave" data-form-url="{% url 'leaves:leave-detail' leave.id %}">Προβολή</a>
+                                            </li>
                                             <li><hr class="dropdown-divider"></li>
                                             <li>
                                                 <a class="dropdown-item delete-leave" data-form-url="{% url 'leaves:leave-delete' leave.id %}">Διαγραφή</a>
@@ -151,6 +153,10 @@ Employee Leaves List
                 $(this).modalForm({formURL: $(this).data("form-url"), isDeleteForm: true});
             });
 
+            // view leave
+            $(".view-leave").each(function () {
+                $(this).modalForm({formURL: $(this).data("form-url"), isDeleteForm: false, modalID: "#modal-lg"});
+            });
 
             // create new leave
             $("#create-leave-button").modalForm({

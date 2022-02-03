@@ -40,14 +40,14 @@ class Leave(models.Model):
     leave_type = models.ForeignKey(LeaveType, null=False, db_column="EMPLOYEE_LEAVE_TYPE_ID", on_delete=models.PROTECT,
                                    verbose_name='Τύπος Άδειας', help_text="Επιλέξτε τον τύπος της άδειας")
     is_active = models.BooleanField(db_column="IS_ACTIVE", null=False, default=True, db_index=True)
-    comment = models.TextField(db_column="COMMENT", null=True, blank=True,
+    comment = models.TextField(db_column="COMMENT", null=True, blank=True, verbose_name='Σχόλια Άδειας',
                                help_text='Εισάγεται τυχόν σχόλια που έχετε για την άδεια', max_length=255)
     date_from = models.DateField(db_column="DATE_FROM", null=False, verbose_name='Έναρξη Άδειας',
                                  help_text="Καταχωρίστε την ημ/νια έναρξης")
     date_until = models.DateField(db_column="DATE_UNTIL", null=False, verbose_name='Λήξη Άδειας',
                                   help_text="Καταχωρίστε την ημ/νια λήξης")
     effective_number_of_days = models.IntegerField(db_column="EFFECTIVE_DAYS_COUNT", null=True,
-                                                   verbose_name='Έναρξη Άδειας',
+                                                   verbose_name='Διάρκεια Άδειας',
                                                    help_text="Καταχωρίστε την πραγματική διάρκειας της άδειας")
     number_of_days = models.IntegerField(db_column="DAYS_COUNT", null=True, verbose_name='Ημερολογιακή Διάρκεια Άδειας',
                                          help_text='Ημερολογιακή Διάρκεια Άδειας. Υπολογίζεται αυτόματα απο την Ημ/νια '
