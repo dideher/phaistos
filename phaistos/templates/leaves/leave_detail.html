@@ -1,0 +1,46 @@
+{% load django_bootstrap5 %}
+
+<div class="modal-header">
+    <h5 class="modal-title">Προβολή Άδειας</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+    </button>
+</div>
+
+<div class="modal-body">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col">
+                <label for="staticEmail" class="col-sm-2 col-form-label">Τύπος Άδειας</label>
+                {{ leave.leave_type }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <label for="staticEmail" class="col-sm-2 col-form-label">Έναρξη Άδειας</label>
+                {{ leave.date_from }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <label for="staticEmail" class="col-sm-2 col-form-label">Λήξη Άδειας</label>
+                {{ leave.date_until }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <label for="staticEmail" class="col-sm-2 col-form-label">Διάρκεια Άδειας</label>
+                {{ leave.effective_number_of_days }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <label for="staticEmail" class="col-sm-2 col-form-label">Σχόλια Άδειας</label>
+                {{ leave.comment }}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal-footer">
+    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Εντάξει</button>
+</div>

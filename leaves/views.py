@@ -10,7 +10,7 @@ from django.views.generic import View
 from django.views.generic.detail import SingleObjectMixin
 from django.views.generic.edit import DeletionMixin, CreateView
 from datetime import datetime, timedelta
-from bootstrap_modal_forms.generic import BSModalCreateView, BSModalUpdateView
+from bootstrap_modal_forms.generic import BSModalCreateView, BSModalUpdateView, BSModalReadView
 
 from phaistos.mixins import JsonableResponseMixin
 
@@ -52,6 +52,9 @@ def compute_leave_calendar_duration(request: HttpRequest):
 
     else:
         return HttpResponse("")
+
+class LeaveDetailView(BSModalReadView):
+    model = Leave
 
 
 class LeaveCreateView(LoginRequiredMixin, JsonableResponseMixin, BSModalCreateView):
