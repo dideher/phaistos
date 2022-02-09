@@ -67,8 +67,14 @@ Employee Leaves List
 
                     {% bootstrap_form form layout='horizontal' size='sm' %}
 
-                    <a href="{% url 'employees:employee-list' %} " class="btn btn-success" role="button">Επιστροφή</a>
-                    <button id="create-leave-button" class="btn btn-primary" type="button" name="button">Είσαγωγή Άδειας</button>
+                    <a href="{% url 'employees:employee-list' %} " class="btn btn-sm btn-success" role="button">
+                        <i class="bi-arrow-left-circle" aria-hidden="true"></i>&nbsp;
+                        Επιστροφή
+                    </a>
+                    <button id="create-leave-button" class="btn btn-sm btn-primary" type="button" name="button">
+                        <i class="bi-plus-circle" aria-hidden="true"></i>&nbsp;
+                        Εισαγωγή Άδειας
+                    </button>
 
 
                 </form>
@@ -100,29 +106,26 @@ Employee Leaves List
                             {% for leave in leaves_paginated %}
                             <tr>
                                 <td>
-                                    <div class="btn-group">
-                                        <button type="button" class="btn btn-success">{{ leave.id }}</button>
-                                        <button type="button" class="btn btn-success dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
-                                            <span class="visually-hidden">Toggle Dropdown</span>
-                                        </button>
-                                        <ul class="dropdown-menu">
-                                            <li>
-                                                <a class="dropdown-item view-leave" data-form-url="{% url 'leaves:leave-detail' leave.id %}">Προβολή</a>
-                                            </li>
-                                            <li><hr class="dropdown-divider"></li>
-                                            <li>
-                                                <a class="dropdown-item delete-leave" data-form-url="{% url 'leaves:leave-delete' leave.id %}">Διαγραφή</a>
-                                            </li>
-                                        </ul>
-                                    </div>
+                                    <button id="view-leave-btn" data-form-url="{% url 'leaves:leave-detail' leave.id %}" class="view-leave btn btn-sm btn-primary" type="button" name="button">
+                                       <i class="bi-info-circle" aria-hidden="true"></i>&nbsp;{{ leave.id }}
+                                    </button>
                                 </td>
-                                <td>{{ leave.leave_type.legacy_code }} </td>
+                                <td class="text-center"><code>{{ leave.leave_type.legacy_code }}</code></td>
                                 <td>{{ leave.leave_type.description }} </td>
                                 <td>{{ leave.effective_number_of_days }}</td>
                                 <td>{{ leave.date_from|date:"d-m-Y" }}</td>
                                 <td>{{ leave.date_until|date:"d-m-Y" }}</td>
                                 <td>&nbsp;</td>
                                 <td>{{ leave.comment|truncatechars:20 }}</td>
+                                <td>
+                                    <button id="create-book-sync2" class="btn btn-sm btn-primary" type="button" name="button">
+                                       <i class="bi-pencil-square" aria-hidden="true"></i>&nbsp;Ε.
+                                    </button>
+                                    &nbsp;&nbsp;
+                                    <button id="delete-leave-btn" data-form-url="{% url 'leaves:leave-delete' leave.id %}" class="delete-leave btn btn-sm btn-danger" type="button" name="button">
+                                       <i class="bi-trash" aria-hidden="true"></i>&nbsp;Δ.
+                                    </button>
+                                </td>
                             </tr>
                             {% endfor %}
                             </tbody>

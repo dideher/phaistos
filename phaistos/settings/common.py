@@ -162,3 +162,10 @@ LOGGING = {
         'level': 'INFO',
     },
 }
+
+
+DJANGO_ICONS = {
+    "ICONS": {
+        "edit": {"name": "far fa-pencil"},
+    },
+}
