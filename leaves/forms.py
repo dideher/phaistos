@@ -20,6 +20,7 @@ class DeleteLeaveForm(BSModalModelForm):
             'deleted_comment': forms.Textarea(attrs={'rows': 4}),
         }
 
+
 class LeaveForm(BSModalModelForm):
     
     class Meta:
@@ -69,7 +70,6 @@ class LeaveForm(BSModalModelForm):
         """
         Validates the leave's date_from and date_until
         """
-        
         cleaned_data = super().clean()
         
         date_from = cleaned_data.get("date_from")

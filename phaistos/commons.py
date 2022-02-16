@@ -25,13 +25,7 @@ def compute_leaves_real_duration(leaves: List[Leave], trim_to_year=None):
 
     leaves_duration = 0
     for leave in leaves:
-        print(leave)
-        print(leave.leave_type)
-        print(leave.effective_number_of_days)
-        print(leave.is_deleted)
-        print(leave.employee)
         leaves_duration += leave.effective_number_of_days
-    print(leaves_duration)
     return leaves_duration
 
 

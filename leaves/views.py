@@ -53,6 +53,7 @@ def compute_leave_calendar_duration(request: HttpRequest):
     else:
         return HttpResponse("")
 
+
 class LeaveDetailView(BSModalReadView):
     model = Leave
 
@@ -61,7 +62,7 @@ class LeaveCreateView(LoginRequiredMixin, JsonableResponseMixin, BSModalCreateVi
 
     model = Leave
     form_class = LeaveForm
-    
+
     def dispatch(self, request, *args, **kwargs):
         """
         Overridden so we can make sure the `Ipsum` instance exists
@@ -79,19 +80,39 @@ class LeaveCreateView(LoginRequiredMixin, JsonableResponseMixin, BSModalCreateVi
     def form_valid(self, form):
         # This method is called when valid form data has been POSTed.
         # It should return an HttpResponse.
-        self.object: Leave = form.save(commit=False)
-        self.object.employee = self.employee
-        self.object.minoas_id
-        self.object.number_of_days = (self.object.date_until - self.object.date_from).days + 1
+        leave: Leave = form.instance
+        leave.employee = self.employee
+        leave.number_of_days = (leave.date_until - leave.date_from).days + 1
+        leave.minoas_id = None
 
         messages.success(self.request, f'Η άδεια καταχωρήθηκε επιτυχώς')
-        
+
         return super().form_valid(form)
 
     def get_success_url(self):
-           return reverse("employees:employee-leaves-list", kwargs={"pk": self.employee.id})
+        return reverse("employees:employee-leaves-list", kwargs={"pk": self.employee.id})
 
 
+class LeaveUpdateView(LoginRequiredMixin, JsonableResponseMixin, BSModalUpdateView):
+    model = Leave
+    template_name = 'leaves/update_leave.html'
+    form_class = LeaveForm
 
-    
+    def get_object(self, queryset=None):
+        return super(LeaveUpdateView, self).get_object(queryset=queryset)
+
+    def form_valid(self, form):
+
+        messages.success(self.request, f'Η άδεια τροποποιήθηκε επιτυχώς')
+
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse("employees:employee-leaves-list", kwargs={"pk": self.object.employee.id})
+
+    def get_form_kwargs(self):
+        kwargs = super(LeaveUpdateView, self).get_form_kwargs()
+        kwargs['employee_id'] = self.object.employee.id
+
+        return kwargs
     

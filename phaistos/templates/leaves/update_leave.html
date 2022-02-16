@@ -3,11 +3,11 @@
 {% load django_bootstrap5 %}
 
 
-<form id="leave_form" method="post">
+<form id="update_leave_form" method="post">
     {% csrf_token %}
 
     <div class="modal-header">
-        <h5 class="modal-title">Καταχώριση Νέας Άδειας</h5>
+        <h5 class="modal-title">Τροποποίηση Άδειας</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
         </button>
     </div>
@@ -42,7 +42,7 @@
     </div>
     <div class="modal-footer">
         <button type="submit" class="btn btn-primary">
-            <i class="bi-arrow-left-circle" aria-hidden="true"></i>&nbsp;Καταχώριση
+            <i class="bi-plus-circle" aria-hidden="true"></i>&nbsp;Τροποποίηση
         </button>
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
             <i class="bi-arrow-left-circle" aria-hidden="true"></i>&nbsp;Επιστροφή
@@ -54,10 +54,10 @@
 
 <script>
     $( "#id_date_from, #id_date_until" ).change(function() {
-        $form=$('#leave_form');
-        $date_from = $('#leave_form input[name=date_from]').val();
-        $date_until = $('#leave_form input[name=date_until]').val();
-        $csrf_token = $('#leave_form input[name=csrfmiddlewaretoken]').val();
+        $form=$('#update_leave_form');
+        $date_from = $('#update_leave_form input[name=date_from]').val();
+        $date_until = $('#update_leave_form input[name=date_until]').val();
+        $csrf_token = $('#update_leave_form input[name=csrfmiddlewaretoken]').val();
         if( $date_from && $date_until) {
             $.ajax({
                 type: "POST",
@@ -78,7 +78,7 @@
                 }
             });
         }
-
+    
         //don't submit the form
         return false;
     });
