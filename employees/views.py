@@ -81,9 +81,8 @@ class EmployeeLeavesListView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         employee_id = self.kwargs['pk']
         if True:
-            return Leave.objects.filter(employee=employee_id, is_deleted=False).order_by('-date_from')
-        
-        
+            return Leave.objects.filter(employee=employee_id, is_deleted=False).order_by('-date_from', '-created_on')
+
         form = self.form_class(self.request.GET)
 
         if form.is_valid():

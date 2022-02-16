@@ -83,6 +83,7 @@ class LeaveCreateView(LoginRequiredMixin, JsonableResponseMixin, BSModalCreateVi
         leave: Leave = form.instance
         leave.employee = self.employee
         leave.number_of_days = (leave.date_until - leave.date_from).days + 1
+        leave.created_on = timezone.now()
         leave.minoas_id = None
 
         messages.success(self.request, f'Η άδεια καταχωρήθηκε επιτυχώς')
@@ -102,7 +103,8 @@ class LeaveUpdateView(LoginRequiredMixin, JsonableResponseMixin, BSModalUpdateVi
         return super(LeaveUpdateView, self).get_object(queryset=queryset)
 
     def form_valid(self, form):
-
+        leave: Leave = form.instance
+        leave.updated_on = timezone.now()
         messages.success(self.request, f'Η άδεια τροποποιήθηκε επιτυχώς')
 
         return super().form_valid(form)
