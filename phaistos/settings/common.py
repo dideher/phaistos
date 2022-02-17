@@ -30,12 +30,6 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'users',
-    'allauth',
-    'allauth.account',
-    'allauth.socialaccount',
-    'rest_auth',
-    'rest_auth.registration',
-    'crispy_forms',
     'api',
     'employees',
     'leaves'
@@ -119,7 +113,7 @@ STATIC_URL = '/static/'
 
 AUTH_USER_MODEL = "users.CustomUser"
 
-CRISPY_TEMPLATE_PACK = "bootstrap4"
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 SITE_ID = 1
 
