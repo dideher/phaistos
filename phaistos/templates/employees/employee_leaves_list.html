@@ -71,10 +71,12 @@ Employee Leaves List
                         <i class="bi-arrow-left-circle" aria-hidden="true"></i>&nbsp;
                         Επιστροφή
                     </a>
+                    {% if perms.leaves.create_leave %}
                     <button id="create-leave-button" class="btn btn-sm btn-primary" type="button" name="button">
                         <i class="bi-plus-circle" aria-hidden="true"></i>&nbsp;
                         Εισαγωγή Άδειας
                     </button>
+                    {% endif %}
                 </form>
             </div>
 
@@ -104,9 +106,13 @@ Employee Leaves List
                             {% for leave in leaves_paginated %}
                             <tr>
                                 <td>
-                                    <button id="view-leave-btn" data-form-url="{% url 'leaves:leave-detail' leave.id %}" class="view-leave btn btn-sm btn-primary" type="button" name="button">
-                                       <i class="bi-info-circle" aria-hidden="true"></i>&nbsp;{{ leave.id }}
-                                    </button>
+                                    {% if perms.leaves.view_leave %}
+                                        <button id="view-leave-btn" data-form-url="{% url 'leaves:leave-detail' leave.id %}" class="view-leave btn btn-sm btn-primary" type="button" name="button">
+                                            <i class="bi-info-circle" aria-hidden="true"></i>&nbsp;{{ leave.id }}
+                                        </button>
+                                    {% else %}
+                                        {{ leave.id }}
+                                    {% endif %}
                                 </td>
                                 <td class="text-center"><code>{{ leave.leave_type.legacy_code }}</code></td>
                                 <td>{{ leave.leave_type.description }} </td>
@@ -116,13 +122,17 @@ Employee Leaves List
                                 <td>&nbsp;</td>
                                 <td>{{ leave.comment|truncatechars:20 }}</td>
                                 <td>
+                                    {% if perms.leaves.change_leave %}
                                     <button id="update-leave-button" data-form-url="{% url 'leaves:leave-update' leave.id %}" class="update-leave btn btn-sm btn-primary" type="button" name="button">
                                        <i class="bi-pencil-square" aria-hidden="true"></i>&nbspΕ.
                                     </button>
+                                    {% endif %}
 
+                                    {% if perms.leaves.delete_leave %}
                                     <button id="delete-leave-btn" data-form-url="{% url 'leaves:leave-delete' leave.id %}" class="delete-leave btn btn-sm btn-danger" type="button" name="button">
                                        <i class="bi-trash" aria-hidden="true"></i>&nbspΔ.
                                     </button>
+                                    {% endif %}
                                 </td>
                             </tr>
                             {% endfor %}

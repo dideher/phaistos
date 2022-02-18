@@ -65,7 +65,13 @@
                         {% for employee in employees_paginated %}
                             <tr>
                                 <td>
-                                    <a href="{% url 'employees:employee-leaves-list' employee.id %}">{{ employee.id }}</a>
+                                    {% if perms.leaves.view_leave %}
+                                    <a href="{% url 'employees:employee-leaves-list' employee.id %}">
+                                        <code>{{ employee.id }}</code>
+                                    </a>
+                                    {% else %}
+                                    <code>{{ employee.id }}</code>
+                                    {% endif %}
                                 </td>
                                 <td>{{ employee.vat_number }} </td>
                                 <td>{{ employee.last_name|truncatechars:20 }}</td>

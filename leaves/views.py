@@ -1,22 +1,19 @@
-from django.core import paginator
 from django.http.request import HttpRequest
-from django.utils import timezone
-from django.urls import reverse_lazy, reverse
-from django.http import HttpResponseRedirect, HttpResponse, HttpResponseBadRequest
-from django.shortcuts import get_object_or_404
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib import messages
-from django.views.generic import View
-from django.views.generic.detail import SingleObjectMixin
-from django.views.generic.edit import DeletionMixin, CreateView
-from datetime import datetime, timedelta
+from datetime import datetime
+
 from bootstrap_modal_forms.generic import BSModalCreateView, BSModalUpdateView, BSModalReadView
+from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.http import HttpResponse, HttpResponseBadRequest
+from django.http.request import HttpRequest
+from django.shortcuts import get_object_or_404
+from django.urls import reverse
+from django.utils import timezone
 
-from phaistos.mixins import JsonableResponseMixin
-
-from leaves.models import Leave
-from leaves.forms import LeaveForm, DeleteLeaveForm
 from employees.models import Employee
+from leaves.forms import LeaveForm, DeleteLeaveForm
+from leaves.models import Leave
+from phaistos.mixins import JsonableResponseMixin
 
 
 class BaseDeleteView(BSModalUpdateView):
@@ -28,8 +25,9 @@ class BaseDeleteView(BSModalUpdateView):
         return super(BaseDeleteView, self).form_valid(form)
 
 
-class LeaveDeleteView(LoginRequiredMixin, BaseDeleteView):
+class LeaveDeleteView(LoginRequiredMixin, PermissionRequiredMixin, BaseDeleteView):
     template_name = 'leaves/delete_leave.html'
+    permission_required = ['leaves.delete_leave']
     form_class = DeleteLeaveForm
     model = Leave
     success_message = 'Η διαγραφή της άδειας έγινε με επιτυχεία!'
@@ -54,12 +52,13 @@ def compute_leave_calendar_duration(request: HttpRequest):
         return HttpResponse("")
 
 
-class LeaveDetailView(BSModalReadView):
+class LeaveDetailView(LoginRequiredMixin, PermissionRequiredMixin, BSModalReadView):
+    permission_required = ['leaves.view_leave']
     model = Leave
 
 
-class LeaveCreateView(LoginRequiredMixin, JsonableResponseMixin, BSModalCreateView):
-
+class LeaveCreateView(LoginRequiredMixin, PermissionRequiredMixin, JsonableResponseMixin, BSModalCreateView):
+    permission_required = ['leaves.create_leave']
     model = Leave
     form_class = LeaveForm
 
@@ -94,8 +93,9 @@ class LeaveCreateView(LoginRequiredMixin, JsonableResponseMixin, BSModalCreateVi
         return reverse("employees:employee-leaves-list", kwargs={"pk": self.employee.id})
 
 
-class LeaveUpdateView(LoginRequiredMixin, JsonableResponseMixin, BSModalUpdateView):
+class LeaveUpdateView(LoginRequiredMixin, PermissionRequiredMixin, JsonableResponseMixin, BSModalUpdateView):
     model = Leave
+    permission_required = ['leaves.change_leave']
     template_name = 'leaves/update_leave.html'
     form_class = LeaveForm
 
