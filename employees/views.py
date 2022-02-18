@@ -1,29 +1,27 @@
-from django.core import paginator
-from django.db.models.query import QuerySet
-from django.utils import timezone
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic.list import ListView
-from django.views.generic.detail import DetailView, SingleObjectTemplateResponseMixin, BaseDetailView
-from django.views.generic.edit import DeletionMixin, DeleteView
-from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
+from django.utils import timezone
+from django.views.generic.detail import DetailView
+from django.views.generic.list import ListView
 
-from employees.models import Employee, Specialization
 from employees.forms import EmployeeSearchForm
+from employees.models import Employee
 from leaves.forms import LeaveSearchForm
-from leaves.models import Leave, LeaveType
+from leaves.models import Leave
 from phaistos.commons import (
     get_regular_leaves_for_employee_established_in_year,
     get_medical_leaves_for_employee_established_in_year,
     compute_leaves_real_duration
 )
 
-class EmployeeListView(LoginRequiredMixin, ListView):
+
+class EmployeeListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
 
     model = Employee
     context_object_name = 'employees'
     paginator_per_page_count = 12
     form_class = EmployeeSearchForm
+    permission_required = ['employees.view_employee']
 
     def get_queryset(self):
         form = self.form_class(self.request.GET)
@@ -65,18 +63,19 @@ class EmployeeListView(LoginRequiredMixin, ListView):
         return context
 
 
-class EmployeeDetailView(DetailView):
-
+class EmployeeDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
+    permission_required = ['employees.view_employee']
     model = Employee
 
 
-class EmployeeLeavesListView(LoginRequiredMixin, ListView):
+class EmployeeLeavesListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
 
     model = Leave
     context_object_name = 'leaves'
     paginator_per_page_count = 12
     form_class = LeaveSearchForm
     template_name = 'employees/employee_leaves_list.html'
+    permission_required = ['employees.view_employee', 'leaves.view_leave']
 
     def get_queryset(self):
         employee_id = self.kwargs['pk']
