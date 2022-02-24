@@ -10,20 +10,44 @@
 
 {% block bootstrap5_content %}
 
-    <div class="container min-vh-100 bg-light bg-gradient">
-        <div class="row">
-            <nav class="navbar navbar-expand-lg navbar-light bg-success">
-                <div class="container-fluid">
-                    <a class="navbar-brand" href="#">Navbar</a>
-                </div>
-            </nav>
-        </div>
-        
-        <h1>{% block title %}(no title){% endblock %}</h1>
-        <div class="row">
-        {% autoescape off %}{% bootstrap_messages %}{% endautoescape %}
 
-        {% block content %}(no content){% endblock %}
+<div class="fluid-container min-vh-100 bg-light bg-gradient">
+    <div class="row">
+        <!-- sidebar -->
+        <div class="d-flex flex-column vh-100 flex-shrink-0 p-3 text-white bg-dark" style="width: 250px;"> <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none"> <svg class="bi me-2" width="40" height="32"> </svg> <span class="fs-4">Μενού</span> </a>
+            <hr>
+            <ul class="nav nav-pills flex-column mb-auto">
+                <li class="nav-item"> <a href="{% url 'home' %}" class="nav-link active" aria-current="page"> <i class="fa fa-home"></i><span class="ms-2">Κεντρική Σελίδα</span> </a> </li>
+                <li> <a href="{% url 'employees:employee-list' %}" class="nav-link text-white"> <i class="fa fa-dashboard"></i><span class="ms-2">Άδειες</span> </a> </li>
+                <hr class="dropdown-divider">
+                <li> <a href="{% url 'logout' %}" class="nav-link text-white"> <i class="fa fa-dashboard"></i><span class="ms-2">Έξοδος</span> </a> </li>
+<!--                <li> <a href="#" class="nav-link text-white"> <i class="fa fa-cog"></i><span class="ms-2">Settings</span> </a> </li>-->
+<!--                <li> <a href="#" class="nav-link text-white"> <i class="fa fa-bookmark"></i><span class="ms-2">Bookmarks</span> </a> </li>-->
+            </ul>
+<!--            <hr>-->
+<!--            <div class="dropdown"> <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false"> <img src="https://github.com/mdo.png" alt="" width="32" height="32" class="rounded-circle me-2"> <strong> {{user.lastname}} {{ user.name}} </strong> </a>-->
+<!--                <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1">-->
+<!--                    <li><a class="dropdown-item" href="#">Ρυθμίσεις</a></li>-->
+<!--                    <li><a class="dropdown-item" href="#">Προφίλ</a></li>-->
+<!--                    <li>-->
+<!--                        <hr class="dropdown-divider">-->
+<!--                    </li>-->
+<!--                    <li><a class="dropdown-item" href="{% url 'logout' %}">Έξοδος</a></li>-->
+<!--                </ul>-->
+<!--            </div>-->
+        </div>
+        <div class="col">
+            <h1>{% block title %}(no title){% endblock %}</h1>
+            <div class="row">
+                {% autoescape off %}{% bootstrap_messages %}{% endautoescape %}
+
+                {% block content %}(no content){% endblock %}
+            </div>
         </div>
     </div>
+
+
+
+
+</div>
 {% endblock %}
