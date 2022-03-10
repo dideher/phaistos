@@ -48,14 +48,14 @@
                         <thead class="thead-dark">
                             <tr>
                                 <th scope="col">#</th>
+                                <th scope="col">ΑΜ</th>
                                 <th scope="col">ΑΦΜ</th>
                                 <th scope="col">Επώνυμο</th>
                                 <th scope="col">Όνομα</th>
                                 <th scope="col">Όνομα Πατρός</th>
-                                <th scope="col">Ειδ.</th>
-                                <th scope="col">Λεκτικό Ειδικότητας</th>
+                                <th scope="col">Ειδικότητα</th>
+                                <th scope="col">Οργανική</th>
                                 <th scope="col">Τύπος</th>
-                                <!-- <th scope="col">Οργανική</th> -->
                                 <!-- <th scope="col">Βαθμός Ε'-2</th> -->
                                 <th scope="col">Ετ.Γεν.</th>
                             </tr>
@@ -72,12 +72,13 @@
                                     <code>{{ employee.id }}</code>
                                     {% endif %}
                                 </td>
-                                <td>{{ employee.vat_number }} </td>
+                                <td>{{ employee.registry_id|default:""}}</td>
+                                <td>{{ employee.vat_number|default:""}}</td>
                                 <td>{{ employee.last_name|truncatechars:20 }}</td>
                                 <td>{{ employee.first_name }}</td>
                                 <td>{{ employee.father_name }}</td>
-                                <td>{{ employee.specialization.code }}</td>
-                                <td>{{ employee.specialization.title|truncatechars:20 }}</td>
+                                <td>{{ employee.specialization.code }} {{ employee.specialization.title|truncatechars:20 }}</td>
+                                <td>{{ employee.current_unit.title|default:"" }}</td>
                                 <td>{{ employee.get_employee_type_display }}</td>
                                 <td>{{ employee.date_of_birth|date:"d-m-Y" }}</td>
                             </tr>

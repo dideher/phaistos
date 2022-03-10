@@ -14,7 +14,7 @@
     </thead>
     <tbody>
         <tr>
-            <td>{{employee.vat_number}}</td>
+            <td>{{employee.vat_number|default:""}}</td>
             <td>{{employee.last_name}}</td>
             <td>{{ employee.first_name }}</td>
             <td>{{ employee.father_name }}</td>
