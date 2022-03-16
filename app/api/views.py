@@ -215,6 +215,7 @@ class EmployeeImportAPIView(APIView):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
 class EmployeeDetailAPI(APIView):
 
     def get_object(self, pk):
@@ -332,7 +333,6 @@ class LeaveImportAPIView(APIView):
                 return Response({
                     'message': f"Employee {validated_data.get('minoas_employee_id')} could not be found"
                 }, status=status.HTTP_404_NOT_FOUND)
-                
 
             try:
                 leave_type = LeaveType.objects.get(minoas_id=validated_data.get('minoas_leave_type_id'))
@@ -341,22 +341,50 @@ class LeaveImportAPIView(APIView):
                     'message': f"leave type {validated_data.get('minoas_leave_type_id')} could not be found"
                 }, status=status.HTTP_404_NOT_FOUND)
 
-            leave = Leave.objects.create(
-                minoas_id = validated_data.get('minoas_id'),
-                employee = employee,
-                leave_type = leave_type,
-                is_active = validated_data.get('is_active'),
-                comment = validated_data.get('comment'),
-                date_from = validated_data.get('date_from'),
-                date_until = validated_data.get('date_until'),
-                effective_number_of_days = validated_data.get('effective_number_of_days'),
-                number_of_days = validated_data.get('number_of_days'),
-                is_deleted = validated_data.get('is_deleted'),
-                deleted_on = validated_data.get('deleted_on'),
-                deleted_comment = validated_data.get('deleted_comment'),
-            )
+            try:
+                leave: Leave = Leave.objects.get(minoas_id=validated_data.get('minoas_id'))
+            except Leave.DoesNotExist:
+                leave = None
+
+            if leave is None:
+
+                leave = Leave.objects.create(
+                    minoas_id=validated_data.get('minoas_id'),
+                    employee=employee,
+                    leave_type=leave_type,
+                    is_active=validated_data.get('is_active'),
+                    comment=validated_data.get('comment'),
+                    date_from=validated_data.get('date_from'),
+                    date_until=validated_data.get('date_until'),
+                    effective_number_of_days=validated_data.get('effective_number_of_days'),
+                    number_of_days=validated_data.get('number_of_days'),
+                    is_deleted=validated_data.get('is_deleted'),
+                    deleted_on=validated_data.get('deleted_on'),
+                    deleted_comment=validated_data.get('deleted_comment'),
+                )
+
+                leave_serializer = LeaveSerializer(leave)
+                return Response(leave_serializer.data, status=status.HTTP_201_CREATED)
+
+            else:
+                leave.minoas_id=validated_data.get('minoas_id'),
+                leave.employee=employee,
+                leave.leave_type=leave_type,
+                leave.is_active=validated_data.get('is_active'),
+                leave.comment=validated_data.get('comment'),
+                leave.date_from=validated_data.get('date_from'),
+                leave.date_until=validated_data.get('date_until'),
+                leave.effective_number_of_days=validated_data.get('effective_number_of_days'),
+                leave.number_of_days=validated_data.get('number_of_days'),
+                leave.is_deleted=validated_data.get('is_deleted'),
+                leave.deleted_on=validated_data.get('deleted_on'),
+                leave.deleted_comment=validated_data.get('deleted_comment'),
+
+                leave.save()
+                leave_serializer = LeaveSerializer(leave)
+
+                return Response(leave_serializer.data, status=status.HTTP_201_CREATED)
+
             
-            leave_serializer = LeaveSerializer(leave)
-            return Response(leave_serializer.data, status=status.HTTP_201_CREATED)
-        
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

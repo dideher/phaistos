@@ -62,7 +62,8 @@ class Leave(models.Model):
 
     class Meta:
         indexes = [
-            models.Index(fields=['employee', 'leave_type',]),
+            models.Index(fields=['employee', 'leave_type', ]),
+            models.Index(fields=['minoas_id'], )
         ]
 
     def __str__(self):

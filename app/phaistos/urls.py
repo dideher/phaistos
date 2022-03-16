@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django_registration.backends.one_step.views import RegistrationView
 from main.views import MainPageView
 from users.forms import CustomUserForm
@@ -31,3 +31,6 @@ urlpatterns = [
     path('leaves/', include('leaves.urls')),
     path('api/', include('api.urls'))
 ]
+
+# make gunicorn serve static files as well (in staging, production, etc)
+urlpatterns += staticfiles_urlpatterns()

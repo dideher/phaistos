@@ -55,8 +55,8 @@ class Specialization(models.Model):
 
     class Meta:
         indexes = [
-            models.Index(fields=['title', 'public_title',]),
-            models.Index(fields=['is_disabled',]),
+            models.Index(fields=['title', 'public_title', ]),
+            models.Index(fields=['is_disabled', ]),
         ]
 
     def __str__(self):
@@ -104,9 +104,10 @@ class Employee(models.Model):
 
     class Meta:
         indexes = [
-            models.Index(fields=['last_name', 'first_name',]),
-            models.Index(fields=['vat_number',]),
-            models.Index(fields=['employee_type',]),
+            models.Index(fields=['last_name', 'first_name', ]),
+            models.Index(fields=['vat_number', ]),
+            models.Index(fields=['employee_type', ]),
+            models.Index(fields=['minoas_id'], )
         ]
 
     def __str__(self):
