@@ -29,7 +29,6 @@ COPY requirements.txt ./requirements.in
 
 ## update requirements file with deployment requirement deps
 RUN echo "gunicorn" >> /requirements.in
-RUN echo "meinheld" >> /requirements.in
 RUN echo "mysqlclient" >> /requirements.in
 
 RUN set -x \
@@ -52,11 +51,17 @@ RUN set -x \
         libjpeg \
         openssl \
         ca-certificates \
-        mariadb-connector-c
+        mariadb-connector-c \
+        nginx \
+        vim
 
 ## copy Python dependencies from build image
 COPY --from=compile-image /opt/venv /opt/venv
 
+## prepare nginx
+COPY nginx.conf /etc/nginx/http.d/default.conf
+RUN ln -sf /dev/stdout /var/log/nginx/access.log \
+    && ln -sf /dev/stderr /var/log/nginx/error.log
 
 COPY ./entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
