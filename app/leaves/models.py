@@ -1,6 +1,6 @@
-from datetime import datetime
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from django.utils import timezone
 from employees.models import Employee, EmployeeType
 
 
@@ -57,7 +57,7 @@ class Leave(models.Model):
     deleted_comment = models.TextField(db_column="DELETED_COMMENT", verbose_name='Σχόλιο Διαγραφής',
                                        help_text='Προαιρετικά εισάγεται σχόλιο ή περιγραφή διαγραφής της άδειας',
                                        null=True, max_length=255)
-    created_on = models.DateTimeField(db_column="CREATED_ON", null=False, blank=False, default=datetime.utcnow)
+    created_on = models.DateTimeField(db_column="CREATED_ON", null=False, blank=False, default=timezone.now)
     updated_on = models.DateTimeField(db_column="UPDATED_ON", null=True, blank=True)
 
     class Meta:
