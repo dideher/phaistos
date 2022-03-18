@@ -17,8 +17,9 @@ docker run \
     -e MYSQL_ROOT_PASSWORD=root_password \
     -v mysql-data:/var/lib/mysql \
     --name mysql \
+    --restart unless-stopped \
     -d \
-    mysql:5.7
+    mysql:8.0
 ```
 
 Once the database instance is up & running, connect as a `root`
@@ -31,9 +32,9 @@ mysql> create database phaistos_db character set utf8;
 and finally, create the db user
 
 ```sql
-mysql> CREATE USER 'phaistos'@'%' IDENTIFIED WITH mysql_native_password BY 'phaistos';
-mysql> GRANT ALL PRIVILEGES ON phaistos_db.* TO 'phaistos'@'%';
-mysql> flush privileges;
+CREATE USER 'phaistos'@'%' IDENTIFIED WITH mysql_native_password BY 'phaistos';
+GRANT ALL PRIVILEGES ON phaistos_db.* TO 'phaistos'@'%';
+flush privileges;
 ```
 
 
@@ -51,7 +52,7 @@ Attach the running mysql container to the application's network (assume the mysq
 docker network connect --alias mysql phaistos-net mysql
 ```
 ```commandline
-docker build . -t phaistos
+docker build . -t dideira/phaistos-web:latest
 ```
 
 ```commandline
@@ -64,7 +65,32 @@ docker run --rm -it --name phaistos \
     -e DB_PORT=3306 \
     -e VIRTUAL_HOST=phaistos-dev.dide.ira.net \
     --network phaistos-net \
-    phaistos:latest
+    dideira/phaistos-web:latest
+```
+
+or for local development
+
+```commandline
+docker run --rm -it --name phaistos \
+    -e DJANGO_SETTINGS_MODULE=phaistos.settings.docker-dev \
+    -p 8000:80 \
+    dideira/phaistos-web:latest
+```
+
+or daemonize it
+```commandline
+docker run --name phaistos \
+    -e DJANGO_SETTINGS_MODULE=phaistos.settings.staging \
+    -e DB_NAME=phaistos_db \
+    -e DB_USER=phaistos \
+    -e DB_PASS=phaistos \
+    -e DB_HOST=mysql \
+    -e DB_PORT=3306 \
+    -e VIRTUAL_HOST=phaistos-dev.dide.ira.net \
+    -d \
+    --network phaistos-net \
+    --restart unless-stopped \
+    dideira/phaistos-web:latest
 ```
 
 # Nginx Proxy
@@ -83,7 +109,7 @@ docker run -d -p 80:80 --restart unless-stopped \
     jwilder/nginx-proxy
 ```
 
-Don't forget to add the nginx-proxy container to the `phaistos` network
+Don't forget to add the nginx-proxy container to the `phaistos-net` network
 ```commandline
 docker network connect phaistos-net nginx-proxy
 ```
