@@ -367,18 +367,19 @@ class LeaveImportAPIView(APIView):
                 return Response(leave_serializer.data, status=status.HTTP_201_CREATED)
 
             else:
-                leave.minoas_id=validated_data.get('minoas_id'),
-                leave.employee=employee,
-                leave.leave_type=leave_type,
-                leave.is_active=validated_data.get('is_active'),
-                leave.comment=validated_data.get('comment'),
-                leave.date_from=validated_data.get('date_from'),
-                leave.date_until=validated_data.get('date_until'),
-                leave.effective_number_of_days=validated_data.get('effective_number_of_days'),
-                leave.number_of_days=validated_data.get('number_of_days'),
-                leave.is_deleted=validated_data.get('is_deleted'),
-                leave.deleted_on=validated_data.get('deleted_on'),
-                leave.deleted_comment=validated_data.get('deleted_comment'),
+
+                leave.minoas_id = validated_data.get('minoas_id')
+                leave.employee = employee
+                leave.leave_type = leave_type
+                leave.is_active = validated_data.get('is_active')
+                leave.comment = validated_data.get('comment')
+                leave.date_from = validated_data.get('date_from')
+                leave.date_until = validated_data.get('date_until')
+                leave.effective_number_of_days = validated_data.get('effective_number_of_days')
+                leave.number_of_days = validated_data.get('number_of_days')
+                leave.is_deleted = validated_data.get('is_deleted')
+                leave.deleted_on = validated_data.get('deleted_on')
+                leave.deleted_comment = validated_data.get('deleted_comment')
 
                 leave.save()
                 leave_serializer = LeaveSerializer(leave)
