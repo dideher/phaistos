@@ -33,8 +33,8 @@ class EmployeeListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
             if form.cleaned_data['first_name']:
                 filters['first_name__contains'] = form.cleaned_data['first_name'].upper()
 
-            if form.cleaned_data['enabled'] is None:
-                filters['enabled'] = form.cleaned_data['enabled']
+            if form.cleaned_data['enabled'] is not None:
+                filters['is_active'] = form.cleaned_data['enabled']
 
             if form.cleaned_data['employee_type'] not in [None, '']:
                 filters['employee_type'] = form.cleaned_data['employee_type']

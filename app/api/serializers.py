@@ -60,6 +60,7 @@ class EmployeeImportSerializer(serializers.Serializer):
     specialization_code = serializers.CharField(allow_null=True, required=False)
     registry_id = serializers.CharField(allow_null=True, required=False)
     current_unit_id = serializers.IntegerField(allow_null=True, required=False)
+    is_active = serializers.BooleanField(allow_null=False, required=False, default=True)
 
 
 class LeaveTypeSerializer(serializers.ModelSerializer):

@@ -181,7 +181,8 @@ class EmployeeImportAPIView(APIView):
                     marital_status=validated_data.get('marital_status'),
                     specialization=specialization,
                     registry_id=validated_data.get('registry_id'),
-                    current_unit=current_unit
+                    current_unit=current_unit,
+                    is_active=validated_data.get('is_active')
                 )
 
                 employee_serializer = EmployeeSerializer(employee)
@@ -207,6 +208,7 @@ class EmployeeImportAPIView(APIView):
                 employee.specialization = specialization
                 employee.registry_id = validated_data.get('registry_id')
                 employee.current_unit = current_unit
+                employee.is_active = validated_data.get('is_active')
 
                 employee.save()
                 employee_serializer = EmployeeSerializer(employee)
@@ -367,7 +369,6 @@ class LeaveImportAPIView(APIView):
                 return Response(leave_serializer.data, status=status.HTTP_201_CREATED)
 
             else:
-
                 leave.minoas_id = validated_data.get('minoas_id')
                 leave.employee = employee
                 leave.leave_type = leave_type
@@ -380,7 +381,6 @@ class LeaveImportAPIView(APIView):
                 leave.is_deleted = validated_data.get('is_deleted')
                 leave.deleted_on = validated_data.get('deleted_on')
                 leave.deleted_comment = validated_data.get('deleted_comment')
-
                 leave.save()
                 leave_serializer = LeaveSerializer(leave)
 

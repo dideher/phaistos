@@ -101,6 +101,7 @@ class Employee(models.Model):
                                       max_length=30, db_column='MARITAL_STATUS')
     specialization = models.ForeignKey(Specialization, null=True, on_delete=models.SET_NULL)
     current_unit = models.ForeignKey(Unit, null=True, default=None, on_delete=models.SET_NULL)
+    is_active = models.BooleanField(db_column="IS_ACTIVE", null=False, default=True, db_index=True)
 
     class Meta:
         indexes = [
