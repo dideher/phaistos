@@ -384,7 +384,7 @@ class LeaveImportAPIView(APIView):
                 leave.save()
                 leave_serializer = LeaveSerializer(leave)
 
-                return Response(leave_serializer.data, status=status.HTTP_201_CREATED)
+                return Response(leave_serializer.data, status=status.HTTP_200_OK)
 
             
         else:
