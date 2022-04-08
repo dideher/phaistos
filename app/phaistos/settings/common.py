@@ -29,6 +29,7 @@ INSTALLED_APPS = [
     'bootstrap_modal_forms',
     'rest_framework',
     'rest_framework.authtoken',
+    'impersonate',
     'users',
     'api',
     'employees',
@@ -45,6 +46,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'impersonate.middleware.ImpersonateMiddleware',
 ]
 
 ROOT_URLCONF = 'phaistos.urls'
