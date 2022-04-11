@@ -58,7 +58,7 @@ class LeaveDetailView(LoginRequiredMixin, PermissionRequiredMixin, BSModalReadVi
 
 
 class LeaveCreateView(LoginRequiredMixin, PermissionRequiredMixin, JsonableResponseMixin, BSModalCreateView):
-    permission_required = ['leaves.create_leave']
+    permission_required = ['leaves.add_leave']
     model = Leave
     form_class = LeaveForm
 
