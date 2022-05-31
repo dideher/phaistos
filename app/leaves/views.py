@@ -9,6 +9,8 @@ from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.utils import timezone
 from phaistos.commons.export import ExportableListView
+from django.views.generic.edit import FormMixin
+from django.shortcuts import render
 
 from employees.models import Employee
 from leaves.forms import LeaveForm, DeleteLeaveForm, LeaveSearchForm
@@ -119,7 +121,7 @@ class LeaveUpdateView(LoginRequiredMixin, PermissionRequiredMixin, JsonableRespo
         return kwargs
 
 
-class LeaveSearchListView(LoginRequiredMixin, PermissionRequiredMixin, ExportableListView):
+class LeaveSearchListView(LoginRequiredMixin, PermissionRequiredMixin, ExportableListView, FormMixin):
     model = Leave
     context_object_name = 'leaves'
     paginator_per_page_count = 12
@@ -128,43 +130,49 @@ class LeaveSearchListView(LoginRequiredMixin, PermissionRequiredMixin, Exportabl
     permission_required = ['leaves.search_leave']
     export_header = [
         'ID',
+        'Κωδ.Άδ.',
+        'Τύπος Άδειας',
         'Επώνυμο',
         'Όνομα',
         'Πατρώνυμο',
         'Τύπος',
         'Ειδικότητα',
-        'Κωδ.Άδ.',
-        'Τύπος Άδειας',
         'Ημέρες',
         'Έναρξη',
         'Λήξη',
-        'Ημ/νια Καταχώρισης'
         'Σχόλια',
     ]
     export_fields = [
         'id',
+        'leave_type.legacy_code',
+        'leave_type.description',
         'employee.last_name',
         'employee.first_name',
         'employee.father_name',
         'employee.get_employee_type_display',
         'employee.specialization.code',
-        'leave_type.legacy_code',
-        'leave_type.description',
         'effective_number_of_days',
         'date_from',
         'date_until',
-        'created_on',
         'comment'
 
     ]
     export_filename = 'leaves-report'
 
+    def get(self, *args, **kwargs):
+        form = self.form_class(self.request.GET)
+
+        if form.is_valid():
+            return super(LeaveSearchListView, self).get(*args, **kwargs)
+
+        return render(self.request, self.template_name, {'form': form})
+
     def get_queryset(self):
 
-        qs = Leave.objects.filter(is_deleted=False)
-
         form = self.form_class(self.request.GET)
-        if form.is_valid():
+        qs = Leave.objects.none() # by default we have an empty qs
+        if form.is_valid() or True:
+
             filters = {}
 
             leave_types = form.cleaned_data['leave_type']
@@ -217,34 +225,17 @@ class LeaveSearchListView(LoginRequiredMixin, PermissionRequiredMixin, Exportabl
                 elif date_until_operator == LeaveSearchForm.LESS_THAN_OR_EQUAL:
                     filters['date_until__lte'] = date_until
 
-            qs = qs.filter(**filters)
+            if len(filters) > 0:
+                qs = Leave.objects.filter(is_deleted=False, **filters)
 
         return qs.order_by('-date_from', '-created_on')
 
     def get_context_data(self, **kwargs):
 
         context = super().get_context_data(**kwargs)
-
         context['form'] = self.form_class(initial=self.request.GET)
         paginator = Paginator(context['leaves'], LeaveSearchListView.paginator_per_page_count)
         page = self.request.GET.get("page")
-
-        # compute some basic leave statistics
-        today = timezone.now().date()
-
-        # context['regular_leaves_current_year'] = compute_leaves_real_duration(
-        #     get_regular_leaves_for_employee_established_in_year(employee=employee, year=today.year)
-        # )
-        # context['regular_leaves_previous_year'] = compute_leaves_real_duration(
-        #     get_regular_leaves_for_employee_established_in_year(employee=employee, year=today.year - 1)
-        # )
-        # context['medical_leaves_current_year'] = compute_leaves_real_duration(
-        #     get_medical_leaves_for_employee_established_in_year(employee=employee, year=today.year)
-        # )
-        # context['medical_leaves_last_5_years'] = compute_leaves_real_duration(
-        #     get_medical_leaves_for_employee_established_in_year(employee=employee, year_from=today.year - 5,
-        #                                                         year_until=today.year)
-        # )
 
         try:
             objects = paginator.page(page)

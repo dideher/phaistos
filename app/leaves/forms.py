@@ -103,7 +103,8 @@ class LeaveSearchForm(forms.Form):
     effective_days_operator = forms.ChoiceField(choices=EFFECTIVE_DAYS_OPERATOR_CHOICES, initial=GREATER_THAN_OR_EQUAL,
                                                 label=_('Τελεστής Σύγκρισης Ημερών Άδειας'),
                                                 help_text=_(
-                                                    'Διαμορφώστε τον τρόπο ερμηνείας των ημερών άδειας κατά την σύγκριση'),
+                                                    'Διαμορφώστε τον τρόπο ερμηνείας των ημερών άδειας '
+                                                    'κατά την σύγκριση'),
                                                 required=False)
     effective_days = forms.IntegerField(label="Αριθμός Ημερών",
                                         required=False,
@@ -123,7 +124,8 @@ class LeaveSearchForm(forms.Form):
                                            initial=GREATER_THAN_OR_EQUAL,
                                            label=_('Τελεστής Σύγκρισης Έναρξης Άδειας'),
                                            help_text=_(
-                                               'Διαμορφώστε τον τρόπο ερμηνείας της ημ/νιας έναρξης της άδειας κατά την σύγκριση'),
+                                               'Διαμορφώστε τον τρόπο ερμηνείας της ημ/νιας έναρξης της '
+                                               'άδειας κατά την σύγκριση'),
                                            required=False)
     date_from = forms.DateField(label="Ημ/νια Έναρξης", required=False,
                                 help_text=_('Περιορίστε με βάση την ημ/νια έναρξης της άδειας'))
@@ -131,7 +133,8 @@ class LeaveSearchForm(forms.Form):
     date_until_operator = forms.ChoiceField(choices=DATE_OPERATOR_CHOICES, initial=LESS_THAN_OR_EQUAL,
                                             label=_('Τελεστής Σύγκρισης Λήξης Άδειας'),
                                             help_text=_(
-                                                'Διαμορφώστε τον τρόπο ερμηνείας της ημ/νιας λήξης της άδειας κατά την σύγκριση'),
+                                                'Διαμορφώστε τον τρόπο ερμηνείας της ημ/νιας λήξης της άδειας '
+                                                'κατά την σύγκριση'),
                                             required=False)
     date_until = forms.DateField(label="Ημ/νια Λήξης", required=False,
                                  help_text=_('Περιορίστε με βάση την ημ/νια λήξης της άδειας'))
@@ -143,11 +146,28 @@ class LeaveSearchForm(forms.Form):
         }
 
     def clean_effective_days(self):
-        data = self.cleaned_data['effective_days']
+        effective_days = self.cleaned_data['effective_days']
 
-        if data is not None and data <= 0:
-            print("******* ARWSTI")
-            self.add_error('effective_days', 'sdfsdff')
-            raise ValidationError("Η διάρκεια των ημερών άδειας πρέπει να είναι μεγαλύτερη του 0")
+        if effective_days is not None and effective_days <= 0:
+            self.add_error('effective_days', _("Η διάρκεια των ημερών άδειας πρέπει να είναι μεγαλύτερη του 0"))
 
-        return data
+        return effective_days
+
+    def clean(self):
+        """
+        Validates the leave's date_from and date_until
+        """
+        cleaned_data = super().clean()
+
+        date_from = cleaned_data.get("date_from")
+        date_until = cleaned_data.get("date_until")
+
+        if date_from and date_until:
+
+            if date_from > date_until:
+                self.add_error('date_from', _('Η ημ/νία έναρξης της άδειας είναι μεταγενέστερη της λήξης'))
+
+            if date_until < date_from :
+                self.add_error('date_until', _('Η ημ/νία λήξης της άδειας είναι προγενέστερη της έναρξης'))
+
+        return cleaned_data

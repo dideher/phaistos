@@ -8,13 +8,13 @@
 
 
 {% block content %}
-
+{% include "_modal.html" %}
 <div class="col-md-12 mx-auto">
     <div class="card shadow">
 
         <div class="card-body">
+            <form id='search_leaves_form' role="form" method="get">
 
-            <form id='search_leaves_form' role="form" method="get   ">
                 {% bootstrap_form_errors form type='non_fields' %}
                     <div class="row">
 
@@ -96,9 +96,6 @@
                         <i class="bi bi-arrow-left-circle" aria-hidden="true"></i>&nbsp;
                         Επιστροφή
                     </a>
-
-
-
                 </div>
             </div>
 
@@ -114,11 +111,12 @@
                         <table class="table table-sm table-hover">
                             <thead class="thead-dark">
                             <tr>
-                                <th scope="col">Ονοματεπώνυμο</th>
                                 <th scope="col">#</th>
+                                <th scope="col">Τύπος Άδειας</th>
+                                <th scope="col">Ονοματεπώνυμο</th>
                                 <th scope="col">Ειδικότητα</th>
                                 <th scope="col">Τύπος</th>
-                                <th scope="col">Τύπος Άδειας</th>
+
                                 <th scope="col">Ημέρες</th>
                                 <th scope="col">Έναρξη</th>
                                 <th scope="col">Λήξη</th>
@@ -136,6 +134,7 @@
                                         {{ leave.id }}
                                     {% endif %}
                                 </td>
+                                <td>(#{{ leave.leave_type.legacy_code }}) - {{ leave.leave_type.description }} </td>
                                 <td class="text-left">
                                     {% if perms.leaves.view_leave %}
                                     <a href="{% url 'employees:employee-leaves-list' leave.employee.id %}">
@@ -151,7 +150,7 @@
                                 <td>
                                     {{ leave.employee.get_employee_type_display}}
                                 </td>
-                                <td>(#{{ leave.leave_type.legacy_code }}) - {{ leave.leave_type.description }} </td>
+
                                 <td>{{ leave.effective_number_of_days }}</td>
                                 <td>{{ leave.date_from|date:"d-m-Y" }}</td>
                                 <td>{{ leave.date_until|date:"d-m-Y" }}</td>
@@ -191,6 +190,11 @@
             });
 
             $( "#id_leave_type" ).attr("size", 10);
+
+            // view leave
+            $(".view-leave").each(function () {
+                $(this).modalForm({formURL: $(this).data("form-url"), isDeleteForm: false, modalID: "#modal-lg"});
+            });
 
         });
     </script>
