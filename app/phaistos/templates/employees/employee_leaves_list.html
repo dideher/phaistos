@@ -63,7 +63,7 @@
 
             <div class="row">
                 <div class="container">
-                    <a href="{% url 'employees:employee-list' %} " class="btn btn-sm btn-success" role="button">
+                    <a href="{{request.META.HTTP_REFERER|escape}}" class="btn btn-sm btn-success" role="button">
                         <i class="bi-arrow-left-circle" aria-hidden="true"></i>&nbsp;
                         Επιστροφή
                     </a>
