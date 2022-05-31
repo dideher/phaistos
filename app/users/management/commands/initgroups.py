@@ -1,6 +1,7 @@
 # inspired from https://www.devasking.com/issue/create-django-group
 from django.core.management import BaseCommand
 from django.contrib.auth.models import Group, Permission
+from django.contrib.contenttypes.models import ContentType
 from leaves import models as leave_models
 from employees import models as employee_model
 
@@ -17,6 +18,9 @@ GROUPS_PERMISSIONS = {
     'LeaveAdmin': {
         leave_models.Leave: ['add', 'change', 'delete', 'view'],
     },
+    'LeaveReporting': {
+        leave_models.Leave: ['search', 'export'],
+    }
 }
 
 
@@ -45,10 +49,13 @@ class Command(BaseCommand):
                     try:
                         # Find permission object and add to group
                         perm = Permission.objects.get(codename=codename)
-                        group.permissions.add(perm)
-                        self.stdout.write("Adding "
-                                          + codename
-                                          + " to group "
-                                          + group.__str__())
                     except Permission.DoesNotExist:
-                        self.stdout.write(codename + " not found")
+                        ct = ContentType.objects.get_for_model(model_cls)
+                        perm = Permission.objects.create(codename=codename,
+                                                         name='Can ' + codename,
+                                                         content_type=ct)
+                    group.permissions.add(perm)
+                    self.stdout.write("Adding "
+                                      + codename
+                                      + " to group "
+                                      + group.__str__())

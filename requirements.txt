@@ -4,3 +4,4 @@ djangorestframework
 django-bootstrap5
 django-bootstrap-modal-forms
 django-impersonate
+openpyxl
