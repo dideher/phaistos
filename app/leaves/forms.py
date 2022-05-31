@@ -8,6 +8,7 @@ from employees.models import Employee, EmployeeType
 from leaves.models import LeaveType
 from bootstrap_modal_forms.forms import BSModalModelForm
 from phaistos.commons.forms import EmptyChoiceField
+from phaistos.commons.widgets import DatePickerInput
 
 blank_choice = [('', '-----------------'), ]
 
@@ -112,7 +113,8 @@ class LeaveSearchForm(forms.Form):
     leave_type = forms.ModelMultipleChoiceField(label="Τύπος Άδειας", queryset=LeaveType.objects.all(),
                                                 help_text=_('Περιορίστε την αναζήτηση με βάση τον τύπο της άδειας. '
                                                             'Μπορείτε να επιλέξετε περισσότερους τύπους'),
-                                                required=False)
+                                                required=False,
+                                                widget=forms.SelectMultiple(attrs={'size': 9}))
 
     employee_type = EmptyChoiceField(choices=EmployeeType.choices,
                                      empty_label='',
@@ -127,7 +129,7 @@ class LeaveSearchForm(forms.Form):
                                                'Διαμορφώστε τον τρόπο ερμηνείας της ημ/νιας έναρξης της '
                                                'άδειας κατά την σύγκριση'),
                                            required=False)
-    date_from = forms.DateField(label="Ημ/νια Έναρξης", required=False,
+    date_from = forms.DateField(label="Ημ/νια Έναρξης", required=False, widget=DatePickerInput,
                                 help_text=_('Περιορίστε με βάση την ημ/νια έναρξης της άδειας'))
 
     date_until_operator = forms.ChoiceField(choices=DATE_OPERATOR_CHOICES, initial=LESS_THAN_OR_EQUAL,
@@ -136,13 +138,14 @@ class LeaveSearchForm(forms.Form):
                                                 'Διαμορφώστε τον τρόπο ερμηνείας της ημ/νιας λήξης της άδειας '
                                                 'κατά την σύγκριση'),
                                             required=False)
-    date_until = forms.DateField(label="Ημ/νια Λήξης", required=False,
+    date_until = forms.DateField(label="Ημ/νια Λήξης", required=False, widget=DatePickerInput,
                                  help_text=_('Περιορίστε με βάση την ημ/νια λήξης της άδειας'))
 
     class Meta:
 
         widgets = {
             'leave_type': forms.SelectMultiple(attrs={'size': 14}),
+
         }
 
     def clean_effective_days(self):
