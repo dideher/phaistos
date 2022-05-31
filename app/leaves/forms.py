@@ -28,7 +28,9 @@ class LeaveForm(BSModalModelForm):
         model = Leave
         fields = ['date_from', 'date_until', 'leave_type', 'comment', 'number_of_days', 'effective_number_of_days']
         widgets = {
-            'comment': forms.Textarea(attrs={'rows': 4}),
+            'comment': forms.Textarea(attrs={'rows': 3}),
+            'date_from': DatePickerInput(),
+            'date_until': DatePickerInput(),
         }
 
     def __init__(self, *args, **kwargs):
