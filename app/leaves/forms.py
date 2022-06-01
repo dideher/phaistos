@@ -112,7 +112,7 @@ class LeaveSearchForm(forms.Form):
     effective_days = forms.IntegerField(label="Αριθμός Ημερών",
                                         required=False,
                                         help_text=_('Περιορίστε τα αποτελέσματα με βάση την διάρκεια της άδειας'))
-    leave_type = forms.ModelMultipleChoiceField(label="Τύπος Άδειας", queryset=LeaveType.objects.all(),
+    leave_type = forms.ModelMultipleChoiceField(label="Τύπος Άδειας", queryset=LeaveType.objects.all().order_by('legacy_code'),
                                                 help_text=_('Περιορίστε την αναζήτηση με βάση τον τύπο της άδειας. '
                                                             'Μπορείτε να επιλέξετε περισσότερους τύπους'),
                                                 required=False,
