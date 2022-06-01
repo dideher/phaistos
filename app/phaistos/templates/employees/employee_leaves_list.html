@@ -62,12 +62,8 @@
             </div>
 
             <div class="row">
-                <form role="form" method="get">
-                    {% bootstrap_form_errors form type='non_fields' %}
-
-                    {% bootstrap_form form layout='horizontal' size='sm' %}
-
-                    <a href="{% url 'employees:employee-list' %} " class="btn btn-sm btn-success" role="button">
+                <div class="container">
+                    <a href="{{request.META.HTTP_REFERER|escape}}" class="btn btn-sm btn-success" role="button">
                         <i class="bi-arrow-left-circle" aria-hidden="true"></i>&nbsp;
                         Επιστροφή
                     </a>
@@ -77,7 +73,7 @@
                         Εισαγωγή Άδειας
                     </button>
                     {% endif %}
-                </form>
+                </div>
             </div>
 
             <div class="row">

@@ -6,7 +6,6 @@ from django.views.generic.list import ListView
 
 from employees.forms import EmployeeSearchForm
 from employees.models import Employee
-from leaves.forms import LeaveSearchForm
 from leaves.models import Leave
 from phaistos.commons import (
     get_regular_leaves_for_employee_established_in_year,
@@ -75,34 +74,12 @@ class EmployeeLeavesListView(LoginRequiredMixin, PermissionRequiredMixin, ListVi
     model = Leave
     context_object_name = 'leaves'
     paginator_per_page_count = 12
-    form_class = LeaveSearchForm
     template_name = 'employees/employee_leaves_list.html'
     permission_required = ['employees.view_employee', 'leaves.view_leave']
 
     def get_queryset(self):
         employee_id = self.kwargs['pk']
-        if True:
-            return Leave.objects.filter(employee=employee_id, is_deleted=False).order_by('-date_from', '-created_on')
-
-        form = self.form_class(self.request.GET)
-
-        if form.is_valid():
-            filters = {}
-            if form.cleaned_data['last_name']:
-                filters['last_name__contains'] = form.cleaned_data['last_name'].upper()
-
-            if form.cleaned_data['first_name']:
-                filters['first_name__contains'] = form.cleaned_data['first_name'].upper()
-
-            if form.cleaned_data['enabled'] is None:
-                filters['enabled'] = form.cleaned_data['enabled']
-
-            if form.cleaned_data['employee_type'] not in [None, '']:
-                filters['employee_type'] = form.cleaned_data['employee_type']
-
-            return Leave.objects.filter(**filters).order_by('last_name', 'specialization')
-        else:
-            return Leave.objects.all().order_by('last_name', 'specialization')
+        return Leave.objects.filter(employee=employee_id, is_deleted=False).order_by('-date_from', '-created_on')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -111,7 +88,7 @@ class EmployeeLeavesListView(LoginRequiredMixin, PermissionRequiredMixin, ListVi
         employee: Employee = Employee.objects.get(id=self.kwargs['pk'])
         context['employee'] = employee
         
-        context['form'] = self.form_class(initial=self.request.GET)
+        #context['form'] = self.form_class(initial=self.request.GET)
         paginator = Paginator(context['leaves'], EmployeeLeavesListView.paginator_per_page_count)
         page = self.request.GET.get("page")
 
