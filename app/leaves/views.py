@@ -195,7 +195,6 @@ class LeaveSearchListView(LoginRequiredMixin, PermissionRequiredMixin, Exportabl
                 filters['leave_type__in'] = leave_types
 
             if employee_type is not None and len(employee_type) > 0:
-                print(employee_type)
                 filters['employee__employee_type'] = employee_type
 
             if effective_days is not None:
@@ -216,8 +215,6 @@ class LeaveSearchListView(LoginRequiredMixin, PermissionRequiredMixin, Exportabl
                     filters['date_from__lte'] = date_from
 
             if date_until is not None:
-                print(date_until)
-                print(date_until_operator)
                 if date_until_operator == LeaveSearchForm.EQUAL_TO:
                     filters['date_until'] = date_until
                 elif date_until_operator == LeaveSearchForm.GREATER_THAN_OR_EQUAL:
