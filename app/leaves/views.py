@@ -44,8 +44,8 @@ def compute_leave_calendar_duration(request: HttpRequest):
         date_from = request.POST.get('date_from')
         date_until = request.POST.get('date_until')
         try:
-            date_from_date = datetime.strptime(date_from, '%d/%m/%Y')
-            date_until_date = datetime.strptime(date_until, '%d/%m/%Y')
+            date_from_date = datetime.strptime(date_from, '%Y-%m-%d')
+            date_until_date = datetime.strptime(date_until, '%Y-%m-%d')
             return HttpResponse(1+(date_until_date.date() - date_from_date.date()).days)
         except ValueError:
             return HttpResponseBadRequest()
