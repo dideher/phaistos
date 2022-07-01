@@ -99,3 +99,51 @@ class LeaveImportSerializer(serializers.Serializer):
     # def create(self, validated_data):
 
     #     employee
+
+
+class AthinaWorkExperience(serializers.Serializer):
+    work_type = serializers.CharField(allow_null=False, allow_blank=False, required=True)
+    work_type_name = serializers.CharField(allow_null=False, allow_blank=False, required=True)
+    work_duration = serializers.CharField(allow_null=True, required=True)
+    document_number = serializers.CharField(allow_null=True, allow_blank=False, required=True)
+    document_date = serializers.DateField(format='%d/%m/%Y', input_formats=['%d/%m/%Y', ], required=False,
+                                                 allow_null=True)
+    authority = serializers.CharField(allow_null=True, required=True)
+    work_from = serializers.DateField(format='%d/%m/%Y', input_formats=['%d/%m/%Y', ], required=True, allow_null=True)
+    work_until = serializers.DateField(format='%d/%m/%Y', input_formats=['%d/%m/%Y', ], required=True, allow_null=True)
+    work_comment = serializers.CharField(allow_null=True, required=True)
+
+
+class AthinaEmployeeImportSerializer(serializers.Serializer):
+    """
+    Special Serializer to be used for bulk importing employees and work expirience from Athina
+    """
+    employee_first_name = serializers.CharField(allow_null=False, required=True)
+    employee_last_name = serializers.CharField(allow_null=False, required=True)
+    employee_father_name = serializers.CharField(allow_null=True, required=True)
+    employee_mother_name = serializers.CharField(allow_null=True, allow_blank=True, required=False)
+    employee_sex = serializers.CharField(allow_null=False, required=False)
+    employee_type = serializers.CharField(allow_null=False, required=True)
+    employee_type_name = serializers.CharField(allow_null=False, required=True)
+    employee_specialization = serializers.CharField(allow_null=False, required=True)
+    employee_specialization_name = serializers.CharField(allow_null=False, required=True)
+    employee_afm = serializers.CharField(allow_null=True, required=False)
+    employee_adt = serializers.CharField(allow_null=True, required=False)
+    employee_am = serializers.CharField(allow_null=False, required=True)
+    employee_amka = serializers.CharField(allow_null=True, required=False)
+    employee_birthday = serializers.DateField(format='%d/%m/%Y', input_formats=['%d/%m/%Y', ], required=False,
+                                              allow_null=True)
+    communication_address = serializers.CharField(allow_null=True, required=False)
+    communication_city = serializers.CharField(allow_null=True, required=False)
+    communication_zip = serializers.CharField(allow_null=True, required=False)
+    communication_telephone = serializers.CharField(allow_null=True, required=False)
+    employee_fek_diorismou = serializers.CharField(allow_null=True, required=False)
+    employee_fek_diorismou_date = serializers.CharField(allow_null=True, required=False)
+    employee_specialization_old = serializers.CharField(allow_null=False, required=False)
+    employee_specialization_old_name = serializers.CharField(allow_null=False, required=False)
+
+    work_experience = AthinaWorkExperience(many=True)
+
+
+
+

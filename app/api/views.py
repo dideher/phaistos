@@ -1,6 +1,9 @@
 import logging
 
 from django.db.models.query import QuerySet
+from django.utils.timezone import now
+from django.db import transaction
+
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import serializers, status
@@ -13,17 +16,22 @@ from api.serializers import (
     LeaveSerializer,
     LeaveTypeSerializer,
     UnitImportSerializer,
-    UnitSerializer
+    UnitSerializer,
+    AthinaEmployeeImportSerializer
 )
 from employees.models import (
     Employee, 
     Specialization,
     Unit,
-    UnitType
+    UnitType,
+    EmployeeType,
+    LegacyEmployeeType,
+    WorkExperience,
+    WorkExperienceType
 )
 from leaves.models import (
     Leave,
-    LeaveType
+    LeaveType,
 )
 from django.views.generic.list import ListView
 
@@ -47,7 +55,6 @@ class EmployeeListAPIView(APIView):
 
 
 class UnitImportAPIView(APIView):
-
 
     def insert_or_update_general_unit(self, serializer: UnitImportSerializer) -> Response:
 
@@ -386,6 +393,337 @@ class LeaveImportAPIView(APIView):
 
                 return Response(leave_serializer.data, status=status.HTTP_200_OK)
 
-            
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+def merge_employee(employees: QuerySet[Employee]) -> Employee:
+    # based on the leaves we will decide which employee will "survive
+    latest_leave = None
+    logging.warn("trying to merge employees '%s'", employees)
+
+    for employee in employees:
+
+        employee_leaves: QuerySet[Leave] = Leave.objects.filter(employee=employee, is_deleted=False).\
+            order_by('-date_until')
+
+        if employee_leaves.count() > 0:
+            logging.info("employee '%s' has '%d' leave(s)", employee, employee_leaves.count())
+
+            leave_candidate: Leave = employee_leaves.first()
+
+            if latest_leave is None:
+                latest_leave = leave_candidate
+                logging.warn("setting leave '%s' of employee '%s' as reference leave", latest_leave, employee)
+            else:
+                if leave_candidate.date_until > latest_leave.date_until:
+                    latest_leave = leave_candidate
+                    logging.warn("setting leave '%s' of employee '%s' as reference leave", latest_leave, employee)
+
+        else:
+            logging.info("employee '%s' does have leaves", employee)
+
+    if latest_leave is not None:
+        reference_employee = latest_leave.employee
+    else:
+        reference_employee = employees.first()
+
+    with transaction.atomic():
+        for employee in employees:
+
+            if employee.pk != reference_employee.pk:
+                # transfer leaves to reference employee
+                employee_leaves: QuerySet[Leave] = Leave.objects.filter(employee=employee)
+                for employee_leave in employee_leaves:
+                    employee_leave.employee = reference_employee
+
+                # mark employee as deleted
+                employee.is_active = False
+                employee.deleted_on = now()
+                employee.deleted_comment = "merged with employee '%s'" % employee
+                employee.save()
+
+    logging.warn("reference employee is set to '%s'", reference_employee)
+    return reference_employee
+
+
+class AthinaEmployeeImportAPIView(APIView):
+
+    def post(self, request):
+
+        serializer = AthinaEmployeeImportSerializer(data=request.data)
+
+        if serializer.is_valid():
+
+            employee: Employee = None
+            employee_type: EmployeeType = None
+
+            validated_data = serializer.validated_data
+
+            employee_first_name = validated_data.get('employee_first_name')
+            employee_last_name = validated_data.get('employee_last_name')
+            employee_father_name = validated_data.get('employee_father_name')
+            employee_mother_name = validated_data.get('employee_mother_name')
+            validated_data.get('employee_sex')
+            employee_type_name = validated_data.get('employee_type_name')
+
+            employee_specialization = validated_data.get('employee_specialization')
+            employee_specialization_name = validated_data.get('employee_specialization_name')
+            employee_vat_number = validated_data.get('employee_afm')
+            employee_id_number = validated_data.get('employee_adt')
+            employee_registry_id = validated_data.get('employee_am')
+            employee_amka = validated_data.get('employee_amka')
+            employee_date_of_birth = validated_data.get('employee_birthday')
+            employee_address_line = validated_data.get('communication_address')
+            employee_address_city = validated_data.get('communication_city')
+            employee_address_zip = validated_data.get('communication_zip')
+            employee_telephone = validated_data.get('communication_telephone')
+            validated_data.get('employee_fek_diorismou')
+            validated_data.get('employee_fek_diorismou_date')
+            validated_data.get('employee_specialization_old')
+            validated_data.get('employee_specialization_old_name')
+
+            work_experiences = validated_data.get('work_experience', list())
+
+            print(work_experiences)
+
+            athina_employee_label = f'({employee_registry_id}) {employee_last_name} {employee_first_name} ' \
+                                    f'{employee_father_name} [{employee_specialization}]'
+
+            logging.info("trying to update employee '%s'", athina_employee_label)
+
+            try:
+                employee_legacy_type_code = LegacyEmployeeType.REGULAR
+
+                if employee_type_name == 'Μόνιμος Εκπαιδευτικός':
+                    employee_legacy_type_code = LegacyEmployeeType.REGULAR
+
+                employee_type: EmployeeType = EmployeeType.objects.get(code=validated_data.get('employee_type'))
+            except EmployeeType.DoesNotExist:
+                employee_type = EmployeeType.objects.create(code=validated_data.get('employee_type'),
+                                                            title=employee_type_name,
+                                                            legacy_type=employee_legacy_type_code)
+
+            # first try to match employee with AM
+            employees: QuerySet[Employee] = Employee.objects.filter(
+                registry_id=employee_registry_id,
+                is_active=True,
+                employee_type=employee_legacy_type_code)
+
+            if employees.count() == 1:
+                employee: Employee = employees.first()
+            elif employees.count() > 1:
+                employee: Employee = merge_employee(employees)
+            else:
+                employee = None
+
+            # if we failed to match, then try with AFM
+            if employee is None:
+
+                employees: QuerySet[Employee] = Employee.objects.filter(
+                    vat_number=employee_vat_number,
+                    is_active=True,
+                    employee_type=employee_legacy_type_code)
+
+                if employees.count() == 1:
+                    employee = employees.first()
+                elif employees.count() > 1:
+                    employee: Employee = merge_employee(employees)
+
+            if employee is not None:
+
+                # update operation
+                employee.first_name = employee_first_name
+                employee.last_name = employee_last_name
+                employee.father_name = employee_father_name
+                employee.mother_name = employee_mother_name
+                validated_data.get('employee_sex')
+                employee.employee_type_extended = employee_type
+
+                employee.vat_number = employee_vat_number
+                employee.id_number = employee_id_number
+                employee.registry_id = employee_registry_id
+                employee.amka = employee_amka
+                employee.date_of_birth = employee_date_of_birth
+                employee.address_line = employee_address_line
+                employee.address_city = employee_address_city
+                employee.address_zip = employee_address_zip
+                employee.telephone = employee_telephone
+                validated_data.get('employee_fek_diorismou')
+                validated_data.get('employee_fek_diorismou_date')
+                validated_data.get('employee_specialization_old')
+                validated_data.get('employee_specialization_old_name')
+
+                today = now()
+                employee.updated_from_athina = today
+                employee.updated_on = today
+                employee.save()
+                employee_serializer = EmployeeSerializer(employee)
+                logging.info("employee '%s' updated", athina_employee_label)
+
+                # work experience handling
+                WorkExperience.objects.filter(employee=employee).delete()
+                for work_experience in work_experiences:
+                    work_experience_work_type = work_experience.get('work_type')
+                    work_experience_work_type_name = work_experience.get('work_type_name')
+
+                    try:
+                        work_experience_type = WorkExperienceType.objects.get(code=work_experience_work_type)
+                    except WorkExperienceType.DoesNotExist:
+                        work_experience_type = WorkExperienceType.objects.create(
+                            code=work_experience_work_type,
+                            description=work_experience_work_type_name)
+
+                    work_experience_work_duration_str: str = work_experience.get('work_duration')
+                    print(work_experience_work_duration_str)
+                    work_experience_elements = work_experience_work_duration_str.split(':')
+                    print(work_experience_elements)
+
+                    if len(work_experience_elements) != 3:
+
+                        logging.warning('work experience "%s" for employee "%s" could not be decoded',
+                                        work_experience_work_duration_str, athina_employee_label)
+                        work_experience_duration_days = 0
+                        work_experience_duration_months = 0
+                        work_experience_duration_years = 0
+
+                    else:
+                        work_experience_duration_days = int(work_experience_elements[2])
+                        work_experience_duration_months = int(work_experience_elements[1])
+                        work_experience_duration_years = int(work_experience_elements[0])
+
+                    work_experience_work_duration = work_experience_duration_years * 360 + \
+                                                    work_experience_duration_months * 30 + \
+                                                    work_experience_duration_days
+
+                    print(work_experience_duration_days)
+                    print(work_experience_duration_months)
+                    print(work_experience_duration_years)
+                    print(work_experience_work_duration)
+
+                    work_experience_document_number = work_experience.get('document_number')
+                    work_experience_document_date = work_experience.get('document_date')
+                    work_experience_authority = work_experience.get('authority')
+                    work_experience_work_from = work_experience.get('work_from')
+                    work_experience_work_until = work_experience.get('work_until')
+                    work_experience_work_comment = work_experience.get('work_comment')
+
+                    WorkExperience.objects.create(
+                        employee=employee,
+                        work_experience_type=work_experience_type,
+                        duration_total_in_days=work_experience_work_duration,
+                        duration_days=work_experience_duration_days,
+                        duration_months=work_experience_duration_months,
+                        duration_years=work_experience_duration_years,
+                        document_number=work_experience_document_number,
+                        document_date=work_experience_document_date,
+                        authority=work_experience_authority,
+                        date_from=work_experience_work_from,
+                        date_until=work_experience_work_until,
+                        comment=work_experience_work_comment,
+                    )
+
+                return Response(employee_serializer.data, status=status.HTTP_200_OK)
+            else:
+                # employee not found
+                logging.warning("employee '%s' NOT FOUND in phaistos, will create a new one", athina_employee_label)
+                employee = Employee.objects.create(
+                    first_name=employee_first_name,
+                    last_name=employee_last_name,
+                    father_name=employee_father_name,
+                    mother_name=employee_mother_name,
+                    employee_type_extended=employee_type,
+                    vat_number=employee_vat_number,
+                    id_number=employee_id_number,
+                    registry_id=employee_registry_id,
+                    amka=employee_amka,
+                    date_of_birth=employee_date_of_birth,
+                    address_line=employee_address_line,
+                    address_city=employee_address_city,
+                    address_zip=employee_address_zip,
+                    telephone=employee_telephone,
+                    imported_from_athina=now()
+                )
+                employee.save()
+                employee_serializer = EmployeeSerializer(employee)
+                return Response(employee_serializer.data, status=status.HTTP_201_CREATED)
+
+        #     employee_serializer = EmployeeSerializer(employee)
+        #     return Response(employee_serializer.data, status=status.HTTP_200_OK)
+            # try:
+            #     specialization: Specialization = Specialization.objects.get(
+            #         code=validated_data.get('specialization_code'))
+            # except Specialization.DoesNotExist:
+            #     specialization = None
+            #
+            # try:
+            #     employee: Employee = Employee.objects.get(minoas_id=validated_data.get('minoas_id'))
+            # except Employee.DoesNotExist:
+            #     employee = None
+            #
+            # current_unit_id = validated_data.get('current_unit_id')
+            # if current_unit_id is not None:
+            #     try:
+            #         current_unit = Unit.objects.get(minoas_id=current_unit_id)
+            #     except Unit.DoesNotExist:
+            #         current_unit = None
+            # else:
+            #     current_unit = None
+            #
+            # if employee is None:
+            #
+            #     employee = Employee.objects.create(
+            #         minoas_id=validated_data.get('minoas_id'),
+            #         big_family=validated_data.get('big_family'),
+            #         comment=validated_data.get('comment'),
+            #         date_of_birth=validated_data.get('date_of_birth'),
+            #         email=validated_data.get('email'),
+            #         father_name=validated_data.get('father_name'),
+            #         father_surname=validated_data.get('father_surname'),
+            #         first_name=validated_data.get('first_name'),
+            #         last_name=validated_data.get('last_name'),
+            #         id_number=validated_data.get('id_number'),
+            #         id_number_authority=validated_data.get('id_number_authority'),
+            #         is_man=validated_data.get('is_man'),
+            #         mother_name=validated_data.get('mother_name'),
+            #         mother_surname=validated_data.get('mother_surname'),
+            #         vat_number=validated_data.get('vat_number'),
+            #         employee_type=validated_data.get('employee_type'),
+            #         marital_status=validated_data.get('marital_status'),
+            #         specialization=specialization,
+            #         registry_id=validated_data.get('registry_id'),
+            #         current_unit=current_unit,
+            #         is_active=validated_data.get('is_active')
+            #     )
+            #
+            #     employee_serializer = EmployeeSerializer(employee)
+            #     return Response(employee_serializer.data, status=status.HTTP_201_CREATED)
+            #
+            # else:
+            #     employee.big_family = validated_data.get('big_family')
+            #     employee.comment = validated_data.get('comment')
+            #     employee.date_of_birth = validated_data.get('date_of_birth')
+            #     employee.email = validated_data.get('email')
+            #     employee.father_name = validated_data.get('father_name')
+            #     employee.father_surname = validated_data.get('father_surname')
+            #     employee.first_name = validated_data.get('first_name')
+            #     employee.last_name = validated_data.get('last_name')
+            #     employee.id_number = validated_data.get('id_number')
+            #     employee.id_number_authority = validated_data.get('id_number_authority')
+            #     employee.is_man = validated_data.get('is_man')
+            #     employee.mother_name = validated_data.get('mother_name')
+            #     employee.mother_surname = validated_data.get('mother_surname')
+            #     employee.vat_number = validated_data.get('vat_number')
+            #     employee.employee_type = validated_data.get('employee_type')
+            #     employee.marital_status = validated_data.get('marital_status')
+            #     employee.specialization = specialization
+            #     employee.registry_id = validated_data.get('registry_id')
+            #     employee.current_unit = current_unit
+            #     employee.is_active = validated_data.get('is_active')
+            #
+            #     employee.save()
+            #     employee_serializer = EmployeeSerializer(employee)
+            #     return Response(employee_serializer.data, status=status.HTTP_200_OK)
+
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

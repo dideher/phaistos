@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 
@@ -63,7 +63,7 @@ class Specialization(models.Model):
         return f"{ self.code } - {self.title}"
 
 
-class EmployeeType(models.TextChoices):
+class LegacyEmployeeType(models.TextChoices):
     DEPUTY = 'DEPUTY', _('Αναπληρωτής')
     REGULAR = 'REGULAR', _('Μόνιμος')
     HOURLYPAID = 'HOURLYPAID', _('Ωρομίσθιος')
@@ -77,9 +77,16 @@ class MaritalStatusType(models.TextChoices):
     DIVORCED = 'DIVORCED', _('Διαζευγμένος')
     WIDOWER = 'WIDOWER', _('Χηρεία')
 
+class EmployeeType(models.Model):
+
+    code = models.PositiveSmallIntegerField(null=False, db_index=True)
+    title = models.CharField(null=False, max_length=128)
+    legacy_type = models.CharField(choices=LegacyEmployeeType.choices, default=LegacyEmployeeType.REGULAR,
+                                   max_length=32)
+
 
 class Employee(models.Model):
-    minoas_id = models.IntegerField(db_column='MINOAS_ID', default=None, null=False, unique=True)
+    minoas_id = models.IntegerField(db_column='MINOAS_ID', default=None, null=True, db_index=True)
     big_family = models.BooleanField(db_column='BIG_FAMILY', null=True)
     comment = models.CharField(db_column='COMMENT', max_length=256, null=True)
     date_of_birth = models.DateField(db_column='BIRTH_DAY', null=True)
@@ -93,23 +100,68 @@ class Employee(models.Model):
     is_man = models.BooleanField(db_column='MAN', null=True)
     mother_name = models.CharField(db_column="MOTHER_NAME", max_length=25, null=True)
     mother_surname = models.CharField(db_column="MOTHER_SURNAME", max_length=35, null=True)
-    vat_number = models.CharField(db_column="VAT_NUMBER", max_length=10, null=True, default=True)
-    registry_id = models.CharField(db_column="REGISTRY_ID", max_length=6, null=True, default=True)
-    employee_type = models.CharField(choices=EmployeeType.choices, default=EmployeeType.REGULAR,
+    vat_number = models.CharField(db_column="VAT_NUMBER", max_length=10, null=True, default=True,  db_index=True)
+    amka = models.CharField(db_column='AMKA', max_length=12, null=True, default=True)
+    registry_id = models.CharField(db_column="REGISTRY_ID", max_length=6, null=True, default=True,  db_index=True)
+    employee_type = models.CharField(choices=LegacyEmployeeType.choices, default=LegacyEmployeeType.REGULAR,
                                      max_length=32, db_column='EMPLOYEE_TYPE')
+    employee_type_extended = models.ForeignKey(EmployeeType, null=True, on_delete=models.SET_NULL, default=None)
     marital_status = models.CharField(choices=MaritalStatusType.choices, default=MaritalStatusType.UNKNOWN,
                                       max_length=30, db_column='MARITAL_STATUS')
     specialization = models.ForeignKey(Specialization, null=True, on_delete=models.SET_NULL)
     current_unit = models.ForeignKey(Unit, null=True, default=None, on_delete=models.SET_NULL)
     is_active = models.BooleanField(db_column="IS_ACTIVE", null=False, default=True, db_index=True)
+    address_line = models.CharField(db_column='ADDRESS_LINE', max_length=128, null=True, default=None)
+    address_city = models.CharField(db_column='ADDRESS_CITY', max_length=64, null=True, default=None)
+    address_zip = models.CharField(db_column='ADDRESS_ZIP', max_length=12, null=True, default=None)
+    telephone = models.CharField(db_column='TELEPHONE', max_length=32, null=True, default=None)
+    updated_from_athina = models.DateTimeField(db_column='ATHINA_UPDATED', null=True, default=None)
+    imported_from_athina = models.DateTimeField(db_column='ATHINA_IMPORTED', null=True, default=None)
+    deleted_on = models.DateField(db_column="DELETED_ON", null=True, default=None)
+    deleted_comment = models.TextField(db_column="DELETED_COMMENT", verbose_name='Σχόλιο Διαγραφής',
+                                       help_text='Προαιρετικά εισάγεται σχόλιο ή περιγραφή διαγραφής',
+                                       null=True, max_length=255, default=None)
+    created_on = models.DateTimeField(db_column="CREATED_ON", null=False, blank=False, default=timezone.now)
+    updated_on = models.DateTimeField(db_column="UPDATED_ON", null=True, blank=True)
 
     class Meta:
         indexes = [
             models.Index(fields=['last_name', 'first_name', ]),
-            models.Index(fields=['vat_number', ]),
             models.Index(fields=['employee_type', ]),
             models.Index(fields=['minoas_id'], )
         ]
 
     def __str__(self):
         return f"{ self.last_name } {self.first_name} του {self.father_name}"
+
+
+class WorkExperienceType(models.Model):
+
+    code = models.PositiveSmallIntegerField(null=False, unique=True)
+    description = models.CharField(null=False, max_length=128)
+
+    def __str__(self):
+        return f"[{ self.code }] {self.description}"
+
+
+class WorkExperience(models.Model):
+    employee = models.ForeignKey(Employee, null=False, on_delete=models.CASCADE)
+    work_experience_type = models.ForeignKey(WorkExperienceType, null=False, db_column="WORK_EXPERIENCE_TYPE_ID",
+                                             on_delete=models.PROTECT,
+                                             verbose_name='Τύπος Υπηρεσίας',
+                                             help_text="Επιλέξτε τον τύπος της Υπηρεσίας")
+    date_from = models.DateField(db_column="DATE_FROM", null=True, default=None, verbose_name='Έναρξη Υπηρεσίας',
+                                 help_text="Καταχωρίστε την ημ/νια έναρξης")
+    date_until = models.DateField(db_column="DATE_UNTIL", null=True, default=None, verbose_name='Λήξη Υπηρεσίας',
+                                  help_text="Καταχωρίστε την ημ/νια λήξης")
+    comment = models.TextField(db_column="COMMENT", null=True, blank=True, verbose_name='Σχόλια Υπηρεσίας',
+                               help_text='Εισάγεται τυχόν σχόλια που έχετε για την υπηρεσία', max_length=255)
+    created_on = models.DateTimeField(db_column="CREATED_ON", null=False, blank=False, default=timezone.now)
+    updated_on = models.DateTimeField(db_column="UPDATED_ON", null=True, blank=True)
+    duration_total_in_days = models.IntegerField(db_column="DURATION_TOTAL_DAYS", null=False, default=0)
+    duration_days = models.PositiveSmallIntegerField(db_column="DURATION_DAYS", null=False, default=0)
+    duration_months = models.PositiveSmallIntegerField(db_column="DURATION_MONTHS", null=False, default=0)
+    duration_years = models.PositiveSmallIntegerField(db_column="DURATION_YEARS", null=False, default=0)
+    document_number = models.CharField(db_column='DOCUMENT_NUMBER', null=True, default=None, max_length=32)
+    document_date = models.DateField(db_column="DOCUMENT_DATE", null=True)
+    authority = models.CharField(db_column='AUTHORITY', null=True, max_length=128)
