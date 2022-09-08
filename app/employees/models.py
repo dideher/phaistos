@@ -115,6 +115,8 @@ class Employee(models.Model):
     address_city = models.CharField(db_column='ADDRESS_CITY', max_length=64, null=True, default=None)
     address_zip = models.CharField(db_column='ADDRESS_ZIP', max_length=12, null=True, default=None)
     telephone = models.CharField(db_column='TELEPHONE', max_length=32, null=True, default=None)
+    fek_diorismou = models.CharField(db_column='FEK_DORISMOU', max_length=16, null=True, default=None)
+    fek_diorismou_date = models.DateField(db_column='FEK_DIORISMOU_DATE', null=True, default=None)
     updated_from_athina = models.DateTimeField(db_column='ATHINA_UPDATED', null=True, default=None)
     imported_from_athina = models.DateTimeField(db_column='ATHINA_IMPORTED', null=True, default=None)
     deleted_on = models.DateField(db_column="DELETED_ON", null=True, default=None)
@@ -130,6 +132,23 @@ class Employee(models.Model):
             models.Index(fields=['employee_type', ]),
             models.Index(fields=['minoas_id'], )
         ]
+
+    def get_smart_specialization_str(self):
+        old_specialization: Specialization = self.specialization
+        if old_specialization is not None:
+            return f"{old_specialization.code} - {old_specialization.title}"
+
+    def get_smart_fek_diorismou_str(self):
+        if self.fek_diorismou is None and self.fek_diorismou_date is None:
+            return None
+        elif self.fek_diorismou and self.fek_diorismou_date:
+            return f"{self.fek_diorismou}/{self.fek_diorismou_date}"
+        elif self.fek_diorismou is None:
+            return self.fek_diorismou_date
+        else:
+            return self.fek_diorismou
+
+        return f"{old_specialization.code} - {old_specialization.title}"
 
     def __str__(self):
         return f"{ self.last_name } {self.first_name} του {self.father_name}"
@@ -165,3 +184,16 @@ class WorkExperience(models.Model):
     document_number = models.CharField(db_column='DOCUMENT_NUMBER', null=True, default=None, max_length=32)
     document_date = models.DateField(db_column="DOCUMENT_DATE", null=True)
     authority = models.CharField(db_column='AUTHORITY', null=True, max_length=128)
+
+    def get_safe_document_str(self):
+        if self.document_number and self.document_date:
+            return f'{self.document_number}/{self.document_date}'
+        elif self.document_number:
+            return self.document_number
+        elif self.document_date:
+            return self.document_date
+        else:
+            return ''
+
+    def __str__(self):
+        return f"[{ self.work_experience_type }] {self.date_from} - {self.date_until} - {self.duration_total_in_days}"

@@ -1,14 +1,88 @@
+{% extends 'base.html' %}
+
+{% load django_bootstrap5 %}
 {% load employee_extras %}
 
-<h1>{{ employee }}</h1>
-<p>{{ employee.last_name }}</p>
-<p>{{ employee.first_name }}</p>
-<p>{{ employee.father_name }}</p>
-<p>{{ employee.specialization }}</p>
-<p>{{ employee.employee_type }}</p>
-<p>{{ now|date }}</p>
+{% block title %}
+Καρτέλα Εργαζόμενου
+{% endblock %}
 
-<h1>Leaves</h1>
-{% show_leaves %}
+{% block content %}
+
+<div class="col-md-12 mx-auto">
+    <div class="card shadow">
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <div class="col-md-6">
+                    <h5>
+                        Βασικά Στοιχεία -
+                        <small class="text-muted">Πληροφορίες για τον εργαζόμενο</small>
+                    </h5>
+                    <hr />
+                    {% include "employees/employee_details_vertical.html" %}
+                </div>
+
+                <div class="col-md">
+                    <h5>Εργασιακά -
+                        <small class="text-muted">Στοιχεία που αφορούν τον εργασιακό βίο του εργαζόμενου</small>
+                    </h5>
+                    <hr />
+                    {% show_work_experience_totals %}
+
+                </div>
+
+            </div>
+
+            <div class="row">
+                <br />
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <h5>Αναλυτικό Ιστορικό -
+                        <small class="text-muted">Αναλυτικά άδειες & προϋπηρεσία, </small>
+                    </h5>
+                    <hr />
+                    <nav>
+                        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                            <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">Άδειες</button>
+                            <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">Προϋπηρεσία</button>
+                        </div>
+                    </nav>
+
+                    <div class="tab-content" id="nav-tabContent">
+                        <!-- Leaves Tab -->
+                        <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+                            <div class="card shadow">
+                                <div class="card-body">
+                                    {% show_leaves %}
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Work Experience Tab -->
+                        <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+                            <div class="card shadow">
+                                <div class="card-body">
+                                    {% show_work_experience %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+
+{% endblock content %}
 
 

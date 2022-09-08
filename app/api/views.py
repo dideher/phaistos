@@ -478,8 +478,8 @@ class AthinaEmployeeImportAPIView(APIView):
             employee_address_city = validated_data.get('communication_city')
             employee_address_zip = validated_data.get('communication_zip')
             employee_telephone = validated_data.get('communication_telephone')
-            validated_data.get('employee_fek_diorismou')
-            validated_data.get('employee_fek_diorismou_date')
+            employee_fek_diorismou = validated_data.get('employee_fek_diorismou')
+            employee_fek_diorismou_date = validated_data.get('employee_fek_diorismou_date')
             validated_data.get('employee_specialization_old')
             validated_data.get('employee_specialization_old_name')
 
@@ -549,8 +549,9 @@ class AthinaEmployeeImportAPIView(APIView):
                 employee.address_city = employee_address_city
                 employee.address_zip = employee_address_zip
                 employee.telephone = employee_telephone
-                validated_data.get('employee_fek_diorismou')
-                validated_data.get('employee_fek_diorismou_date')
+                employee.fek_diorismou = employee_fek_diorismou
+                employee.fek_diorismou_date = employee_fek_diorismou_date
+
                 validated_data.get('employee_specialization_old')
                 validated_data.get('employee_specialization_old_name')
 

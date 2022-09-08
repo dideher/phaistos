@@ -138,7 +138,8 @@ class AthinaEmployeeImportSerializer(serializers.Serializer):
     communication_zip = serializers.CharField(allow_null=True, required=False)
     communication_telephone = serializers.CharField(allow_null=True, required=False)
     employee_fek_diorismou = serializers.CharField(allow_null=True, required=False)
-    employee_fek_diorismou_date = serializers.CharField(allow_null=True, required=False)
+    employee_fek_diorismou_date = serializers.DateField(format='%d/%m/%Y', input_formats=['%d/%m/%Y', ],
+                                                        required=False, allow_null=True)
     employee_specialization_old = serializers.CharField(allow_null=False, required=False)
     employee_specialization_old_name = serializers.CharField(allow_null=False, required=False)
 

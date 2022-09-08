@@ -1,0 +1,35 @@
+{% load django_bootstrap5 %}
+
+<table class="table table-sm table-hover">
+    <thead class="thead-dark">
+    <tr>
+        <th scope="col">#</th>
+        <th scope="col">Τύπος Προϋπηρεσίας</th>
+        <th scope="col">Αρ.Πρωτ.</th>
+        <th scope="col">Από</th>
+        <th scope="col">Έως</th>
+        <th scope="col">Διάρκεια</th>
+        <th scope="col">Υπηρ.Χορήγησης	</th>
+        <th scope="col">Παρατηρήσεις</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for workexperience in workexperiences %}
+    <tr>
+        <td>
+            {{ workexperience.id }}
+        </td>
+        <td><code>{{ workexperience.work_experience_type.code }}</code> - {{ workexperience.work_experience_type.description }}</td>
+        <td>{{ workexperience.get_safe_document_str }} </td>
+        <td>{{ workexperience.date_from|date:"d-m-Y" }}</td>
+        <td>{{ workexperience.date_until|date:"d-m-Y" }}</td>
+        <td> {{ workexperience.duration_years }} έτη {{ workexperience.duration_months }} μην. {{ workexperience.duration_days }} ημ. ({{ workexperience.duration_total_in_days }} ημ.)</td>
+        <td>{{ workexperience.authority|default:''|truncatechars:20 }}</td>
+        <td>{{ workexperience.comment|default:''|truncatechars:20 }}</td>
+
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+{% bootstrap_pagination workexperiences parameter_name="wpage" extra=request.GET.urlencode size="sm" %}

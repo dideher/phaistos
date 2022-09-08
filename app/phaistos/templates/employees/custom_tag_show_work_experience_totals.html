@@ -1,0 +1,83 @@
+{% load django_bootstrap5 %}
+{% load employee_extras %}
+
+<div class="row">
+
+    <div class="col-md">
+        <h6>
+            Προ Διορισμού -
+            <small class="text-muted">Υπηρεσία πριν τον διορισμό</small>
+        </h6>
+
+        <table class="table table-sm table-striped">
+            <tr>
+                <th>Μισθολογική Προϋπ. (ν4354/2015)</th>
+                <td>{{misthologiki_proyp|default:"0"|duration_string_from_days}} ({{misthologiki_proyp|default:"0"}} ημέρες)</td>
+            </tr>
+            <tr>
+                <th>Βαθμολογική Προϋπ.</th>
+                <td>{{bathmologiki_proyp|default:"0"|duration_string_from_days}} ({{bathmologiki_proyp|default:"0"}} ημέρες)</td>
+            </tr>
+            <tr>
+                <th>Προϋπ. για Ωράριο</th>
+                <td>{{proy_gia_orario|default:"0"|duration_string_from_days}} ({{proy_gia_orario|default:"0"}} ημέρες)</td>
+            </tr>
+        </table>
+
+    </div>
+
+</div>
+
+<div class="row">
+    <div class="col-md">
+        <h6>
+            Μετά Διορισμού -
+            <small class="text-muted">Υπηρεσία που έχει αποκτηθεί μετά τον διορισμό</small>
+        </h6>
+        {% if no_fek_diorismou %}
+
+        <div class="alert alert-warning" role="alert">
+        Δεν υπάρχει καταχωρημένο ΦΕΚ Διορισμόυ για να υπολογισθεί η υπηρεσία μετά το διορισμό
+        </div>
+
+        {% else %}
+        <table class="table table-sm table-striped">
+            <tr>
+                <th>Εκπαιδευτική Υπηρεσία</th>
+                <td>{{ekpaideutiki_yphresia_meta_diorismo|default:"0"|duration_string_from_days}} ({{ekpaideutiki_yphresia_meta_diorismo|default:"0"}} ημέρες)</td>
+            </tr>
+            <tr>
+                <th>Διδακτική Υπηρεσία</th>
+                <td>{{didaktiki_yphresia_meta_diorismo|default:"0"|duration_string_from_days}} ({{didaktiki_yphresia_meta_diorismo|default:"0"}} ημέρες)</td>
+            </tr>
+        </table>
+        {% endif %}
+    </div>
+</div>
+
+<div class="row">
+
+    <div class="col-md">
+        <h6>
+            Συνολικά -
+            <small class="text-muted">Προύπηρεσία και υπηρεσία μετά το διορισμό</small>
+        </h6>
+
+        {% if no_fek_diorismou %}
+        <div class="alert alert-warning" role="alert">
+            Δεν υπάρχει καταχωρημένο ΦΕΚ Διορισμόυ για να υπολογισθεί η συνολική υπηρεσία
+        </div>
+        {% else %}
+        <table class="table table-sm table-striped">
+            <tr>
+                <th>Συνολική Εκπαιδευτική Υπηρεσία</th>
+                <td>{{ekpaideutiki_yphresia_meta_diorismo|default:"0"|duration_string_from_days}} ({{ekpaideutiki_yphresia_meta_diorismo|default:"0"}} ημέρες)</td>
+            </tr>
+            <tr>
+                <th>Συνολική Διδακτική Υπηρεσία</th>
+                <td>{{didaktiki_yphresia_meta_diorismo|default:"0"|duration_string_from_days}} ({{didaktiki_yphresia_meta_diorismo|default:"0"}} ημέρες)</td>
+            </tr>
+        </table>
+        {% endif %}
+    </div>
+</div>
