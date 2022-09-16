@@ -8,6 +8,10 @@ from django.http.request import HttpRequest
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.utils import timezone
+from django.views.generic import ListView
+
+from phaistos.commons import compute_leaves_real_duration, get_regular_leaves_for_employee_established_in_year, \
+    get_medical_leaves_for_employee_established_in_year
 from phaistos.commons.export import ExportableListView
 from django.views.generic.edit import FormMixin
 from django.shortcuts import render
@@ -35,7 +39,7 @@ class LeaveDeleteView(LoginRequiredMixin, PermissionRequiredMixin, BaseDeleteVie
     success_message = 'Η διαγραφή της άδειας έγινε με επιτυχεία!'
 
     def get_success_url(self):
-        return reverse("employees:employee-leaves-list", kwargs={"pk": self.object.employee.id})
+        return reverse("leaves:employee-leaves-list", kwargs={"pk": self.object.employee.id})
 
 
 def compute_leave_calendar_duration(request: HttpRequest):
@@ -92,7 +96,7 @@ class LeaveCreateView(LoginRequiredMixin, PermissionRequiredMixin, JsonableRespo
         return super().form_valid(form)
 
     def get_success_url(self):
-        return reverse("employees:employee-leaves-list", kwargs={"pk": self.employee.id})
+        return reverse("leaves:employee-leaves-list", kwargs={"pk": self.employee.id})
 
 
 class LeaveUpdateView(LoginRequiredMixin, PermissionRequiredMixin, JsonableResponseMixin, BSModalUpdateView):
@@ -112,7 +116,7 @@ class LeaveUpdateView(LoginRequiredMixin, PermissionRequiredMixin, JsonableRespo
         return super().form_valid(form)
 
     def get_success_url(self):
-        return reverse("employees:employee-leaves-list", kwargs={"pk": self.object.employee.id})
+        return reverse("leaves:employee-leaves-list", kwargs={"pk": self.object.employee.id})
 
     def get_form_kwargs(self):
         kwargs = super(LeaveUpdateView, self).get_form_kwargs()
@@ -248,3 +252,57 @@ class LeaveSearchListView(LoginRequiredMixin, PermissionRequiredMixin, Exportabl
 
         return context
 
+
+class EmployeeLeavesListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
+
+    model = Leave
+    context_object_name = 'leaves'
+    paginator_per_page_count = 12
+    template_name = 'employees/employee_leaves_list.html'
+    permission_required = ['employees.view_employee', 'leaves.view_leave']
+
+    def get_queryset(self):
+        employee_id = self.kwargs['pk']
+        return Leave.objects.filter(employee=employee_id, is_deleted=False).order_by('-date_from', '-created_on')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        # add also the employee in the context
+        employee: Employee = Employee.objects.get(id=self.kwargs['pk'])
+        context['employee'] = employee
+
+        #context['form'] = self.form_class(initial=self.request.GET)
+        paginator = Paginator(context['leaves'], EmployeeLeavesListView.paginator_per_page_count)
+        page = self.request.GET.get("page")
+
+        # compute some basic leave statistics
+        today = timezone.now().date()
+
+        context['regular_leaves_current_year'] = compute_leaves_real_duration(
+            get_regular_leaves_for_employee_established_in_year(employee=employee, year=today.year)
+        )
+        context['regular_leaves_previous_year'] = compute_leaves_real_duration(
+            get_regular_leaves_for_employee_established_in_year(employee=employee, year=today.year-1)
+        )
+        context['medical_leaves_current_year'] = compute_leaves_real_duration(
+            get_medical_leaves_for_employee_established_in_year(employee=employee, year=today.year)
+        )
+        context['medical_leaves_last_5_years'] = compute_leaves_real_duration(
+            get_medical_leaves_for_employee_established_in_year(employee=employee, year_from=today.year - 5,
+                                                                year_until=today.year)
+        )
+
+        try:
+            objects = paginator.page(page)
+        except PageNotAnInteger:
+            # If page is not an integer, deliver first page.
+            objects = paginator.page(1)
+        except EmptyPage:
+            # If page is out of range (e.g. 9999), deliver last page of results.
+            objects = paginator.page(paginator.num_pages)
+
+        context["leaves_paginated"] = objects
+        context["display_paginated_pages"] = paginator.num_pages > 1
+
+        return context

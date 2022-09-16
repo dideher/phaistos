@@ -46,7 +46,7 @@ class LeaveForm(BSModalModelForm):
 
         if data.suitable_for_employee_type != self.employee.employee_type:
             # ops! leave type is not good for the given employee type
-            raise ValidationError(_("Ο τύπος άδειας δεν είναι συμβατός με τον εκπαιδευτικό"))
+            raise ValidationError(_("Ο τύπος άδειας δεν είναι συμβατός με τον συγκεκριμένο εργαζόμενο"))
 
         return data
 

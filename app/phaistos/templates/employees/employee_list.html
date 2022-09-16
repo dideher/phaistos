@@ -3,7 +3,7 @@
 {% load django_bootstrap5 %}
 
 {% block title %}
-    Λίστα Εκπαιδευτικών
+    Λίστα Προσωπικού
 {% endblock %}
 
 {% block content %}
@@ -64,13 +64,13 @@
                         {% for employee in employees_paginated %}
                             <tr>
                                 <td>
-                                    {% if perms.leaves.view_leave %}
-                                    <a href="{% url 'employees:employee-leaves-list' employee.id %}">
+                                    <a href="{% url goto_target employee.id %}">
                                         <code>{{ employee.id }}</code>
                                     </a>
-                                    {% else %}
-                                    <code>{{ employee.id }}</code>
-                                    {% endif %}
+
+
+
+
                                 </td>
                                 <td>{{ employee.registry_id|default:""}}</td>
                                 <td>{{ employee.vat_number|default:""}}</td>

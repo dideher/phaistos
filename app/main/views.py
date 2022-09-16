@@ -13,4 +13,4 @@ class MainPageView(LoginRequiredMixin, View):
 
     def get(self, request):
         # for now, just redirect to the employee-list view
-        return HttpResponseRedirect(reverse_lazy("employees:employee-list"))
+        return HttpResponseRedirect(reverse_lazy("employees:employee-list", kwargs={'goto_target': 'employees:employee-detail'}))
