@@ -115,7 +115,7 @@ class Employee(models.Model):
     address_city = models.CharField(db_column='ADDRESS_CITY', max_length=64, null=True, default=None)
     address_zip = models.CharField(db_column='ADDRESS_ZIP', max_length=12, null=True, default=None)
     telephone = models.CharField(db_column='TELEPHONE', max_length=32, null=True, default=None)
-    fek_diorismou = models.CharField(db_column='FEK_DORISMOU', max_length=16, null=True, default=None)
+    fek_diorismou = models.CharField(db_column='FEK_DORISMOU', max_length=32, null=True, default=None)
     fek_diorismou_date = models.DateField(db_column='FEK_DIORISMOU_DATE', null=True, default=None)
     updated_from_athina = models.DateTimeField(db_column='ATHINA_UPDATED', null=True, default=None)
     imported_from_athina = models.DateTimeField(db_column='ATHINA_IMPORTED', null=True, default=None)
