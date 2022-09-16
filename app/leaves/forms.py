@@ -4,7 +4,7 @@ from leaves.models import Leave, LeaveType
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 from django.shortcuts import get_object_or_404
-from employees.models import Employee, EmployeeType
+from employees.models import Employee, LegacyEmployeeType
 from leaves.models import LeaveType
 from bootstrap_modal_forms.forms import BSModalModelForm
 from phaistos.commons.forms import EmptyChoiceField
@@ -46,7 +46,7 @@ class LeaveForm(BSModalModelForm):
 
         if data.suitable_for_employee_type != self.employee.employee_type:
             # ops! leave type is not good for the given employee type
-            raise ValidationError(_("Ο τύπος άδειας δεν είναι συμβατός με τον εκπαιδευτικό"))
+            raise ValidationError(_("Ο τύπος άδειας δεν είναι συμβατός με τον συγκεκριμένο εργαζόμενο"))
 
         return data
 
@@ -118,7 +118,7 @@ class LeaveSearchForm(forms.Form):
                                                 required=False,
                                                 widget=forms.SelectMultiple(attrs={'size': 9}))
 
-    employee_type = EmptyChoiceField(choices=EmployeeType.choices,
+    employee_type = EmptyChoiceField(choices=LegacyEmployeeType.choices,
                                      empty_label='',
                                      label=_("Τύπος Εργαζόμενου"),
                                      help_text=_("Περιόριστε την αναζήτηση με βάση τον τύπο του εργαζόμενου"),

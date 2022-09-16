@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
-from employees.models import Employee, EmployeeType
+from employees.models import Employee, LegacyEmployeeType
 
 
 class LeaveBasicType(models.TextChoices):
@@ -18,8 +18,8 @@ class LeaveType(models.Model):
     is_active = models.BooleanField(db_column="IS_ACTIVE", db_index=True, null=False, default=True)
     description = models.CharField(db_column="DESCRIPTION", db_index=True, max_length=255, null=True)
     legacy_code = models.CharField(db_column="LEGACY_CODE", db_index=True, max_length=32, null=False)
-    suitable_for_employee_type = models.CharField(choices=EmployeeType.choices,
-                                                  default=EmployeeType.REGULAR,
+    suitable_for_employee_type = models.CharField(choices=LegacyEmployeeType.choices,
+                                                  default=LegacyEmployeeType.REGULAR,
                                                   max_length=32,
                                                   db_index=True,
                                                   db_column='EMPLOYEE_TYPE')
@@ -28,7 +28,7 @@ class LeaveType(models.Model):
                                   max_length=32, db_column='BASIC_TYPE')
 
     def __str__(self):
-        return f"(#{self.legacy_code}) - {self.description} ({EmployeeType(self.suitable_for_employee_type).label})"
+        return f"(#{self.legacy_code}) - {self.description} ({LegacyEmployeeType(self.suitable_for_employee_type).label})"
 
 
 class Leave(models.Model):

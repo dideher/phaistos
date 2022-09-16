@@ -1,6 +1,35 @@
-{% for leave in leaves %}
-    <li><a href="#">{{ leave }}</a></li>
-{% empty %}
-    <li>No Leaves yet.</li>
-{% endfor %}
-</ul>
+{% load django_bootstrap5 %}
+
+<table class="table table-sm table-hover">
+    <thead class="thead-dark">
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Κωδ.Άδ.</th>
+            <th scope="col">Τύπος Άδειας</th>
+            <th scope="col">Ημέρες</th>
+            <th scope="col">Έναρξη</th>
+            <th scope="col">Λήξη</th>
+            <th scope="col">Σχολείο Οργανικής</th>
+            <th scope="col">Σχόλιο</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for leave in leaves %}
+        <tr>
+            <td>
+                {{ leave.id }}
+            </td>
+            <td class="text-center"><code>{{ leave.leave_type.legacy_code }}</code></td>
+            <td>{{ leave.leave_type.description }} </td>
+            <td>{{ leave.effective_number_of_days }}</td>
+            <td>{{ leave.date_from|date:"d-m-Y" }}</td>
+            <td>{{ leave.date_until|date:"d-m-Y" }}</td>
+            <td>&nbsp;</td>
+            <td>{{ leave.comment|default:''|truncatechars:20 }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% bootstrap_pagination leaves parameter_name="lpage" extra=request.GET.urlencode size="sm" %}
+

@@ -20,7 +20,8 @@
                 <li class="nav-item"> <a href="{% url 'home' %}" class="nav-link active" aria-current="page"> <i class="fa fa-home"></i><span class="ms-2">Κεντρική Σελίδα</span> </a> </li>
                 <hr class="dropdown-divider">
 
-                <li> <a href="{% url 'employees:employee-list' %}" class="nav-link text-white"> <i class="fa fa-dashboard"></i><span class="ms-2">Άδειες</span> </a> </li>
+                <li> <a href="{% url 'employees:employee-list' goto_target='employees:employee-detail' %}" class="nav-link text-white"> <i class="fa fa-dashboard"></i><span class="ms-2">Στοιχεία Προσωπικού</span> </a> </li>
+                <li> <a href="{% url 'employees:employee-list' goto_target='leaves:employee-leaves-list' %}" class="nav-link text-white"> <i class="fa fa-dashboard"></i><span class="ms-2">Άδειες Προσωπικού</span> </a> </li>
                 <li> <a href="{% url 'leaves:leave-search' %}" class="nav-link text-white"> <i class="fa fa-dashboard"></i><span class="ms-2">Αναζήτηση Αδειών</span> </a> </li>
 
                 <hr class="dropdown-divider">

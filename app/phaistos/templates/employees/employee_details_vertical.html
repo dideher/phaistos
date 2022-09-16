@@ -1,0 +1,76 @@
+<div class="row">
+
+    <div class="col-md">
+        <table class="table table-sm table-striped">
+            <tr>
+                <th>ΑΜ</th>
+                <td>{{employee.registry_id|default:""}}</td>
+            </tr>
+            <tr>
+                <th>ΑΦΜ</th>
+                <td>{{employee.vat_number|default:""}}</td>
+            </tr>
+            <tr>
+                <th>ΑΜΚΑ</th>
+                <td>{{employee.amka|default:""}}</td>
+            </tr>
+            <tr>
+                <th>Επώνυμο</th>
+                <td>{{employee.last_name|default:""}}</td>
+            </tr>
+            <tr>
+                <th>Όνομα</th>
+                <td>{{employee.first_name|default:""}}</td>
+            </tr>
+            <tr>
+                <th>Όνομα Πατρός</th>
+                <td>{{employee.father_name|default:""}}</td>
+            </tr>
+            <tr>
+                <th>Όνομα Μητρός</th>
+                <td>{{employee.mother_name|default:""}}</td>
+            </tr>
+            <tr>
+                <th>Διεύθυνση</th>
+                <td>
+                    {{employee.address_line|default:""}}
+                    <br />
+                    {{employee.address_zip|default:""}}, {{employee.address_city|default:""}}
+                </td>
+            </tr>
+            <tr>
+                <th>Τηλ. Επικ.</th>
+                <td>{{employee.telephone|default:""}}</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="col-md">
+        <table class="table table-sm table-striped">
+            <tr>
+                <th>ΦΕΚ Διορισμού</th>
+                <td>{{employee.get_smart_fek_diorismou_str|default:""}}</td>
+            </tr>
+            <tr>
+                <th>Ημ/νια Γεννήσεως</th>
+                <td>{{employee.date_of_birth|default:""}}</td>
+            </tr>
+            <tr>
+                <th>Τύπος</th>
+                <td>{{employee.employee_type_extended.title|default:""}}</td>
+            </tr>
+            <tr>
+                <th>Ειδικότητα</th>
+                <td>{{employee.get_smart_specialization_str|default:""}}</td>
+            </tr>
+
+            <tr>
+                <th>Τρέχουσα Μονάδα</th>
+                <td>{{employee.current_unit|default:""}}</td>
+            </tr>
+
+        </table>
+
+    </div>
+
+</div>
