@@ -1,6 +1,7 @@
 from django import template
 from django.template.defaultfilters import stringfilter
 from django.db.models.query import QuerySet
+from django.db.models import Sum
 from django.utils import timezone
 from django.core.paginator import Paginator
 from django.contrib import messages
@@ -71,12 +72,21 @@ def show_work_experience_totals(context):
 
     result = {}
 
+    # ta koritisia elenitsa & manola
+    # mk, bathmo (athena mallon den einai ok)
+    # na metaferoume hm/nia anal yphresias (to exei mallon to myschool Ημερομηνία 1ης Ανάληψης Υπηρεσίας)
+    # hm/nia monimopoihseis +2 xronia (μαλλον το εχει το myschool)
+    # na emfanisoume ADT ston employee (to exoume, to pairnw apo thn athina)
+    # οργανική
 
     # Προ-Διορισμό
 
-    # Μισθολογικη Προϋπηρεσία.. (ν4354/2015) : 3, 6, 7, 11,13, 15
-    # Βαθμολογική Προϋπηρεσία :
-    # Προϋπηρεσια για Ωράριο :
+    # Μισθολογικη Προϋπηρεσία.. (ν4354/2015) : 3, 5, 6, 7, 10, 11,13, 15, 16, 17, 18 (afairoume oti broume se 4, 9)
+    # Βαθμολογική Προϋπηρεσία : 3 (afairoume oti broume se 4, 9)
+    # Προϋπηρεσια για Ωράριο : 3, 6, 15, 16, 17, 18, 20 (afairoume oti broume se 4, 9, 21)
+
+    # eggyhsh: skouzkis & tzombanakis
+
 
     #
 
@@ -106,9 +116,19 @@ def show_work_experience_totals(context):
 
         for we in we_list:
             # for now let's just inc :
-            misthologiki_proyp += we.duration_total_in_days
-            bathmologiki_proyp += we.duration_total_in_days
-            proy_gia_orario += we.duration_total_in_days
+            we_code = we.work_experience_type.code
+
+            if we_code in [4, 9]:
+                misthologiki_proyp -= we.duration_total_in_days
+                bathmologiki_proyp -= we.duration_total_in_days
+            else:
+                misthologiki_proyp += we.duration_total_in_days
+                bathmologiki_proyp += we.duration_total_in_days
+
+            if we_code in [21, ]:
+                proy_gia_orario -= we.duration_total_in_days
+            else:
+                proy_gia_orario += we.duration_total_in_days
 
         computed_totals = {
             'misthologiki_proyp': misthologiki_proyp,
