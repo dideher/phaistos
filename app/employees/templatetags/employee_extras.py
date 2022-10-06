@@ -76,14 +76,14 @@ def show_work_experience_totals(context):
     # mk, bathmo (athena mallon den einai ok)
     # na metaferoume hm/nia anal yphresias (to exei mallon to myschool Ημερομηνία 1ης Ανάληψης Υπηρεσίας)
     # hm/nia monimopoihseis +2 xronia (μαλλον το εχει το myschool)
-    # na emfanisoume ADT ston employee (to exoume, to pairnw apo thn athina)
+    # na emfanisoume ADT ston employee (to exoume, to pairnw apo thn athina) (DONE)
     # οργανική
 
     # Προ-Διορισμό
 
-    # Μισθολογικη Προϋπηρεσία.. (ν4354/2015) : 3, 5, 6, 7, 10, 11,13, 15, 16, 17, 18 (afairoume oti broume se 4, 9)
-    # Βαθμολογική Προϋπηρεσία : 3 (afairoume oti broume se 4, 9)
-    # Προϋπηρεσια για Ωράριο : 3, 6, 15, 16, 17, 18, 20 (afairoume oti broume se 4, 9, 21)
+    # Μισθολογικη Προϋπηρεσία.. (ν4354/2015) : 3, 5, 6, 7, 10, 11,13, 15, 16, 17, 18 (afairoume oti broume se 4, 9) (DONE)
+    # Βαθμολογική Προϋπηρεσία : 3 (afairoume oti broume se 4, 9) (DONE)
+    # Προϋπηρεσια για Ωράριο : 3, 6, 15, 16, 17, 18, 20 (afairoume oti broume se 4, 9, 21) (DONE)
 
     # eggyhsh: skouzkis & tzombanakis
 
