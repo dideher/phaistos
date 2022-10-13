@@ -146,5 +146,34 @@ class AthinaEmployeeImportSerializer(serializers.Serializer):
     work_experience = AthinaWorkExperience(many=True)
 
 
-
+class MySchoolEmployeeImportSerializer(serializers.Serializer):
+    """
+    Special Serializer to be used for bulk importing employees from myschool
+    """
+    employee_first_name = serializers.CharField(allow_null=False, required=True)
+    employee_last_name = serializers.CharField(allow_null=False, required=True)
+    employee_email = serializers.CharField(allow_null=True, allow_blank=True, required=False)
+    employee_email_psd = serializers.CharField(allow_null=True, allow_blank=True, required=False)
+    employee_father_name = serializers.CharField(allow_null=True, required=True)
+    employee_mother_name = serializers.CharField(allow_null=True, allow_blank=True, required=False)
+    employee_sex = serializers.CharField(allow_null=False, allow_blank=True, required=False)
+    employee_type_name = serializers.CharField(allow_null=False, required=True)
+    employee_specialization_id = serializers.CharField(allow_null=False, allow_blank=False, required=True)
+    employee_specialization_name = serializers.CharField(allow_null=False, allow_blank=False, required=True)
+    employee_afm = serializers.CharField(allow_null=True, required=False)
+    employee_am = serializers.CharField(allow_null=False, required=True)
+    employee_birthday = serializers.DateField(format='%d/%m/%Y', input_formats=['%d/%m/%Y', ], required=False,
+                                              allow_null=True)
+    employee_current_unit_id = serializers.CharField(allow_null=True, allow_blank=False, required=True)
+    employee_current_unit_name = serializers.CharField(allow_null=True, allow_blank=False, required=True)
+    employee_telephone = serializers.CharField(allow_null=True, required=False, allow_blank=True)
+    employee_mobile = serializers.CharField(allow_null=True, required=False, allow_blank=True)
+    employee_fek_diorismou = serializers.CharField(allow_null=True, required=False)
+    employee_fek_diorismou_date = serializers.DateField(format='%d/%m/%Y', input_formats=['%d/%m/%Y', ],
+                                                        required=False, allow_null=True)
+    employee_mk = serializers.CharField(allow_null=True, required=False, allow_blank=True)
+    employee_bathmos = serializers.CharField(allow_null=True, required=False, allow_blank=True)
+    employee_first_workday_date = serializers.DateField(format='%d/%m/%Y', input_formats=['%d/%m/%Y', ],
+                                                        required=False, allow_null=True)
+    employee_mandatory_week_workhours = serializers.IntegerField(allow_null=True, required=False)
 

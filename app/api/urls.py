@@ -10,7 +10,8 @@ from api.views import (
     LeaveTypeDetailAPI, 
     LeaveImportAPIView,
     UnitImportAPIView,
-    AthinaEmployeeImportAPIView
+    AthinaEmployeeImportAPIView,
+    MySchoolEmployeeImportAPIView
 )
 
 urlpatterns = [
@@ -20,6 +21,7 @@ urlpatterns = [
     path('bulk_import/units/', UnitImportAPIView.as_view(), name='units-import'),
     path('bulk_import/leaves/', LeaveImportAPIView.as_view(), name='leaves-import'),
     path('bulk_import/athina/employees/', AthinaEmployeeImportAPIView.as_view(), name='athina-employees-import'),
+    path('bulk_import/myschool/employees/', MySchoolEmployeeImportAPIView.as_view(), name='myschool-employees-import'),
     path('specializations/', SpecializationAPIView.as_view(), name="specializations"),
     path('specializations/<str:code>/', SpecializationDetailAPI.as_view(), name="specialization-detail"),
     path('leavetypes/', LeaveTypesAPIView.as_view(), name="leavetypes-list"),

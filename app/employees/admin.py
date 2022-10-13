@@ -4,7 +4,7 @@ from .models import Employee, Specialization, Unit, EmployeeType, WorkExperience
 
 @admin.register(EmployeeType)
 class EmployeeTypeAdmin(admin.ModelAdmin):
-    list_display = ('code', 'title')
+    list_display = ('code', 'title', 'legacy_type')
     ordering = ('code', )
     search_fields = ('code', 'title',)
 
