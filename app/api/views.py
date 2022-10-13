@@ -3,6 +3,7 @@ import logging
 from django.db.models.query import QuerySet
 from django.utils.timezone import now
 from django.db import transaction
+from django.core.exceptions import MultipleObjectsReturned
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -17,7 +18,8 @@ from api.serializers import (
     LeaveTypeSerializer,
     UnitImportSerializer,
     UnitSerializer,
-    AthinaEmployeeImportSerializer
+    AthinaEmployeeImportSerializer,
+    MySchoolEmployeeImportSerializer
 )
 from employees.models import (
     Employee, 
@@ -485,8 +487,6 @@ class AthinaEmployeeImportAPIView(APIView):
 
             work_experiences = validated_data.get('work_experience', list())
 
-            print(work_experiences)
-
             athina_employee_label = f'({employee_registry_id}) {employee_last_name} {employee_first_name} ' \
                                     f'{employee_father_name} [{employee_specialization}]'
 
@@ -576,9 +576,7 @@ class AthinaEmployeeImportAPIView(APIView):
                             description=work_experience_work_type_name)
 
                     work_experience_work_duration_str: str = work_experience.get('work_duration')
-                    print(work_experience_work_duration_str)
                     work_experience_elements = work_experience_work_duration_str.split(':')
-                    print(work_experience_elements)
 
                     if len(work_experience_elements) != 3:
 
@@ -597,10 +595,6 @@ class AthinaEmployeeImportAPIView(APIView):
                                                     work_experience_duration_months * 30 + \
                                                     work_experience_duration_days
 
-                    print(work_experience_duration_days)
-                    print(work_experience_duration_months)
-                    print(work_experience_duration_years)
-                    print(work_experience_work_duration)
 
                     work_experience_document_number = work_experience.get('document_number')
                     work_experience_document_date = work_experience.get('document_date')
@@ -728,3 +722,213 @@ class AthinaEmployeeImportAPIView(APIView):
 
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class MySchoolEmployeeImportAPIView(APIView):
+
+    def post(self, request):
+
+        serializer = MySchoolEmployeeImportSerializer(data=request.data)
+
+        if serializer.is_valid() is False:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        employee: Employee = None
+        employee_type: EmployeeType = None
+
+        validated_data = serializer.validated_data
+
+        employee_first_name = validated_data.get('employee_first_name')
+        employee_last_name = validated_data.get('employee_last_name')
+        employee_father_name = validated_data.get('employee_father_name')
+        employee_mother_name = validated_data.get('employee_mother_name')
+        employee_email = validated_data.get('employee_email')
+        employee_email_psd = validated_data.get('employee_email_psd')
+        employee_sex = validated_data.get('employee_sex')
+        employee_type_name = validated_data.get('employee_type_name')
+        employee_birthday = validated_data.get('employee_birthday')
+        employee_specialization_id = validated_data.get('employee_specialization_id')
+        employee_specialization_name = validated_data.get('employee_specialization_name')
+        employee_vat_number = validated_data.get('employee_afm')
+        employee_registry_id = validated_data.get('employee_am')
+        employee_fek_diorismou = validated_data.get('employee_fek_diorismou')
+        employee_fek_diorismou_date = validated_data.get('employee_fek_diorismou_date')
+        employee_mk = validated_data.get('employee_mk')
+        employee_bathmos = validated_data.get('employee_bathmos')
+        employee_mandatory_week_workhours = validated_data.get('employee_mandatory_week_workhours')
+        employee_first_workday_date = validated_data.get('employee_first_workday_date')
+        employee_current_unit_id = validated_data.get('employee_current_unit_id')
+        employee_current_unit_name = validated_data.get('employee_current_unit_name')
+
+        employee_communication_telephone = validated_data.get('employee_telephone')
+        employee_communication_mobile = validated_data.get('employee_mobile')
+
+        employee_is_man = True if employee_sex == 'Α' else False
+
+        myschool_employee_label = f'({employee_registry_id}) {employee_last_name} {employee_first_name} ' \
+                                f'{employee_father_name} [{employee_specialization_id}]'
+
+        with transaction.atomic():
+
+            try:
+                employee_specialization: Specialization = Specialization.objects.get(code=employee_specialization_id)
+            except Specialization.DoesNotExist:
+                employee_specialization = None
+
+            if employee_specialization is None:
+                # we failed to find the specialization. Perhaps the code was the legacy coce, ie "ΠΕ02"
+                # and we have stored (in the db) the old type, ie "ΠΕ0201"
+
+                employee_specialization_id_normalized = employee_specialization_id + "01"
+                try:
+                    employee_specialization: Specialization = Specialization.objects.get(
+                        code=employee_specialization_id_normalized)
+                except Specialization.DoesNotExist:
+                    employee_specialization = None
+
+            if employee_specialization is None:
+                # failed to create specialization, go ahead and create a new one
+                employee_specialization: Specialization = Specialization.objects.create(
+                    code=employee_specialization_id,
+                    title=employee_current_unit_name
+                )
+                logging.error(f'specialization {employee_specialization_id} created !')
+
+            if employee_specialization.title != employee_specialization_name:
+                employee_specialization.title = employee_specialization_name
+                employee_specialization.save()
+
+            if employee_specialization.code != employee_specialization_id:
+                employee_specialization.code = employee_specialization_id
+                employee_specialization.save()
+
+            try:
+                employee_current_unit: Unit = Unit.objects.get(ministry_code=employee_current_unit_id)
+            except Unit.DoesNotExist:
+                employee_current_unit: Unit = Unit.objects.create(
+                    ministry_code=employee_current_unit_id,
+                    title=employee_current_unit_name,
+                    myschool_title=employee_current_unit_name,
+                )
+                logging.error(f'******* created unit {employee_current_unit_id} - {employee_current_unit_name}')
+            except Unit.MultipleObjectsReturned:
+                logging.warning(f'unit {employee_current_unit_id} is duplicate in phaistos')
+                employee_current_unit: Unit = Unit.objects.filter(ministry_code=employee_current_unit_id).order_by('title').first()
+
+            if employee_current_unit.myschool_title != employee_current_unit_name:
+                employee_current_unit.myschool_title = employee_current_unit_name
+                employee_current_unit.save()
+
+            try:
+                employee_legacy_type_code = LegacyEmployeeType.REGULAR
+
+                if employee_type_name == 'Μόνιμος':
+                    employee_legacy_type_code = LegacyEmployeeType.REGULAR
+
+                employee_type: EmployeeType = EmployeeType.objects.get(legacy_type=employee_legacy_type_code)
+            except EmployeeType.DoesNotExist:
+                employee_type = EmployeeType.objects.create(code=employee_type_name,
+                                                            title=employee_type_name,
+                                                            legacy_type=employee_legacy_type_code)
+
+            # first try to match employee with AM
+            employees: QuerySet[Employee] = Employee.objects.filter(
+                registry_id=employee_registry_id,
+                is_active=True,
+                employee_type=employee_legacy_type_code)
+
+            if employees.count() == 1:
+                employee: Employee = employees.first()
+            elif employees.count() > 1:
+                employee: Employee = merge_employee(employees)
+            else:
+                employee = None
+
+            # if we failed to match, then try with AFM
+            if employee is None:
+
+                employees: QuerySet[Employee] = Employee.objects.filter(
+                    vat_number=employee_vat_number,
+                    is_active=True,
+                    employee_type=employee_legacy_type_code)
+
+                if employees.count() == 1:
+                    employee = employees.first()
+                elif employees.count() > 1:
+
+                    employee: Employee = merge_employee(employees)
+
+            if employee is not None:
+
+                today = now()
+
+                employee_update_dict = {
+                    'vat_number': employee_vat_number,
+                    'registry_id': employee_registry_id,
+                    'first_name': employee_first_name,
+                    'last_name': employee_last_name,
+                    'father_name': employee_father_name,
+                    'mother_name': employee_mother_name,
+                    'date_of_birth': employee_birthday,
+                    'email': employee_email,
+                    'email_psd': employee_email_psd,
+                    'specialization': employee_specialization,
+                    'current_unit': employee_current_unit,
+                    'telephone': employee_communication_telephone,
+                    'mobile': employee_communication_mobile,
+                    'fek_diorismou': employee_fek_diorismou,
+                    'fek_diorismou_date': employee_fek_diorismou_date,
+                    'mk': employee_mk,
+                    'bathmos': employee_bathmos,
+                    'first_workday_date': employee_first_workday_date,
+                    'is_man': employee_is_man,
+                    'mandatory_week_workhours': employee_mandatory_week_workhours,
+                    'updated_from_myschool': today,
+                    'updated_on': today
+                }
+
+                for attr, value in employee_update_dict.items():
+                    setattr(employee, attr, value)
+
+                #Employee.objects.filter(pk=employee.pk).update(**employee_update_dict)
+                employee.save()
+                employee_serializer = EmployeeSerializer(employee)
+                logging.info("employee '%s' updated", myschool_employee_label)
+
+                return Response(employee_serializer.data, status=status.HTTP_200_OK)
+            else:
+                # employee not found
+                logging.warning("employee '%s' NOT FOUND in phaistos, will create a new one", myschool_employee_label)
+
+                today = now()
+
+                employee_update_dict = {
+                    'vat_number': employee_vat_number,
+                    'registry_id': employee_registry_id,
+                    'first_name': employee_first_name,
+                    'last_name': employee_last_name,
+                    'father_name': employee_father_name,
+                    'mother_name': employee_mother_name,
+                    'date_of_birth': employee_birthday,
+                    'email': employee_email,
+                    'email_psd': employee_email_psd,
+                    'specialization': employee_specialization,
+                    'current_unit': employee_current_unit,
+                    'telephone': employee_communication_telephone,
+                    'mobile': employee_communication_mobile,
+                    'fek_diorismou': employee_fek_diorismou,
+                    'fek_diorismou_date': employee_fek_diorismou_date,
+                    'mk': employee_mk,
+                    'bathmos': employee_bathmos,
+                    'first_workday_date': employee_first_workday_date,
+                    'is_man': employee_is_man,
+                    'mandatory_week_workhours': employee_mandatory_week_workhours,
+                    'imported_from_myschool': today,
+                    'created_on': today
+                }
+
+                employee = Employee.objects.create(**employee_update_dict)
+                employee_serializer = EmployeeSerializer(employee)
+                return Response(employee_serializer.data, status=status.HTTP_201_CREATED)
+
+

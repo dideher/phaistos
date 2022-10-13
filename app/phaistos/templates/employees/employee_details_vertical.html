@@ -11,9 +11,14 @@
                 <td>{{employee.vat_number|default:""}}</td>
             </tr>
             <tr>
-                <th>ΑΜΚΑ</th>
-                <td>{{employee.amka|default:""}}</td>
+                <th>ΑΔΤ</th>
+                <td>{{employee.id_number|default:""}}</td>
             </tr>
+
+<!--            <tr>-->
+<!--                <th>ΑΜΚΑ</th>-->
+<!--                <td>{{employee.amka|default:""}}</td>-->
+<!--            </tr>-->
             <tr>
                 <th>Επώνυμο</th>
                 <td>{{employee.last_name|default:""}}</td>
@@ -31,6 +36,14 @@
                 <td>{{employee.mother_name|default:""}}</td>
             </tr>
             <tr>
+                <th>Email</th>
+                <td>
+                    <code>{{employee.email|default:""}}</code>
+                    <br \>
+                    <code>{{employee.email_psd|default:""}}</code>
+                </td>
+            </tr>
+            <tr>
                 <th>Διεύθυνση</th>
                 <td>
                     {{employee.address_line|default:""}}
@@ -39,8 +52,12 @@
                 </td>
             </tr>
             <tr>
-                <th>Τηλ. Επικ.</th>
+                <th>Σταθερό</th>
                 <td>{{employee.telephone|default:""}}</td>
+            </tr>
+            <tr>
+                <th>Κινητό</th>
+                <td>{{employee.mobile|default:""}}</td>
             </tr>
         </table>
     </div>
@@ -52,12 +69,20 @@
                 <td>{{employee.get_smart_fek_diorismou_str|default:""}}</td>
             </tr>
             <tr>
-                <th>Ημ/νια Γεννήσεως</th>
-                <td>{{employee.date_of_birth|default:""}}</td>
+                <th>Ημ/νια Πρώτης Ανά/ψης Υπ/σιας</th>
+                <td>{{employee.first_workday_date|default:""}}</td>
             </tr>
             <tr>
-                <th>ΑΔΤ</th>
-                <td>{{employee.id_number|default:""}}</td>
+                <th>ΜΚ</th>
+                <td>{{employee.mk|default:""}}</td>
+            </tr>
+            <tr>
+                <th>Βαθμός</th>
+                <td>{{employee.bathmos|default:""}}</td>
+            </tr>
+            <tr>
+                <th>Ημ/νια Γεννήσεως</th>
+                <td>{{employee.date_of_birth|default:""}}</td>
             </tr>
             <tr>
                 <th>Τύπος</th>
