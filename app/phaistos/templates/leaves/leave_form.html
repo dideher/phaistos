@@ -13,6 +13,15 @@
     </div>
     <div class="modal-body">
         <div class="container-fluid">
+            {% if form.non_field_errors %}
+            <div class="row">
+                <div class="alert alert-danger">
+                    {% for error in form.non_field_errors %}
+                    {{ error }}
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
             <div class="row">
                 <div class="col">
                     {% bootstrap_field form.leave_type wrapper_class='invalid' placeholder='' show_label=True %}
