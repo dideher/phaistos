@@ -82,12 +82,11 @@ class LeaveForm(BSModalModelForm):
         if date_from and date_until and date_from > date_until:
             self.add_error('date_until', _('Η ημ/νία λήξης της άδειας είναι προγενέστερη της έναρξης'))
 
-
         # https://github.com/dideher/phaistos/issues/24
         conflicts = Leave.objects.filter(employee=self.employee,
                                          is_deleted=False,
                                          date_from__lte=date_until,
-                                         date_until__gte=date_from)
+                                         date_until__gte=date_from).exclude(pk=self.instance.pk)
 
         if any(conflicts):
             conflict: Leave = conflicts[0]
