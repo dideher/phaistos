@@ -88,55 +88,59 @@ class EmployeeType(models.Model):
 
 
 class Employee(models.Model):
-    minoas_id = models.IntegerField(db_column='MINOAS_ID', default=None, null=True, db_index=True)
-    big_family = models.BooleanField(db_column='BIG_FAMILY', null=True)
-    comment = models.CharField(db_column='COMMENT', max_length=256, null=True)
-    date_of_birth = models.DateField(db_column='BIRTH_DAY', null=True)
+    minoas_id = models.IntegerField(db_column='MINOAS_ID', default=None, null=True, blank=True, db_index=True)
+    big_family = models.BooleanField(db_column='BIG_FAMILY', null=True, blank=True)
+    comment = models.CharField(db_column='COMMENT', max_length=256, null=True, blank=True)
+    date_of_birth = models.DateField(db_column='BIRTH_DAY', null=True, blank=True)
     email = models.EmailField(db_column='EMAIL', max_length=64, null=True, blank=True, default=None)
     email_psd = models.EmailField(db_column='EMAIL_PSD', max_length=64, null=True, blank=True, default=None)
     father_name = models.CharField(db_column="FATHER_NAME", max_length=25, null=True)
-    father_surname = models.CharField(db_column="FATHER_SURNAME", max_length=35, null=True)
+    father_surname = models.CharField(db_column="FATHER_SURNAME", max_length=35, null=True, blank=True)
     first_name = models.CharField(db_column="FIRST_NAME", max_length=25)
     last_name = models.CharField(db_column="LAST_NAME", max_length=35)
-    id_number = models.CharField(db_column="ID_NUMBER", max_length=32, null=True)
-    id_number_authority = models.CharField(db_column="ID_NUMBER_AUTHORITY", max_length=64, null=True)
-    is_man = models.BooleanField(db_column='MAN', null=True)
-    mother_name = models.CharField(db_column="MOTHER_NAME", max_length=25, null=True)
-    mother_surname = models.CharField(db_column="MOTHER_SURNAME", max_length=35, null=True)
-    vat_number = models.CharField(db_column="VAT_NUMBER", max_length=10, null=True, default=None,  db_index=True)
-    amka = models.CharField(db_column='AMKA', max_length=12, null=True, default=None)
-    registry_id = models.CharField(db_column="REGISTRY_ID", max_length=32, null=True, default=None,  db_index=True)
+    id_number = models.CharField(db_column="ID_NUMBER", max_length=32, null=True, blank=True)
+    id_number_authority = models.CharField(db_column="ID_NUMBER_AUTHORITY", max_length=64, null=True, blank=True)
+    is_man = models.BooleanField(db_column='MAN', null=True, blank=True)
+    mother_name = models.CharField(db_column="MOTHER_NAME", max_length=25, null=True, blank=True)
+    mother_surname = models.CharField(db_column="MOTHER_SURNAME", max_length=35, null=True, blank=True)
+    vat_number = models.CharField(db_column="VAT_NUMBER", max_length=10, null=True, default=None, blank=False,
+                                  db_index=True)
+    amka = models.CharField(db_column='AMKA', max_length=12, null=True, default=None, blank=True,)
+    registry_id = models.CharField(db_column="REGISTRY_ID", max_length=32, null=True, default=None, db_index=True,
+                                   blank=True)
     employee_type = models.CharField(choices=LegacyEmployeeType.choices, default=LegacyEmployeeType.REGULAR,
                                      max_length=32, db_column='EMPLOYEE_TYPE')
-    employee_type_extended = models.ForeignKey(EmployeeType, null=True, on_delete=models.SET_NULL, default=None)
+    employee_type_extended = models.ForeignKey(EmployeeType, null=True, on_delete=models.SET_NULL, default=None,
+                                               blank=True)
     marital_status = models.CharField(choices=MaritalStatusType.choices, default=MaritalStatusType.UNKNOWN,
                                       max_length=30, db_column='MARITAL_STATUS')
-    specialization = models.ForeignKey(Specialization, null=True, on_delete=models.SET_NULL)
-    current_unit = models.ForeignKey(Unit, null=True, default=None, on_delete=models.SET_NULL)
+    specialization = models.ForeignKey(Specialization, null=True, blank=True, on_delete=models.SET_NULL)
+    current_unit = models.ForeignKey(Unit, null=True, default=None, blank=True, on_delete=models.SET_NULL)
     is_active = models.BooleanField(db_column="IS_ACTIVE", null=False, default=True, db_index=True)
-    address_line = models.CharField(db_column='ADDRESS_LINE', max_length=128, null=True, default=None)
-    address_city = models.CharField(db_column='ADDRESS_CITY', max_length=64, null=True, default=None)
-    address_zip = models.CharField(db_column='ADDRESS_ZIP', max_length=12, null=True, default=None)
+    address_line = models.CharField(db_column='ADDRESS_LINE', max_length=128, blank=True, null=True, default=None)
+    address_city = models.CharField(db_column='ADDRESS_CITY', max_length=64, blank=True, null=True, default=None)
+    address_zip = models.CharField(db_column='ADDRESS_ZIP', max_length=12, blank=True, null=True, default=None)
     telephone = models.CharField(db_column='TELEPHONE', max_length=32, null=True, default=None, blank=True)
-    mobile = models.CharField(db_column='MOBILE', max_length=32, null=True, default=None, blank=True)
-    fek_diorismou = models.CharField(db_column='FEK_DORISMOU', max_length=32, null=True, default=None)
-    fek_diorismou_date = models.DateField(db_column='FEK_DIORISMOU_DATE', null=True, default=None)
-    mk = models.CharField(db_column='MK', max_length=32, null=True, default=None)
-    bathmos = models.CharField(db_column='BATHMOS', max_length=32, null=True, default=None)
-    first_workday_date = models.DateField(db_column='FIRST_WORKDAY_DATE', null=True, default=None,
+    mobile = models.CharField(db_column='MOBILE', max_length=32, null=True, blank=True, default=None)
+    fek_diorismou = models.CharField(db_column='FEK_DORISMOU', max_length=32, blank=True, null=True, default=None)
+    fek_diorismou_date = models.DateField(db_column='FEK_DIORISMOU_DATE', null=True, blank=True, default=None)
+    mk = models.CharField(db_column='MK', max_length=32, null=True, blank=True, default=None)
+    bathmos = models.CharField(db_column='BATHMOS', max_length=32, null=True, blank=True, default=None)
+    first_workday_date = models.DateField(db_column='FIRST_WORKDAY_DATE', null=True, blank=True, default=None,
                                           help_text="Ημερομηνία 1ης Ανάληψης Υπηρεσίας")
-    mandatory_week_workhours = models.PositiveSmallIntegerField(db_column='WORK_HOURS', null=True, default=None,
+    mandatory_week_workhours = models.PositiveSmallIntegerField(db_column='WORK_HOURS', blank=True, null=True,
+                                                                default=None,
                                                                 help_text='Υποχρεωτικό Διδακτικό Ωράριο')
-    updated_from_athina = models.DateTimeField(db_column='ATHINA_UPDATED', null=True, default=None)
-    imported_from_athina = models.DateTimeField(db_column='ATHINA_IMPORTED', null=True, default=None)
-    updated_from_myschool = models.DateTimeField(db_column='MYSCHOOL_UPDATED', null=True, default=None)
-    imported_from_myschool = models.DateTimeField(db_column='MYSCHOOL_IMPORTED', null=True, default=None)
+    updated_from_athina = models.DateTimeField(db_column='ATHINA_UPDATED', blank=True, null=True, default=None)
+    imported_from_athina = models.DateTimeField(db_column='ATHINA_IMPORTED', blank=True, null=True, default=None)
+    updated_from_myschool = models.DateTimeField(db_column='MYSCHOOL_UPDATED', blank=True, null=True, default=None)
+    imported_from_myschool = models.DateTimeField(db_column='MYSCHOOL_IMPORTED', blank=True, null=True, default=None)
 
-    deleted_on = models.DateField(db_column="DELETED_ON", null=True, default=None)
-    deleted_comment = models.TextField(db_column="DELETED_COMMENT", verbose_name='Σχόλιο Διαγραφής',
+    deleted_on = models.DateField(db_column="DELETED_ON", null=True, blank=True, default=None)
+    deleted_comment = models.TextField(db_column="DELETED_COMMENT", blank=True, verbose_name='Σχόλιο Διαγραφής',
                                        help_text='Προαιρετικά εισάγεται σχόλιο ή περιγραφή διαγραφής',
                                        null=True, max_length=255, default=None)
-    created_on = models.DateTimeField(db_column="CREATED_ON", null=False, blank=False, default=timezone.now)
+    created_on = models.DateTimeField(db_column="CREATED_ON", null=False, blank=True, default=timezone.now)
     updated_on = models.DateTimeField(db_column="UPDATED_ON", null=True, blank=True)
 
     class Meta:
