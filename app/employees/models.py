@@ -82,9 +82,12 @@ class MaritalStatusType(models.TextChoices):
 class EmployeeType(models.Model):
 
     code = models.PositiveSmallIntegerField(null=False, db_index=True)
-    title = models.CharField(null=False, max_length=128)
+    title = models.CharField(null=False, blank=False, max_length=128)
     legacy_type = models.CharField(choices=LegacyEmployeeType.choices, default=LegacyEmployeeType.REGULAR,
-                                   max_length=32)
+                                   max_length=32, blank=False)
+
+    def __str__(self):
+        return f"{self.title} ({self.legacy_type})"
 
 
 class Employee(models.Model):
