@@ -1,5 +1,4 @@
 from django.contrib import admin
-
 from leaves.models import LeaveType, Leave
 
 # Register your models here.
@@ -11,6 +10,7 @@ class LeaveTypeAdmin(admin.ModelAdmin):
     list_display = ('id', 'legacy_code', 'description', 'basic_type', 'suitable_for_employee_type')
     search_fields = ('description', 'legacy_code')
     ordering = ('legacy_code', )
+
 
 @admin.register(Leave)
 class LeaveAdmin(admin.ModelAdmin):
