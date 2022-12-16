@@ -61,7 +61,7 @@
                         </thead>
                         <tbody class="table-group-divider">
                         {% for employee in employees_paginated %}
-                            <tr class="clickable-table-row" style="cursor: pointer" data-href="{% url goto_target employee.id %}">
+                            <tr class="clickable-table-row" style="cursor: pointer" data-href="{% url goto_target employee.uuid %}">
                                 <td>{{ employee.registry_id|default:""}}</td>
                                 <td>{{ employee.vat_number|default:""}}</td>
                                 <td>{{ employee.last_name|truncatechars:20 }}</td>

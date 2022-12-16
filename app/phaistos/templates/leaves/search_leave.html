@@ -130,7 +130,7 @@
                                 <td>(#{{ leave.leave_type.legacy_code }}) - {{ leave.leave_type.description }} </td>
                                 <td class="text-left">
                                     {% if perms.leaves.view_leave %}
-                                    <a href="{% url 'leaves:employee-leaves-list' leave.employee.id %}">
+                                    <a href="{% url 'leaves:employee-leaves-list' leave.employee.uuid %}">
                                         {{ leave.employee.last_name }} {{ leave.employee.first_name }}
                                     </a>
                                     {% else %}

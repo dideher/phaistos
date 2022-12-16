@@ -36,10 +36,10 @@ class LeaveDeleteView(LoginRequiredMixin, PermissionRequiredMixin, BaseDeleteVie
     permission_required = ['leaves.delete_leave']
     form_class = DeleteLeaveForm
     model = Leave
-    success_message = 'Η διαγραφή της άδειας έγινε με επιτυχεία!'
+    success_message = 'Η διαγραφή της άδειας έγινε με επιτυχία!'
 
     def get_success_url(self):
-        return reverse("leaves:employee-leaves-list", kwargs={"pk": self.object.employee.id})
+        return reverse("leaves:employee-leaves-list", kwargs={"uuid": self.object.employee.uuid})
 
 
 def compute_leave_calendar_duration(request: HttpRequest):
@@ -73,7 +73,7 @@ class LeaveCreateView(LoginRequiredMixin, PermissionRequiredMixin, JsonableRespo
         Overridden so we can make sure the `Ipsum` instance exists
         before going any further.
         """
-        self.employee: Employee = get_object_or_404(Employee, pk=kwargs['employee_pk'])
+        self.employee: Employee = get_object_or_404(Employee, uuid=kwargs['employee_uuid'])
         return super().dispatch(request, *args, **kwargs)
 
     def get_form_kwargs(self):
@@ -96,7 +96,7 @@ class LeaveCreateView(LoginRequiredMixin, PermissionRequiredMixin, JsonableRespo
         return super().form_valid(form)
 
     def get_success_url(self):
-        return reverse("leaves:employee-leaves-list", kwargs={"pk": self.employee.id})
+        return reverse("leaves:employee-leaves-list", kwargs={"uuid": self.employee.uuid})
 
 
 class LeaveUpdateView(LoginRequiredMixin, PermissionRequiredMixin, JsonableResponseMixin, BSModalUpdateView):
@@ -116,7 +116,7 @@ class LeaveUpdateView(LoginRequiredMixin, PermissionRequiredMixin, JsonableRespo
         return super().form_valid(form)
 
     def get_success_url(self):
-        return reverse("leaves:employee-leaves-list", kwargs={"pk": self.object.employee.id})
+        return reverse("leaves:employee-leaves-list", kwargs={"uuid": self.object.employee.uuid})
 
     def get_form_kwargs(self):
         kwargs = super(LeaveUpdateView, self).get_form_kwargs()
@@ -262,14 +262,14 @@ class EmployeeLeavesListView(LoginRequiredMixin, PermissionRequiredMixin, ListVi
     permission_required = ['employees.view_employee', 'leaves.view_leave']
 
     def get_queryset(self):
-        employee_id = self.kwargs['pk']
-        return Leave.objects.filter(employee=employee_id, is_deleted=False).order_by('-date_from', '-created_on')
+        employee_uuid = self.kwargs['uuid']
+        return Leave.objects.filter(employee__uuid=employee_uuid, is_deleted=False).order_by('-date_from', '-created_on')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
         # add also the employee in the context
-        employee: Employee = Employee.objects.get(id=self.kwargs['pk'])
+        employee: Employee = Employee.objects.get(uuid=self.kwargs['uuid'])
         context['employee'] = employee
 
         #context['form'] = self.form_class(initial=self.request.GET)
