@@ -10,7 +10,7 @@ from django.urls import reverse
 from django.utils import timezone
 from django.views.generic import ListView
 
-from phaistos.commons import compute_leaves_real_duration, get_regular_leaves_for_employee_established_in_year, \
+from .utils import compute_leaves_real_duration, get_regular_leaves_for_employee_established_in_year, \
     get_medical_leaves_for_employee_established_in_year
 from phaistos.commons.export import ExportableListView
 from django.views.generic.edit import FormMixin

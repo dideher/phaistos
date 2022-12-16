@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
+from phaistos.commons.models import BaseUUIDModel
 
 
 class Address(models.Model):
@@ -90,7 +91,7 @@ class EmployeeType(models.Model):
         return f"{self.title} ({self.legacy_type})"
 
 
-class Employee(models.Model):
+class Employee(BaseUUIDModel):
     minoas_id = models.IntegerField(db_column='MINOAS_ID', default=None, null=True, blank=True, db_index=True)
     big_family = models.BooleanField(db_column='BIG_FAMILY', null=True, blank=True)
     comment = models.CharField(db_column='COMMENT', max_length=256, null=True, blank=True)

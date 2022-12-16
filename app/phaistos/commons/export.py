@@ -3,7 +3,6 @@
 import csv
 import openpyxl
 from openpyxl.writer.excel import save_virtual_workbook
-import datetime
 
 from operator import attrgetter, itemgetter, methodcaller
 from django.shortcuts import redirect
