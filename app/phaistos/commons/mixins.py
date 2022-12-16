@@ -1,5 +1,6 @@
 from django.http import JsonResponse
 
+
 class JsonableResponseMixin:
     """
     Mixin to add JSON support to a form.
