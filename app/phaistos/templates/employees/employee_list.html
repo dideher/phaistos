@@ -45,9 +45,8 @@
             <div class="row">
                 <div class="col">
                     <table class="table table-sm table-hover">
-                        <thead class="thead-dark">
+                        <thead class="table-light">
                             <tr>
-                                <th scope="col">#</th>
                                 <th scope="col">ΑΜ</th>
                                 <th scope="col">ΑΦΜ</th>
                                 <th scope="col">Επώνυμο</th>
@@ -60,14 +59,9 @@
                                 <th scope="col">Ετ.Γεν.</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody class="table-group-divider">
                         {% for employee in employees_paginated %}
-                            <tr>
-                                <td>
-                                    <a href="{% url goto_target employee.id %}">
-                                        <code>{{ employee.id }}</code>
-                                    </a>
-                                </td>
+                            <tr class="clickable-table-row" style="cursor: pointer" data-href="{% url goto_target employee.id %}">
                                 <td>{{ employee.registry_id|default:""}}</td>
                                 <td>{{ employee.vat_number|default:""}}</td>
                                 <td>{{ employee.last_name|truncatechars:20 }}</td>
@@ -91,4 +85,15 @@
 </div>
     
 
-{% endblock %}
+{% endblock content %}
+
+{% block bootstrap5_extra_script %}
+<script>
+$(document).ready(function($) {
+    $(".clickable-table-row").click(function() {
+        window.document.location = $(this).data("href");
+    });
+});
+</script>
+
+{% endblock bootstrap5_extra_script %}
