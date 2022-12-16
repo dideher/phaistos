@@ -64,4 +64,7 @@ class EmployeeDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailView
     permission_required = ['employees.view_employee']
     model = Employee
 
+    def get_object(self, queryset=None):
+        return Employee.objects.get(uuid=self.kwargs.get("uuid"))
+
 

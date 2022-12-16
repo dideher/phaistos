@@ -172,7 +172,7 @@
 
             // create new leave
             $("#create-leave-button").modalForm({
-                formURL: "{% url 'leaves:leave-create' employee.id %}",
+                formURL: "{% url 'leaves:leave-create' employee.uuid %}",
                 modalID: "#modal-lg"
             });
         });
