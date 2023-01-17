@@ -51,7 +51,7 @@ class Leave(models.Model):
                                                    help_text="Καταχωρίστε την πραγματική διάρκειας της άδειας")
     number_of_days = models.IntegerField(db_column="DAYS_COUNT", null=True, verbose_name='Ημερολογιακή Διάρκεια Άδειας',
                                          help_text='Ημερολογιακή Διάρκεια Άδειας. Υπολογίζεται αυτόματα απο την Ημ/νια '
-                                                   'Έναρξης και Λήξεις της άδειας')
+                                                   'Έναρξης και Λήξης της άδειας')
     is_deleted = models.BooleanField(db_column="IS_DELETED", null=False, default=False, db_index=True)
     deleted_on = models.DateField(db_column="DELETED_ON", null=True)
     deleted_comment = models.TextField(db_column="DELETED_COMMENT", verbose_name='Σχόλιο Διαγραφής',
