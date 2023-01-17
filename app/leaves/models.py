@@ -41,7 +41,7 @@ class Leave(models.Model):
                                    verbose_name='Τύπος Άδειας', help_text="Επιλέξτε τον τύπος της άδειας")
     is_active = models.BooleanField(db_column="IS_ACTIVE", null=False, default=True, db_index=True)
     comment = models.TextField(db_column="COMMENT", null=True, blank=True, verbose_name='Σχόλια Άδειας',
-                               help_text='Εισάγεται τυχόν σχόλια που έχετε για την άδεια', max_length=255)
+                               help_text='Εισάγετε τυχόν σχόλια που έχετε για την άδεια', max_length=255)
     date_from = models.DateField(db_column="DATE_FROM", null=False, verbose_name='Έναρξη Άδειας',
                                  help_text="Καταχωρίστε την ημ/νια έναρξης")
     date_until = models.DateField(db_column="DATE_UNTIL", null=False, verbose_name='Λήξη Άδειας',
@@ -55,7 +55,7 @@ class Leave(models.Model):
     is_deleted = models.BooleanField(db_column="IS_DELETED", null=False, default=False, db_index=True)
     deleted_on = models.DateField(db_column="DELETED_ON", null=True)
     deleted_comment = models.TextField(db_column="DELETED_COMMENT", verbose_name='Σχόλιο Διαγραφής',
-                                       help_text='Προαιρετικά εισάγεται σχόλιο ή περιγραφή διαγραφής της άδειας',
+                                       help_text='Προαιρετικά εισάγετε σχόλιο ή περιγραφή διαγραφής της άδειας',
                                        null=True, max_length=255)
     created_on = models.DateTimeField(db_column="CREATED_ON", null=False, blank=False, default=timezone.now)
     updated_on = models.DateTimeField(db_column="UPDATED_ON", null=True, blank=True)

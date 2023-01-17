@@ -142,7 +142,7 @@ class Employee(BaseUUIDModel):
 
     deleted_on = models.DateField(db_column="DELETED_ON", null=True, blank=True, default=None)
     deleted_comment = models.TextField(db_column="DELETED_COMMENT", blank=True, verbose_name='Σχόλιο Διαγραφής',
-                                       help_text='Προαιρετικά εισάγεται σχόλιο ή περιγραφή διαγραφής',
+                                       help_text='Προαιρετικά εισάγετε σχόλιο ή περιγραφή διαγραφής',
                                        null=True, max_length=255, default=None)
     created_on = models.DateTimeField(db_column="CREATED_ON", null=False, blank=True, default=timezone.now)
     updated_on = models.DateTimeField(db_column="UPDATED_ON", null=True, blank=True)
@@ -195,7 +195,7 @@ class WorkExperience(models.Model):
     date_until = models.DateField(db_column="DATE_UNTIL", null=True, default=None, verbose_name='Λήξη Υπηρεσίας',
                                   help_text="Καταχωρίστε την ημ/νια λήξης")
     comment = models.TextField(db_column="COMMENT", null=True, blank=True, verbose_name='Σχόλια Υπηρεσίας',
-                               help_text='Εισάγεται τυχόν σχόλια που έχετε για την υπηρεσία', max_length=255)
+                               help_text='Εισάγετε τυχόν σχόλια που έχετε για την υπηρεσία', max_length=255)
     created_on = models.DateTimeField(db_column="CREATED_ON", null=False, blank=False, default=timezone.now)
     updated_on = models.DateTimeField(db_column="UPDATED_ON", null=True, blank=True)
     duration_total_in_days = models.IntegerField(db_column="DURATION_TOTAL_DAYS", null=False, default=0)
