@@ -1,6 +1,6 @@
 {% load django_bootstrap5 %}
 
-<table class="table table-sm table-hover">
+<table id="employee_leaves_table" class="table table-sm table-hover">
     <thead class="thead-dark">
         <tr>
             <th scope="col">#</th>
@@ -30,6 +30,4 @@
         {% endfor %}
     </tbody>
 </table>
-
-{% bootstrap_pagination leaves parameter_name="lpage" extra=request.GET.urlencode size="sm" %}
 
