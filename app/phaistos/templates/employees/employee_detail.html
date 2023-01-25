@@ -79,10 +79,39 @@
         </div>
     </div>
 </div>
-
-
-
-
 {% endblock content %}
+
+
+{% block bootstrap5_extra_script %}
+<script>
+$(document).ready( function () {
+    $('#employee_work_exp_table').DataTable({
+        "lengthChange": false,
+        language: {
+            url: 'https://cdn.datatables.net/plug-ins/1.13.1/i18n/el.json',
+        },
+        "pageLength": 10,
+        "ordering": false,
+        "pagingType": "simple_numbers",
+        "paging": true,
+        "autoWidth": false
+    });
+
+    $('#employee_leaves_table').DataTable({
+        "lengthChange": false,
+        language: {
+            url: 'https://cdn.datatables.net/plug-ins/1.13.1/i18n/el.json',
+        },
+        "pageLength": 10,
+        "ordering": true,
+        "pagingType": "simple_numbers",
+        "paging": true,
+        "autoWidth": false
+    });
+} );
+</script>
+{% endblock bootstrap5_extra_script %}
+
+
 
 
