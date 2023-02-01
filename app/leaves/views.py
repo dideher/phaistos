@@ -15,6 +15,7 @@ from .utils import compute_leaves_real_duration, get_regular_leaves_for_employee
 from django.views.generic import View, ListView
 # gstam
 import os
+from phaistos.utils import convert_duration_to_words, first_name_to_geniki
 from phaistos.settings.common import BASE_DIR
 from django.template.loader import render_to_string
 from weasyprint import HTML
@@ -324,26 +325,20 @@ class LeavePrintDecisionToPdfView(LoginRequiredMixin, View):
             template_path = os.path.join(BASE_DIR, 'templates/leaves/template_leave_type_41_55_forward_to.html')
         else:
             template_path = os.path.join(BASE_DIR, 'templates/leaves/template_leave_type_empty.html')
-
+        
         context = {'employee': employee,
                    'leave': leave,
+                   'range': range(2),
+                   'geniki_father_name': first_name_to_geniki(employee.father_name), 
+                   'leave_duration_verbal': convert_duration_to_words(leave.effective_number_of_days),
                    'charset': 'iso-8859-7'}
         
         logging.getLogger('fontTools').setLevel(logging.ERROR)
         logging.getLogger('weasyprint').setLevel(logging.ERROR)
-        # # Create a Django response object, and specify content_type as pdf
-        # response = HttpResponse(content_type='application/pdf')
-        # response['Content-Disposition'] = 'attachment; filename="report.pdf"'
         
-        # template = get_template(template_path)
-        # source_html_file = template.render(context)#.encode('iso-8859-7')
-        # with open(os.path.join(BASE_DIR, 'expenditure_register/templates/expenditure_register/sample_to_send.html'), 'w') as static_file:
-        #     static_file.write(content)
-
-        # Django will get the template and render it with the given context
-        content_string = render_to_string(template_path, context).encode('iso-8859-7')
-        
-        # Locate the Greek crest image and embed it in the pdf file
+        content_string = render_to_string(template_path, context)#.encode('iso-8859-7')
+       
+        # How to locate the Greek crest image and embed it in the pdf file:
         # In this view function I provide Weasyprint with the base URI 
         # in the form "http://<ip_address:port>/"
         # The remaining portion of the image's path is given in the template file as
@@ -360,6 +355,5 @@ class LeavePrintDecisionToPdfView(LoginRequiredMixin, View):
         # so, in the end the file path is 
         # /home/gstam/src/phaistos/phaistos/app/static_files/main/greek_flag_icon.png'
         base_url=request.build_absolute_uri('/')
-                
         HTML(string=content_string, base_url=base_url).write_pdf(target='/tmp/leave.pdf')
         return  FileResponse(open('/tmp/leave.pdf', 'rb'), as_attachment=True, filename='Report.pdf')
