@@ -141,7 +141,7 @@
             ΠΕΡΙΦΕΡΕΙΑΚΗ ΔΙΕΥΘΥΝΣΗ Α/ΘΜΙΑΣ & <br>
             Β/ΘΜΙΑΣ ΕΚΠΑΙΔΕΥΣΗΣ ΚΡΗΤΗΣ <br>
             Δ/ΝΣΗ Β/ΘΜΙΑΣ ΕΚΠ/ΣΗΣ Ν. ΗΡΑΚΛΕΙΟΥ <br>
-            ΤΜΗΜΑ Β' ΟΙΚΟΝΟΜΙΚΟΥ <br>
+            ΤΜΗΜΑ Γ' ΠΡΟΣΩΠΙΚΟΥ <br>
             <div class="thin-dashed-line"> ----- </div>
             <table id="address-table">
               <tr>
@@ -206,15 +206,15 @@
     <li> Την με αριθμ. Φ.353.1/26/153324/Δ1/25-9-2014 Υ.Α (ΦΕΚ αρ.2648 τ.Β’/7-10-2014) «Τροποποίηση της υπ' αριθμ. Φ.353.1/324/105657/Δ1/8−10−2002 απόφασης: Καθορισμός των ειδικότερων καθηκόντων και αρμοδιοτήτων των προϊσταμένων των περιφερειακών υπηρεσιών πρωτοβάθμιας και δευτεροβάθμιας εκπαίδευσης, των διευθυντών και υποδιευθυντών σχολικών μονάδων και ΣΕΚ και των συλλόγων διδασκόντων». </li>
     <li> Τις διατάξεις του άρθ.6 της Κ.Υ.Α (ΦΕΚ Αρ.6273/τ.Β’/28-12-2021) «Καθήκοντα και αρμοδιότητες Διευθυντών Εκπαίδευσης». </li>
     <li> Την με Αρ. Πρωτ: {{leave.health_committee_protocol}} Γνωμ. της Α/θμιας Υγειονομικής Επιτροπής Περιφερειακής Ενότητας Ηρακλείου που γνωματεύει ότι 
-      {% if employee.is_man %} ο {% else %} η {% endif %} {{employee.last_name}} {{employee.first_name}} του {{geniki_father_name}} 
-      εκπαιδευτικός κλάδου {{employee.specialization }} του {{employee.current_unit }} έχει ανάγκη αναρρωτικής άδειας {{leave_duration_verbal}} ({{leave.effective_number_of_days}}) 
-      {% if leave.effective_number_of_days == 1 %} ημέρας{% else %} ημερών{% endif %}, από {{leave.date_from}} έως και {{leave.date_until}}.</li>
+      {% if employee.is_man %} ο {% else %} η {% endif %} <b>{{employee.last_name}} {{employee.first_name}}</b> του <b>{{geniki_father_name}} </b>
+      εκπαιδευτικός κλάδου {{employee.specialization }} του {{employee.current_unit }} έχει ανάγκη αναρρωτικής άδειας <b> {{leave_duration_verbal}} ({{leave.effective_number_of_days}}) 
+      {% if leave.effective_number_of_days == 1 %} ημέρας{% else %} ημερών{% endif %}</b>, από <b>{{leave.date_from}}</b> έως και <b>{{leave.date_until}}</b>.</li>
     </ol> 
     <h3> Αποφασίζουμε </h3>
     <p>
-      Χορηγούμε {% if employee.is_man %} στον {% else %} στην {% endif %} {{employee.last_name}} {{employee.first_name}} του {{geniki_father_name}}, 
-      εκπαιδευτικό κλάδου {{employee.specialization }} του {{employee.current_unit }}, της Διεύθυνσης Δ/θμιας Εκπ/σης Ηρακλείου, αναρρωτική άδεια {{leave_duration_verbal}} ({{leave.effective_number_of_days}}) 
-      {% if leave.effective_number_of_days == 1 %} ημέρας{% else %} ημερών{% endif %} με αποδοχές, από {{leave.date_from}} έως και {{leave.date_until}}.</li>
+      Χορηγούμε {% if employee.is_man %} στον {% else %} στην {% endif %} <b>{{employee.last_name}} {{employee.first_name}}</b> του <b>{{geniki_father_name}}</b>, 
+      εκπαιδευτικό κλάδου {{employee.specialization }} του <b>{{employee.current_unit }}</b>, της Δ/νσης Δ/θμιας Εκπ/σης Ηρακλείου, αναρρωτική άδεια <b>{{leave_duration_verbal}} ({{leave.effective_number_of_days}}) 
+      {% if leave.effective_number_of_days == 1 %} ημέρας{% else %} ημερών{% endif %}</b> με αποδοχές, από <b>{{leave.date_from}}</b> έως και <b>{{leave.date_until}}</b>.</li>
     </p>
     <br>
     <div class="flex-signature">
