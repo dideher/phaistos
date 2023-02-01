@@ -263,7 +263,8 @@ class EmployeeLeavesListView(LoginRequiredMixin, PermissionRequiredMixin, ListVi
 
     def get_queryset(self):
         employee_uuid = self.kwargs['uuid']
-        return Leave.objects.filter(employee__uuid=employee_uuid, is_deleted=False).order_by('-date_from', '-created_on')
+        return Leave.objects.filter(employee__uuid=employee_uuid, is_deleted=False).order_by('-date_from',
+                                                                                             '-created_on')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -273,8 +274,6 @@ class EmployeeLeavesListView(LoginRequiredMixin, PermissionRequiredMixin, ListVi
         context['employee'] = employee
 
         #context['form'] = self.form_class(initial=self.request.GET)
-        paginator = Paginator(context['leaves'], EmployeeLeavesListView.paginator_per_page_count)
-        page = self.request.GET.get("page")
 
         # compute some basic leave statistics
         today = timezone.now().date()
@@ -292,17 +291,5 @@ class EmployeeLeavesListView(LoginRequiredMixin, PermissionRequiredMixin, ListVi
             get_medical_leaves_for_employee_established_in_year(employee=employee, year_from=today.year - 5,
                                                                 year_until=today.year)
         )
-
-        try:
-            objects = paginator.page(page)
-        except PageNotAnInteger:
-            # If page is not an integer, deliver first page.
-            objects = paginator.page(1)
-        except EmptyPage:
-            # If page is out of range (e.g. 9999), deliver last page of results.
-            objects = paginator.page(paginator.num_pages)
-
-        context["leaves_paginated"] = objects
-        context["display_paginated_pages"] = paginator.num_pages > 1
 
         return context

@@ -6,6 +6,15 @@ from django.views.generic.list import ListView
 from employees.forms import EmployeeSearchForm
 from employees.models import Employee
 
+# from phaistos.commons.views import OurServerSideDatatableView
+# class EmployeeListDatatableView(OurServerSideDatatableView):
+#     # WONT USE IT FOR THE TIME
+#
+#     queryset = Employee.objects.filter(is_active=True)
+#
+#     columns = ['vat_number', 'registry_id', 'last_name', 'first_name', 'father_name', 'specialization__code',
+#                'current_unit__title', 'employee_type', 'date_of_birth', 'uuid']
+
 
 class EmployeeListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
 
@@ -57,6 +66,7 @@ class EmployeeListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
         
         context["employees_paginated"] = objects
         context["display_paginated_pages"] = paginator.num_pages > 1
+
         return context
 
 

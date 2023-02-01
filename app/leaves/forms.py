@@ -82,6 +82,18 @@ class LeaveForm(BSModalModelForm):
         if date_from and date_until and date_from > date_until:
             self.add_error('date_until', _('Η ημ/νία λήξης της άδειας είναι προγενέστερη της έναρξης'))
 
+        # https://github.com/dideher/phaistos/issues/24
+        conflicts = Leave.objects.filter(employee=self.employee,
+                                         is_deleted=False,
+                                         date_from__lte=date_until,
+                                         date_until__gte=date_from).exclude(pk=self.instance.pk)
+
+        if any(conflicts):
+            conflict: Leave = conflicts[0]
+            raise ValidationError(
+                _(f'Η άδεια που προσπαθείτε να καταχωρήσετε επικαλύπτεται με υπάρχουσα άδεια τύπου "{conflict.leave_type} από "{conflict.date_from}" μέχρι "{conflict.date_until}".'),
+                code='conflict')
+
         return cleaned_data
 
 

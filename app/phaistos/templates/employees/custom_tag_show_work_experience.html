@@ -1,6 +1,6 @@
 {% load django_bootstrap5 %}
 
-<table class="table table-sm table-hover">
+<table id="employee_work_exp_table" class="table table-sm table-hover">
     <thead class="thead-dark">
     <tr>
         <th scope="col">#</th>
@@ -31,5 +31,3 @@
     {% endfor %}
     </tbody>
 </table>
-
-{% bootstrap_pagination workexperiences parameter_name="wpage" extra=request.GET.urlencode size="sm" %}

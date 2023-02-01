@@ -1,10 +1,8 @@
 from django import template
-from django.template.defaultfilters import stringfilter
-from django.db.models.query import QuerySet
-from django.db.models import Sum
-from django.utils import timezone
 from django.core.paginator import Paginator
-from django.contrib import messages
+from django.db.models.query import QuerySet
+from django.utils import timezone
+
 from employees.models import Employee, WorkExperience
 from leaves.models import Leave
 from phaistos.commons import days360
@@ -33,13 +31,13 @@ def duration_string_from_days(value):
 @register.inclusion_tag('employees/custom_tag_show_leaves.html', takes_context=True)
 def show_leaves(context):
     employee: Employee = context.get('employee')
-    request = context.get('request')
     if employee is not None:
         leaves_list: QuerySet[Leave] = Leave.objects.filter(employee_id=employee, is_deleted=False).order_by('-date_from')
-        paginator = Paginator(leaves_list, 10)  # Show 25 contacts per page.
-        page = request.GET.get('lpage')
-        leaves = paginator.get_page(page)
-        return {'leaves': leaves}
+        # paginator = Paginator(leaves_list, 10)  # Show 25 contacts per page.
+        # page = request.GET.get('lpage')
+        # leaves = paginator.get_page(page)
+        # return {'leaves': leaves}
+        return {'leaves': leaves_list}
     else:
         return {'leaves': None}
 
@@ -50,10 +48,11 @@ def show_work_experience(context):
     request = context.get('request')
     if employee is not None:
         workexperiences_list: QuerySet[WorkExperience] = WorkExperience.objects.filter(employee_id=employee).order_by('-date_from')
-        paginator = Paginator(workexperiences_list, 5)  # Show 25 contacts per page.
-        page = request.GET.get('wpage')
-        workexperiences = paginator.get_page(page)
-        return {'workexperiences': workexperiences}
+        # paginator = Paginator(workexperiences_list, 5)  # Show 25 contacts per page.
+        # page = request.GET.get('wpage')
+        # workexperiences = paginator.get_page(page)
+        # return {'workexperiences': workexperiences}
+        return {'workexperiences': workexperiences_list}
     else:
         return {'workexperiences': None}
 

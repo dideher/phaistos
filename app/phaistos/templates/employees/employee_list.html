@@ -7,6 +7,7 @@
 {% endblock %}
 
 {% block content %}
+
 <div class="col-md-12 mx-auto">
     <div class="card shadow">
         
@@ -44,7 +45,7 @@
 
             <div class="row">
                 <div class="col">
-                    <table class="table table-sm table-hover">
+                    <table id="employee_list_table" class="table table-sm table-hover">
                         <thead class="table-light">
                             <tr>
                                 <th scope="col">ΑΜ</th>
@@ -76,7 +77,7 @@
                         </tbody>
                     </table>
                     {% if display_paginated_pages %}
-                        {% bootstrap_pagination employees_paginated extra=request.GET.urlencode size="sm" %}
+                       {% bootstrap_pagination employees_paginated extra=request.GET.urlencode size="sm" %}
                     {% endif %}
                 </div>
             </div>
@@ -90,9 +91,85 @@
 {% block bootstrap5_extra_script %}
 <script>
 $(document).ready(function($) {
+
     $(".clickable-table-row").click(function() {
         window.document.location = $(this).data("href");
     });
+
+<!--    var table = $('#employee_list_table').DataTable({-->
+<!--        pagingType: "simple_numbers",-->
+<!--        lengthChange: true,-->
+<!--        lengthMenu: [ 10, 20, 40, 80],-->
+<!--        paging: true,-->
+<!--        pageLength: 20,-->
+<!--        ordering: true,-->
+<!--        order: [[2, 'asc']],-->
+<!--        autoWidth: false-->
+<!--    });-->
+
+<!--    var table = $('#employee_list_table').DataTable({-->
+<!--        initComplete: function () {-->
+<!--            this.api()-->
+<!--                .columns()-->
+<!--                .every(function () {-->
+<!--                    var column = this;-->
+<!--                    var select = $('<select><option value=""></option></select>')-->
+<!--                        .appendTo($(column.footer()).empty())-->
+<!--                        .on('change', function () {-->
+<!--                            var val = $.fn.dataTable.util.escapeRegex($(this).val());-->
+
+<!--                            column.search(val ? val : '', false, true).draw();-->
+<!--                        });-->
+
+
+<!--                    column-->
+<!--                        .data()-->
+<!--                        .unique()-->
+<!--                        .sort()-->
+<!--                        .each(function (d, j) {-->
+<!--                            select.append('<option value="' + d + '">' + d + '</option>');-->
+<!--                        });-->
+
+<!--                });-->
+<!--        },-->
+<!--        serverSide: true,-->
+<!--        processing: true,-->
+<!--        deferRender: true,-->
+<!--        ajax: '{ url 'employees:employee-list-data' }',-->
+<!--        columnDefs: [ {-->
+<!--            targets: "dt_nosort",-->
+<!--            orderable: false-->
+<!--        }, {-->
+<!--            targets: "dt_nosearch",-->
+<!--            searchable: false-->
+<!--        }, {-->
+<!--            targets: 2,-->
+<!--            orderData: [2, 3]-->
+<!--        } ],-->
+<!--        search: {-->
+<!--            return: true-->
+<!--        },-->
+<!--        language: {-->
+<!--            url: 'https://cdn.datatables.net/plug-ins/1.13.1/i18n/el.json',-->
+<!--        },-->
+<!--        pagingType: "simple_numbers",-->
+<!--        lengthChange: true,-->
+<!--        lengthMenu: [ 10, 20, 40, 80],-->
+<!--        paging: true,-->
+<!--        pageLength: 20,-->
+<!--        ordering: true,-->
+<!--        order: [[2, 'asc']],-->
+
+<!--        "autoWidth": false-->
+<!--    });-->
+
+
+
+
+<!--    $('#employee_list_table tbody').on('click', 'tr', function () {-->
+<!--        var data = table.row(this).data();-->
+<!--        location.href = '{ url goto_target }/' + data[9];-->
+<!--    });-->
 });
 </script>
 
