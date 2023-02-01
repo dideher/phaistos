@@ -77,7 +77,7 @@
             </div>
 
             <div class="row">
-                {% if leaves_paginated|length == 0 %}
+                {% if leaves|length == 0 %}
                 <div class="col-md-8">
 
                     <div class="mt-3 alert alert-warning" role="alert">
@@ -85,64 +85,72 @@
                     </div>
                     {% else %}
                     <div class="col">
-                        <table class="table table-sm table-hover">
+                        <table id="employee_leave_list_table" class="table table-sm table-hover">
                             <thead class="thead-dark">
-                            <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">Κωδ.Άδ.</th>
-                                <th scope="col">Τύπος Άδειας</th>
-                                <th scope="col">Ημέρες</th>
-                                <th scope="col">Έναρξη</th>
-                                <th scope="col">Λήξη</th>
-                                <th scope="col">Σχολείο Οργανικής</th>
-                                <th scope="col">Σχόλιο</th>
-                            </tr>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Κωδ.Άδ.</th>
+                                    <th scope="col">Τύπος Άδειας</th>
+                                    <th scope="col">Ημέρες</th>
+                                    <th scope="col">Έναρξη</th>
+                                    <th scope="col">Λήξη</th>
+                                    <th scope="col">Σχολείο Οργανικής</th>
+                                    <th scope="col">Σχόλιο</th>
+                                    <th scope="col"></th>
+                                </tr>
                             </thead>
                             <tbody>
-                            {% for leave in leaves_paginated %}
-                            <tr>
-                                <td>
-                                    {% if perms.leaves.view_leave %}
-                                        <button id="view-leave-btn" data-form-url="{% url 'leaves:leave-detail' leave.id %}" class="view-leave btn btn-sm btn-primary" type="button" name="button">
-                                            <i class="bi-info-circle" aria-hidden="true"></i>&nbsp;{{ leave.id }}
+                                {% for leave in leaves %}
+                                <tr>
+                                    <td>
+                                        {% if perms.leaves.view_leave %}
+                                            <button id="view-leave-btn" data-form-url="{% url 'leaves:leave-detail' leave.id %}" class="view-leave btn btn-sm btn-primary" type="button" name="button">
+                                                <i class="bi-info-circle" aria-hidden="true"></i>&nbsp;{{ leave.id }}
+                                            </button>
+                                        {% else %}
+                                            {{ leave.id }}
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ leave.leave_type.legacy_code }}</td>
+                                    <td>{{ leave.leave_type.description }} </td>
+                                    <td>{{ leave.effective_number_of_days }}</td>
+                                    <td>{{ leave.date_from|date:"d-m-Y" }}</td>
+                                    <td>{{ leave.date_until|date:"d-m-Y" }}</td>
+                                    <td>{{ leave.current_unit }}</td>
+                                    <td>{{ leave.comment|truncatechars:20 }}</td>
+                                    <td>
+                                        {% if perms.leaves.change_leave %}
+                                        <button id="update-leave-button" data-form-url="{% url 'leaves:leave-update' leave.id %}" class="update-leave btn btn-sm btn-primary" type="button" name="button">
+                                           <i class="bi-pencil-square" aria-hidden="true"></i>&nbspΕ.
                                         </button>
-                                    {% else %}
-                                        {{ leave.id }}
-                                    {% endif %}
-                                </td>
-                                <td class="text-center"><code>{{ leave.leave_type.legacy_code }}</code></td>
-                                <td>{{ leave.leave_type.description }} </td>
-                                <td>{{ leave.effective_number_of_days }}</td>
-                                <td>{{ leave.date_from|date:"d-m-Y" }}</td>
-                                <td>{{ leave.date_until|date:"d-m-Y" }}</td>
-                                <td>&nbsp;</td>
-                                <td>{{ leave.comment|truncatechars:20 }}</td>
-                                <td>
-                                    {% if perms.leaves.change_leave %}
-                                    <button id="update-leave-button" data-form-url="{% url 'leaves:leave-update' leave.id %}" class="update-leave btn btn-sm btn-primary" type="button" name="button">
-                                       <i class="bi-pencil-square" aria-hidden="true"></i>&nbspΕ.
-                                    </button>
-                                    {% endif %}
+                                        {% endif %}
 
-                                    {% if perms.leaves.delete_leave %}
-                                    <button id="delete-leave-btn" data-form-url="{% url 'leaves:leave-delete' leave.id %}" class="delete-leave btn btn-sm btn-danger" type="button" name="button">
-                                       <i class="bi-trash" aria-hidden="true"></i>&nbspΔ.
-                                    </button>
-                                    {% endif %}
-                                </td>
-                            </tr>
-                            {% endfor %}
+                                        {% if perms.leaves.delete_leave %}
+                                        <button id="delete-leave-btn" data-form-url="{% url 'leaves:leave-delete' leave.id %}" class="delete-leave btn btn-sm btn-danger" type="button" name="button">
+                                           <i class="bi-trash" aria-hidden="true"></i>&nbspΔ.
+                                        </button>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
                             </tbody>
+                            <tfoot class="thead-dark">
+                                <tr>
+                                    <th scope="col"></th>
+                                    <th scope="col"></th>
+                                    <th scope="col"></th>
+                                    <th scope="col"></th>
+                                    <th scope="col"></th>
+                                    <th scope="col"></th>
+                                    <th scope="col"></th>
+                                    <th scope="col"></th>
+                                    <th scope="col"></th>
+                                </tr>
+                            </tfoot>
                         </table>
-
-                        {% if display_paginated_pages %}
-                        {% bootstrap_pagination leaves_paginated extra=request.GET.urlencode size="sm" %}
-                        {% endif %}
                         {% endif %}
                     </div>
                 </div>
-
-
 
             </div>
         </div>
@@ -155,6 +163,50 @@
     {% block bootstrap5_extra_script %}
     <script type="text/javascript">
         $(document).ready(function()  {
+
+            var table = $('#employee_leave_list_table').DataTable({
+                initComplete: function () {
+                    this.api()
+                        .columns()
+                        .every(function () {
+                            var column = this;
+
+                            if ( [1, 2, 3, 6].includes( this.index() ) ) {
+
+                                var select = $('<select><option value=""></option></select>')
+                                    .appendTo($(column.footer()).empty())
+                                    .on('change', function () {
+                                        var val = $.fn.dataTable.util.escapeRegex($(this).val());
+
+                                        column.search(val ? '^' + val + '$' : '', true, false).draw();
+                                    });
+
+
+                                column
+                                    .data()
+                                    .unique()
+                                    .sort()
+                                    .each(function (d, j) {
+                                        select.append('<option value="' + d + '">' + d + '</option>');
+                                    });
+
+                            }
+
+                        });
+                },
+                pagingType: "simple_numbers",
+                lengthChange: false,
+                lengthMenu: [ 10, 20, 40, 80],
+                paging: true,
+                pageLength: 10,
+                ordering: true,
+                order: [[2, 'asc']],
+                autoWidth: false,
+                language: {
+                    url: 'https://cdn.datatables.net/plug-ins/1.13.1/i18n/el.json',
+                }
+            });
+
             // delete leave
             $(".delete-leave").each(function () {
                 $(this).modalForm({formURL: $(this).data("form-url"), isDeleteForm: true});
