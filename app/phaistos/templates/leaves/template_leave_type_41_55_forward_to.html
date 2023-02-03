@@ -1,0 +1,289 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="{{charset}}">
+<style>
+    @font-face {
+        font-family: DejaVu-Sans;
+        font-size: 14pt;
+        {% comment %} src: url({% static 'main/fonts/Kerkis-Bold.ttf' %}); {% endcomment %}
+    }
+   
+    @page {
+        size: A4 portrait;
+        margin-left: 1.5cm;
+        margin-right: 1.5cm;
+        margin-top:1.5cm;
+        margin-bottom:1.5cm;
+      }
+
+      div.break {
+        page-break-before:always;
+      }
+
+      body {
+        font-size: 10pt;
+        font-family:DejaVu-Sans;
+        {% comment %} font-weight: bold; {% endcomment %}
+      }
+
+      .greek_flag_image {
+        height: 45px;
+        width: 45px;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        margin-bottom: 5px;
+       }            
+
+      .prometopida {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        font-family:DejaVu-Sans;
+        padding-bottom: 5px;
+      }
+      
+      #foreas {
+        text-align:center;
+        font-weight: bold;
+      }
+
+      .thin-dashed-line {
+        font-weight: normal;
+      }
+
+      #sender-info {
+        text-align:left;
+      }
+
+      #location-date-protocol {
+        text-align:left;
+        font-family: DejaVu-Sans;
+        padding-top: 25px;
+        padding-bottom: 25px;
+      }
+
+      #address-table {
+        font-weight: normal;
+        margin-left:auto;
+        margin-right:auto;
+        style="font-weight: normal;"
+      }
+      
+      #recepients {
+        text-align:left;
+        font-family: DejaVu-Sans;
+        padding-bottom: 50px;
+        font-weight: normal;
+      }
+
+      #decision {
+        text-align:left;
+        padding-top: 50px;
+        font-weight: bold;
+      }
+      h3 {
+        text-align:center;
+        font-family: DejaVu-Sans;
+        font-weight: bold;
+      }
+      
+       ol{
+        list-style-position: insdide;
+        padding-left: 2em;
+        text-align: justify;
+        text-justify: inter-word;
+        }
+
+       ol.l {
+          list-style-type: lower-greek;
+          list-style-position: insdide;
+          padding-left: 2em;
+          text-align: justify;
+          text-justify: inter-word;
+          }
+       
+        .flex-signature {
+          display: flex;
+          justify-content: space-between;
+          align-items: baseline;
+          text-align: center;
+          font-weight: bold;
+        }
+        
+        p {
+          text-align: justify;
+          text-justify: inter-word;
+        }
+
+     .data-table, .data-table th, .data-table td {
+          border: 1px solid black;
+          border-collapse: collapse;
+          padding-top: 2px;
+          padding-bottom: 2px;
+          padding-left: 2px;
+          padding-right: 2px;
+        }
+      </style>
+</head>
+
+<body>
+  {% for i in range %}
+  <div class="break">
+    <div class="prometopida">
+        <div id="foreas">
+            <img src={% static 'main/greek_flag_icon.png'%} class="greek_flag_image" class="center-flag" alt="Σημαία" alt="Τεστ">
+            ΕΛΛΗΝΙΚΗ ΔΗΜΟΚΡΑΤΙΑ <br>
+            ΥΠΟΥΡΓΕΙΟ ΠΑΙΔΕΙΑΣ & ΘΡΗΣΚΕΥΜΑΤΩΝ <br>
+            <div class="thin-dashed-line"> ----- </div>
+            ΠΕΡΙΦΕΡΕΙΑΚΗ ΔΙΕΥΘΥΝΣΗ Α/ΘΜΙΑΣ & <br>
+            Β/ΘΜΙΑΣ ΕΚΠΑΙΔΕΥΣΗΣ ΚΡΗΤΗΣ <br>
+            Δ/ΝΣΗ Β/ΘΜΙΑΣ ΕΚΠ/ΣΗΣ Ν. ΗΡΑΚΛΕΙΟΥ <br>
+            ΤΜΗΜΑ Γ' ΠΡΟΣΩΠΙΚΟΥ <br>
+            <div class="thin-dashed-line"> ----- </div>
+            <table id="address-table">
+              <tr>
+                <td style="text-align:right"> Ταχ. Δ/νση: </td>
+                <td style="text-align:left"> Μονοφατσίου 8 </td>
+              </tr>
+              <tr>
+                <td style="text-align:right"> T.K. - Πόλη: </td>
+                <td style="text-align:left"> 71201 Ηράκλειο </td>
+              </tr>
+              {% comment %} <tr> {% endcomment %}
+                {% comment %} <td style="text-align:right"> Ιστοσελίδα: </td> {% endcomment %}
+                {% comment %} <td style="text-align:left"> dide.ira.sch.gr </td> {% endcomment %}
+              {% comment %} </tr> {% endcomment %}
+              
+              <tr>
+                <td style="text-align:right"> Πληροφορίες: </td>
+                <td style="text-align:left"> Ανδρουλάκη Αικ. - Βιτσαξάκη Ε.</td>
+              </tr>
+              <tr>
+                <td style="text-align:right"> Τηλέφωνο: </td>
+                <td style="text-align:left"> 2810-333737 </td>
+              </tr>
+              <tr>
+                <td style="text-align:right"> E-mail: </td>
+                <td style="text-align:left"> adeies@dide.ira.sch.gr </td>
+              </tr>
+            </table>
+        </div>
+        <div>
+          {% comment %} Βαθμός Ασφαλείας: <br> {% endcomment %}
+          {% comment %} Βαθμός Προτερ.: <br> {% endcomment %}
+          {% comment %} Να διατηρηθεί μέχρι: <br> {% endcomment %}
+          <div id="location-date-protocol">
+            Ηράκλειο, {{leave.incoming_protocol_date}} <br>
+            Αρ. Πρωτ.: {{leave.incoming_protocol}}
+          </div>
+          <div id="decision">
+            <h2> ΑΠΟΦΑΣΗ </h2>
+          </div>
+          {% comment %} <div id="recepients"> {% endcomment %}
+            {% comment %} Προς: <br> {% endcomment %}
+            {% comment %} {% for r in recipients %} {% endcomment %}
+             {% comment %} {{forloop.counter }}. {{ r }} <br> {% endcomment %}
+            {% comment %} {% endfor %} {% endcomment %}
+          </div>
+        </div>
+    </div> 
+      
+    <h3> ΘΕΜΑ: «Χορήγηση αναρρωτικής άδειας σε εκπαιδευτικό λειτουργό» </h3>
+      Έχοντας υπόψη:
+    <ol>
+    {% comment %} <li> Τις διατάξεις : </li> {% endcomment %}
+        {% comment %} <ol class="l"> {% endcomment %}
+            {% comment %} <li> Του Ν. 4270/2014 (ΦΕΚ 143/Α/28-06-2014 «Αρχές δημοσιονομικής διαχείρισης και εποπτείας» (Ενσωμάτωση της οδηγίας 2011/85/ΕΕ - Δημόσιο λογιστικό και άλλες διατάξεις όπως τροποποιήθηκε και ισχύει). </li> {% endcomment %}
+            {% comment %} <li> Του π.δ. 80/05-08-2016 (ΦΕΚ 145/Α΄) περί αναλήψεως υποχρεώσεων από τους Διατάκτες. </li> {% endcomment %}
+            {% comment %} <li> Του άρθρου 31 παρ. 1του Ν. 4325/2015 (ΦΕΚ 47/Α΄) «Εκδημοκρατισμός της Διοίκησης - Καταπολέμηση Γραφειοκρατίας και Ηλεκτρονική Διακυβέρνηση. Αποκατάσταση αδικιών και άλλες διατάξεις».</li> {% endcomment %}
+        {% comment %} </ol> {% endcomment %}
+    {% comment %} </li> {% endcomment %}
+    <li> Τις διατάξεις των άρθρων 54, 55 και 56 του Ν.3528/2007 (ΦΕΚ 26/09-02-2007 τ.Α΄) «Κύρωση του Κώδικα Κατάστασης Δημοσίων Πολιτικών Διοικητικών Υπαλλήλων και Υπαλλήλων Ν.Π.Δ.Δ.» όπως αντικαταστάθηκε από το άρθρο 2, 3 του Ν.4210/2013 (ΦΕΚ 254/21-11-2013 τ.Α’) «Ρυθμίσεις Υπουργείου Διοικητικής Μεταρρύθμισης και Ηλεκτρονικής Διακυβέρνησης και άλλες διατάξεις»</li>
+    <li> Την με αρίθμ.Φ.351.5/43/67822/Δ1/5-5-2014 του ΥΠΑΙΘ «Άδειες εκπαιδευτικών Πρωτοβάθμιας και Δευτεροβάθμιας Εκπαίδευσης» </li>
+    <li> Την με αριθμ. Φ.353.1/26/153324/Δ1/25-9-2014 Υ.Α (ΦΕΚ αρ.2648 τ.Β’/7-10-2014) «Τροποποίηση της υπ' αριθμ. Φ.353.1/324/105657/Δ1/8−10−2002 απόφασης: Καθορισμός των ειδικότερων καθηκόντων και αρμοδιοτήτων των προϊσταμένων των περιφερειακών υπηρεσιών πρωτοβάθμιας και δευτεροβάθμιας εκπαίδευσης, των διευθυντών και υποδιευθυντών σχολικών μονάδων και ΣΕΚ και των συλλόγων διδασκόντων». </li>
+    <li> Τις διατάξεις του άρθ.6 της Κ.Υ.Α (ΦΕΚ Αρ.6273/τ.Β’/28-12-2021) «Καθήκοντα και αρμοδιότητες Διευθυντών Εκπαίδευσης». </li>
+    <li> Την με Αρ. Πρωτ: {{leave.health_committee_protocol}} Γνωμ. της Α/θμιας Υγειονομικής Επιτροπής Περιφερειακής Ενότητας Ηρακλείου που γνωματεύει ότι 
+      {% if employee.is_man %} ο {% else %} η {% endif %} <b>{{employee.last_name}} {{employee.first_name}}</b> του <b>{{geniki_father_name}} </b>
+      εκπαιδευτικός κλάδου {{employee.specialization }} του {{employee.current_unit }} έχει ανάγκη αναρρωτικής άδειας <b> {{leave_duration_verbal}} ({{leave.effective_number_of_days}}) 
+      {% if leave.effective_number_of_days == 1 %} ημέρας{% else %} ημερών{% endif %}</b>, από <b>{{leave.date_from}}</b> έως και <b>{{leave.date_until}}</b>.</li>
+    </ol> 
+    <h3> Αποφασίζουμε </h3>
+    <p>
+      Χορηγούμε {% if employee.is_man %} στον {% else %} στην {% endif %} <b>{{employee.last_name}} {{employee.first_name}}</b> του <b>{{geniki_father_name}}</b>, 
+      εκπαιδευτικό κλάδου {{employee.specialization }} του <b>{{employee.current_unit }}</b>, της Δ/νσης Δ/θμιας Εκπ/σης Ηρακλείου, αναρρωτική άδεια <b>{{leave_duration_verbal}} ({{leave.effective_number_of_days}}) 
+      {% if leave.effective_number_of_days == 1 %} ημέρας{% else %} ημερών{% endif %}</b> με αποδοχές, από <b>{{leave.date_from}}</b> έως και <b>{{leave.date_until}}</b>.</li>
+    </p>
+    <br>
+    <div class="flex-signature">
+      {% if i == 0 %}
+        <div>  
+        <h4 style="font-weight:normal;text-align:left;"> ΚΟΙΝΟΠΟΙΗΣΗ </h4>
+        <ol >
+          <li style="font-weight:normal;"> Ενδιαφερόμενος </li>
+          <li style="font-weight:normal;"> Α/Φ ΔΔΕ Ηρακλείου </li>
+          <li style="font-weight:normal;"> Σχολείο που υπηρετεί </li>
+        </ol>
+        </div>
+      {% else %}
+        <div>  
+          <p style="font-weight:bold;text-align:center;">
+            ΠΙΣΤΟ ΑΝΤΙΓΡΑΦΟ<br>
+            Η ΑΝ. ΠΡΟΪΣΤΑΜΕΝΗ ΤΟΥ ΤΜΗΜΑΤΟΣ Γ΄<br>
+            ΠΡΟΣΩΠΙΚΟΥ<br>
+            <br>
+            <br>
+            <br>
+            <br>
+            ΕΛΕΝΗ ΚΑΜΠΙΤΑΚΗ
+            </p>
+        </div>
+      {% endif %}
+      <div> 
+        Ο ΔΙΕΥΘΥΝΤΗΣ  <br>
+        ΤΗΣ Δ/ΝΣΗΣ Δ/ΘΜΙΑΣ ΕΚΠ/ΣΗΣ ΗΡΑΚΛΕΙΟΥ <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        ΙΩΑΝΝΗΣ ΚΑΡΑΓΙΑΝΝΙΔΗΣ 
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+  </body>
+</html> 
+
+    {% comment %} <table class="data-table">
+      <legend style="text-align: center; font-weight: bold;"> Δεδομένα </legend>
+      <thead>
+          <tr>
+              <th scope="col"> Ημερομηνία </th>
+              <th scope="col"> Περιοχή </th>                
+              <th scope="col"> Αντιπρόσωπος </th>      
+              <th scope="col"> Προϊόν </th>
+              <th scope="col"> Μονάδες </th>
+              <th scope="col"> Κόστος Μονάδας </th>
+              <th scope="col"> Συνολικό Κόστος </th>
+          </tr>
+      </thead>
+      <tbody>
+          {% for d in data %}
+              <tr>
+                  <td> {{ d.1 }} </td>
+                  <td> {{ d.2 }} </td>
+                  <td> {{ d.3 }} </td>
+                  <td style="text-align: center;" > {{ d.4 }} </td> 
+                  <td style="text-align: center;"> {{ d.5 }} </td> 
+                  <td style="text-align: center;"> {{ d.6 }} </td> 
+                  <td style="text-align: center;"> {{ d.7 }} </td> 
+              </tr>
+          {% endfor %}
+      </tbody>
+  </table> {% endcomment %}
+  
+
+
