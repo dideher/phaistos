@@ -28,7 +28,7 @@ tens_above_twenty_numwords = [  "είκοσι",
                                 "ογδόντα", 
                                 "ενενήντα"]
 
-hundreds_numwords = [ "εκατό",
+hundreds_numwords = [ "εκατόν",
                         "διακόσιες",
                         "τριακόσιες",
                         "τετρακόσιες",  
