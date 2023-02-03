@@ -125,14 +125,18 @@
                                         </button>
                                         {% endif %}
 
-                                        {% if perms.leaves.delete_leave %}
-                                        <button id="delete-leave-btn" data-form-url="{% url 'leaves:leave-delete' leave.id %}" class="delete-leave btn btn-sm btn-danger" type="button" name="button">
-                                           <i class="bi-trash" aria-hidden="true"></i>&nbspΔ.
-                                        </button>
-                                        {% endif %}
-                                    </td>
-                                </tr>
-                                {% endfor %}
+                                   {% if perms.leaves.delete_leave %}
+                                    <button id="delete-leave-btn" data-form-url="{% url 'leaves:leave-delete' leave.id %}" class="delete-leave btn btn-sm btn-danger" type="button" name="button">
+                                       <i class="bi-trash" aria-hidden="true"></i>&nbspΔ.
+                                    </button>
+                                    {% endif %}
+
+                                    <a id="print-leave-btn" href="{% url 'leaves:leave-print' leave.id  employee.id %}" class="print-leave btn btn-sm btn-warning" type="button" name="button">
+                                        <i class="bi bi-filetype-pdf" aria-hidden="true"></i>&nbspΕκτ.
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
                             </tbody>
                             <tfoot class="thead-dark">
                                 <tr>
