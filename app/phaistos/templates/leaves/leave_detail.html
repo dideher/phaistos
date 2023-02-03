@@ -34,6 +34,23 @@
         </div>
         <div class="row">
             <div class="col">
+                <label class="col-sm-2 col-form-label">Αριθμός Εισερχόμενου Πρωτοκόλλου</label>
+                {% if leave.incoming_protocol %}
+                {{ leave.incoming_protocol }}
+                {% endif %}
+                {% if leave.incoming_protocol_date %}
+                /{{ leave.incoming_protocol_date|date:"d-m-Y" }}
+                {% endif %}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <label  class="col-sm-2 col-form-label">Πρωτόκολλο Γνωμάτευσης Υγ. Επιτροπής</label>
+                {{ leave.health_committee_protocol }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
                 <label for="staticEmail" class="col-sm-2 col-form-label">Σχόλια Άδειας</label>
                 {{ leave.comment }}
             </div>

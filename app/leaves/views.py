@@ -144,6 +144,9 @@ class LeaveSearchListView(LoginRequiredMixin, PermissionRequiredMixin, Exportabl
         'Ημέρες',
         'Έναρξη',
         'Λήξη',
+        'Αρ. Πρωτ.',
+        'Ημ/νια Πρωτ.'
+        'Πρω. Γν/σης Υγ. Επιτρ.'
         'Σχόλια',
     ]
     export_fields = [
@@ -158,6 +161,9 @@ class LeaveSearchListView(LoginRequiredMixin, PermissionRequiredMixin, Exportabl
         'effective_number_of_days',
         'date_from',
         'date_until',
+        'incoming_protocol',
+        'incoming_protocol_date',
+        'health_committee_protocol',
         'comment'
 
     ]

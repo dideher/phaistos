@@ -12,6 +12,7 @@
         </button>
     </div>
     <div class="modal-body">
+
         <div class="container-fluid">
             {% if form.non_field_errors %}
             <div class="row">
@@ -35,12 +36,60 @@
             </div>
             <div class="row">
                 <div class="col">
+                    <p></p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
                     {% bootstrap_field form.number_of_days wrapper_class='invalid' placeholder='0' show_label=True %}
                 </div>
                 <div class="col">
                     {% bootstrap_field form.effective_number_of_days wrapper_class='invalid' placeholder='0' show_label=True %}
                 </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <p></p>
+                </div>
+            </div>
 
+            <div class="row">
+
+                <div class="col-6">
+                    <div class="row">
+                        <div class="col">
+                            <p>
+                                Αριθμός Εισερχόμενου Πρωτοκόλλου
+                            </p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-5">
+                            {% bootstrap_field form.incoming_protocol wrapper_class='invalid' placeholder='' show_help=False show_label=False %}
+                        </div>
+                        <div class="col-6">
+                            {% bootstrap_field form.incoming_protocol_date wrapper_class='invalid' placeholder='ηη/μμ/εεεε' show_help=False show_label=False %}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <p class="form-text">
+                                Καταχωρίστε τον αριθμό και την ημ/νια του εισερχόμενου πρωτοκόλλου
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-6">
+                    {% bootstrap_field form.health_committee_protocol wrapper_class='invalid' placeholder='' show_help=True show_label=True %}
+                </div>
+
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <p></p>
+                </div>
             </div>
             <div class="row">
                 <div class="col">
