@@ -60,6 +60,20 @@ class Leave(models.Model):
     created_on = models.DateTimeField(db_column="CREATED_ON", null=False, blank=False, default=timezone.now)
     updated_on = models.DateTimeField(db_column="UPDATED_ON", null=True, blank=True)
 
+    health_committee_protocol = models.CharField(db_column="HEALTH_COMMITTEE_PROTOCOL", max_length=128, blank=True,
+                                                 verbose_name="Πρωτόκολλο Γνωμάτευσης Υγ. Επιτροπής",
+                                                 default='',
+                                                 help_text="Καταχωρίστε το πρωτόκολλο της γνωμάτευσης της Α/θμιας "
+                                                           "Υγειονομικής Επιτροπής")
+
+    incoming_protocol = models.CharField(db_column="INCOMING_PROTOCOL", max_length=64, blank=True, default='',
+                                         verbose_name="Αριθμός Εισερχόμενου Πρωτοκόλλου",
+                                         help_text="Καταχωρίστε τον αριθμό του εισερχόμενου πρωτοκόλλου")
+
+    incoming_protocol_date = models.DateField(db_column="INCOMING_PROTOCOL_DATE", null=True, default=None, blank=True,
+                                              verbose_name="Ημ/νια Εισερχόμενου Πρωτοκόλλου",
+                                              help_text="Καταχωρίστε την ημ/νία του εισερχόμενου πρωτοκόλλου")
+
     class Meta:
         indexes = [
             models.Index(fields=['employee', 'leave_type', ]),
