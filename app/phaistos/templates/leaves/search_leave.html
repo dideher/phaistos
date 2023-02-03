@@ -106,6 +106,8 @@
                             <tr>
                                 <th scope="col">#</th>
                                 <th scope="col">Τύπος Άδειας</th>
+                                <th scope="col">ΑΜ</th>
+                                <th scope="col">ΑΦΜ</th>
                                 <th scope="col">Ονοματεπώνυμο</th>
                                 <th scope="col">Ειδικότητα</th>
                                 <th scope="col">Τύπος</th>
@@ -128,6 +130,12 @@
                                     {% endif %}
                                 </td>
                                 <td>(#{{ leave.leave_type.legacy_code }}) - {{ leave.leave_type.description }} </td>
+                                <td>
+                                    {{ leave.employee.registry_id|default:"" }}
+                                </td>
+                                <td>
+                                    {{ leave.employee.vat_number|default:"" }}
+                                </td>
                                 <td class="text-left">
                                     {% if perms.leaves.view_leave %}
                                     <a href="{% url 'leaves:employee-leaves-list' leave.employee.uuid %}">
