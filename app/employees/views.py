@@ -28,11 +28,23 @@ class EmployeeListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
         form = self.form_class(self.request.GET)
         if form.is_valid():
             filters = {}
-            if form.cleaned_data['last_name']:
-                filters['last_name__contains'] = form.cleaned_data['last_name'].upper()
 
-            if form.cleaned_data['first_name']:
-                filters['first_name__contains'] = form.cleaned_data['first_name'].upper()
+            last_name = form.cleaned_data['last_name']
+            first_name = form.cleaned_data['first_name']
+            vat_number = form.cleaned_data['vat_number']
+            registry_id = form.cleaned_data['registration_id']
+
+            if last_name and len(last_name) > 0:
+                filters['last_name__contains'] = last_name.upper()
+
+            if first_name and len(first_name) > 0:
+                filters['first_name__contains'] = first_name.upper()
+
+            if vat_number and len(vat_number) > 0:
+                filters['vat_number__contains'] = vat_number
+
+            if registry_id and len(registry_id) > 0:
+                filters['registry_id__contains'] = registry_id
 
             # if form.cleaned_data['is_active'] is not None:
             #     filters['is_active'] = form.cleaned_data['is_active']
