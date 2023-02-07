@@ -2,23 +2,30 @@ FROM python:3.9-slim-bullseye AS compile-image
 ARG ENVIRONMENT=development
 
 ## update debian and install build deps
-RUN apt-get update && apt-get install -y \
-        gcc \
-        libc-dev \
-        python3-dev\
-        default-libmysqlclient-dev \
-        build-essential 
-        #default-mysql-client 
-        # libmysqlclient-dev \
-        # linux-headers \
-        #libjpeg-dev \
-        # zlib1g-dev \
-        # 
-        # libmariadb3 \
-        # libmariadb-dev
-        #mariadb-client
-        #postgresql-dev
+#RUN apt-get update && apt-get install -y \
+#        gcc \
+#        libc-dev \
+#        python3-dev\
+#        default-libmysqlclient-dev \
+#        build-essential
+#        #default-mysql-client
+#        # libmysqlclient-dev \
+#        # linux-headers \
+#        #libjpeg-dev \
+#        # zlib1g-dev \
+#        #
+#        # libmariadb3 \
+#        # libmariadb-dev
+#        #mariadb-client
+#        #postgresql-dev
 
+RUN set -eux; \
+	apt-get update; \
+	apt-get install -y --no-install-recommends \
+		build-essential \
+		default-libmysqlclient-dev \
+	; \
+	rm -rf /var/lib/apt/lists/*
 
 ## virtualenv
 ENV VIRTUAL_ENV=/opt/venv
@@ -44,22 +51,19 @@ ARG ENVIRONMENT=development
 # partially inspired from https://github.com/tiangolo/meinheld-gunicorn-docker
 
 ## update alpine and install runtime deps
-RUN apt-get update && apt-get install -y \
-        # libjpeg-turbo \
-        # zlib \
-        # libjpeg \
+RUN set -eux; \
+	apt-get update; \
+	apt-get install -y --no-install-recommends \
         openssl \
         ca-certificates \
-        #mariadb-connector-c \
-        libmariadb3 \
-        libmariadb-dev\
+        default-mysql-client \
         nginx \
-        python3-pip \
-        python3-cffi \
-        python3-brotli \
         libpango-1.0-0 \
         libpangoft2-1.0-0 \
-        vim
+        vim \
+	; \
+	rm -rf /var/lib/apt/lists/*
+
 
 ## copy Python dependencies from build image
 COPY --from=compile-image /opt/venv /opt/venv
