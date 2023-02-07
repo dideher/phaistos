@@ -339,7 +339,7 @@ class LeavePrintDecisionToPdfView(LoginRequiredMixin, View):
         logging.getLogger('weasyprint').setLevel(logging.ERROR)
         
         content_string = render_to_string(template_path, context)#.encode('iso-8859-7')
-       
+        print()
         # How to locate the Greek crest image and embed it in the pdf file:
         # In this view function I provide Weasyprint with the base URI 
         # in the form "http://<ip_address:port>/"
@@ -359,4 +359,4 @@ class LeavePrintDecisionToPdfView(LoginRequiredMixin, View):
         base_url=request.build_absolute_uri('/')
         HTML(string=content_string, base_url=base_url).write_pdf(buffer)
         buffer.seek(0)
-        return  FileResponse(buffer, as_attachment=True, filename='Report.pdf')
+        return  FileResponse(buffer, as_attachment=True, filename=f'{employee.last_name}_{employee.first_name}.pdf')
