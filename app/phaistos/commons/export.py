@@ -2,11 +2,11 @@
 
 import csv
 import openpyxl
-from openpyxl.writer.excel import save_virtual_workbook
+from django.core.files.temp import NamedTemporaryFile
 
 from operator import attrgetter, itemgetter, methodcaller
 from django.shortcuts import redirect
-from django.http import HttpResponse, HttpResponseBadRequest
+from django.http import HttpResponse, FileResponse, HttpResponseBadRequest
 from django.utils.encoding import force_str
 
 from django.urls import reverse, re_path
@@ -97,11 +97,12 @@ class ExportResponseHelper(object):
         # for col_num, width in enumerate(col_width_list):
         #     ws.col(col_num).width = col_width_list[col_num]
 
-        response = HttpResponse(content=save_virtual_workbook(workbook=wb),
-                                content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-        response['Content-Disposition'] = ('attachment; '
-                                           'filename="{}.xls"'.format(self.filename))
-        return response
+        tmp_file = NamedTemporaryFile()
+        wb.save(tmp_file.name)
+        tmp_file.seek(0)
+
+        return FileResponse(tmp_file, as_attachment=True, filename=f"{self.filename}.xls")
+
 
     def export_txt(self, **kwargs):
         response = HttpResponse(content_type='text/plain')
