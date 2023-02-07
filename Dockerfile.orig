@@ -1,13 +1,22 @@
-FROM python:3.9-slim-bullseye AS compile-image
+FROM python:3.9-alpine AS compile-image
 ARG ENVIRONMENT=development
 
-## update debian and install build deps
-RUN apt-get update && apt-get install -y \
+## update alpine and install build deps
+RUN set -x \
+    apk update \
+    && apk add --no-cache \
         gcc \
         libc-dev \
-        # linux-headers \
-        #libjpeg-dev \
-        zlib1g-dev 
+        linux-headers \
+        jpeg-dev \
+        zlib-dev \
+        libjpeg  \
+        mariadb-dev \
+	musl-dev \
+	libffi-dev \
+	cairo-dev \
+	pango-dev \
+	gdk-pixbuf-dev
         #mariadb-client
         #postgresql-dev
 
@@ -18,7 +27,8 @@ RUN python3 -m venv $VIRTUAL_ENV
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
 ## install requirements
-RUN pip install --upgrade pip wheel pip-tools
+RUN set -x \
+    && pip install --upgrade pip wheel pip-tools
 
 COPY requirements.txt ./requirements.in
 
@@ -26,31 +36,28 @@ COPY requirements.txt ./requirements.in
 RUN echo "gunicorn" >> /requirements.in
 RUN echo "mysqlclient" >> /requirements.in
 
-RUN pip-compile ./requirements.in > ./requirements.txt 
-RUN pip-sync 
-RUN pip install -r ./requirements.txt
+RUN set -x \
+    && pip-compile ./requirements.in > ./requirements.txt \
+    && pip-sync \
+    && pip install -r ./requirements.txt
 
-FROM python:3.9-slim-bullseye AS runtime-image
+
+FROM python:3.9-alpine AS runtime-image
 ARG ENVIRONMENT=development
 
 # partially inspired from https://github.com/tiangolo/meinheld-gunicorn-docker
 
 ## update alpine and install runtime deps
-RUN apt-get update && apt-get install -y \
-        # libjpeg-turbo \
-        # zlib \
-        # libjpeg \
-        # openssl \
+RUN set -x \
+    apk update \
+    && apk add --virtual \
+        libjpeg-turbo \
+        zlib \
+        libjpeg \
+        openssl \
         ca-certificates \
-        #mariadb-connector-c \
-        libmariadb3 \
-        libmariadb-dev\
+        mariadb-connector-c \
         nginx \
-        python3-pip \
-        python3-cffi \
-        python3-brotli \
-        libpango-1.0-0 \
-        libpangoft2-1.0-0 \
         vim
 
 ## copy Python dependencies from build image
