@@ -5,9 +5,17 @@ ARG ENVIRONMENT=development
 RUN apt-get update && apt-get install -y \
         gcc \
         libc-dev \
+        python3-dev\
+        default-libmysqlclient-dev \
+        build-essential 
+        #default-mysql-client 
+        # libmysqlclient-dev \
         # linux-headers \
         #libjpeg-dev \
-        zlib1g-dev 
+        # zlib1g-dev \
+        # 
+        # libmariadb3 \
+        # libmariadb-dev
         #mariadb-client
         #postgresql-dev
 
@@ -26,9 +34,9 @@ COPY requirements.txt ./requirements.in
 RUN echo "gunicorn" >> /requirements.in
 RUN echo "mysqlclient" >> /requirements.in
 
-RUN pip-compile ./requirements.in > ./requirements.txt 
-RUN pip-sync 
-RUN pip install -r ./requirements.txt
+RUN pip-compile ./requirements.in > ./requirements.txt  &&\
+    pip-sync &&\
+    pip install -r ./requirements.txt
 
 FROM python:3.9-slim-bullseye AS runtime-image
 ARG ENVIRONMENT=development
@@ -40,7 +48,7 @@ RUN apt-get update && apt-get install -y \
         # libjpeg-turbo \
         # zlib \
         # libjpeg \
-        # openssl \
+        openssl \
         ca-certificates \
         #mariadb-connector-c \
         libmariadb3 \
