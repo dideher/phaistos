@@ -1,23 +1,6 @@
 FROM python:3.9-slim-bullseye AS compile-image
 ARG ENVIRONMENT=development
-
-## update debian and install build deps
-#RUN apt-get update && apt-get install -y \
-#        gcc \
-#        libc-dev \
-#        python3-dev\
-#        default-libmysqlclient-dev \
-#        build-essential
-#        #default-mysql-client
-#        # libmysqlclient-dev \
-#        # linux-headers \
-#        #libjpeg-dev \
-#        # zlib1g-dev \
-#        #
-#        # libmariadb3 \
-#        # libmariadb-dev
-#        #mariadb-client
-#        #postgresql-dev
+ARG DEBIAN_FRONTEND=noninteractive
 
 RUN set -eux; \
 	apt-get update; \
@@ -69,7 +52,7 @@ RUN set -eux; \
 COPY --from=compile-image /opt/venv /opt/venv
 
 ## prepare nginx
-COPY nginx.conf /etc/nginx/http.d/default.conf
+COPY nginx.conf /etc/nginx/sites-available/default
 RUN ln -sf /dev/stdout /var/log/nginx/access.log \
     && ln -sf /dev/stderr /var/log/nginx/error.log
 
