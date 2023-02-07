@@ -1,20 +1,14 @@
-FROM python:3.9-alpine AS compile-image
+FROM python:3.9-slim-bullseye AS compile-image
 ARG ENVIRONMENT=development
+ARG DEBIAN_FRONTEND=noninteractive
 
-## update alpine and install build deps
-RUN set -x \
-    apk update \
-    && apk add --no-cache \
-        gcc \
-        libc-dev \
-        linux-headers \
-        jpeg-dev \
-        zlib-dev \
-        libjpeg  \
-        mariadb-dev
-        #mariadb-client
-        #postgresql-dev
-
+RUN set -eux; \
+	apt-get update; \
+	apt-get install -y --no-install-recommends \
+		build-essential \
+		default-libmysqlclient-dev \
+	; \
+	rm -rf /var/lib/apt/lists/*
 
 ## virtualenv
 ENV VIRTUAL_ENV=/opt/venv
@@ -22,8 +16,7 @@ RUN python3 -m venv $VIRTUAL_ENV
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
 ## install requirements
-RUN set -x \
-    && pip install --upgrade pip wheel pip-tools
+RUN pip install --upgrade pip wheel pip-tools
 
 COPY requirements.txt ./requirements.in
 
@@ -31,35 +24,35 @@ COPY requirements.txt ./requirements.in
 RUN echo "gunicorn" >> /requirements.in
 RUN echo "mysqlclient" >> /requirements.in
 
-RUN set -x \
-    && pip-compile ./requirements.in > ./requirements.txt \
-    && pip-sync \
-    && pip install -r ./requirements.txt
+RUN pip-compile ./requirements.in > ./requirements.txt  &&\
+    pip-sync &&\
+    pip install -r ./requirements.txt
 
-
-FROM python:3.9-alpine AS runtime-image
+FROM python:3.9-slim-bullseye AS runtime-image
 ARG ENVIRONMENT=development
 
 # partially inspired from https://github.com/tiangolo/meinheld-gunicorn-docker
 
 ## update alpine and install runtime deps
-RUN set -x \
-    apk update \
-    && apk add --virtual \
-        libjpeg-turbo \
-        zlib \
-        libjpeg \
+RUN set -eux; \
+	apt-get update; \
+	apt-get install -y --no-install-recommends \
         openssl \
         ca-certificates \
-        mariadb-connector-c \
+        default-mysql-client \
         nginx \
-        vim
+        libpango-1.0-0 \
+        libpangoft2-1.0-0 \
+        vim \
+	; \
+	rm -rf /var/lib/apt/lists/*
+
 
 ## copy Python dependencies from build image
 COPY --from=compile-image /opt/venv /opt/venv
 
 ## prepare nginx
-COPY nginx.conf /etc/nginx/http.d/default.conf
+COPY nginx.conf /etc/nginx/sites-available/default
 RUN ln -sf /dev/stdout /var/log/nginx/access.log \
     && ln -sf /dev/stderr /var/log/nginx/error.log
 
