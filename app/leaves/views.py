@@ -15,6 +15,7 @@ from .utils import compute_leaves_real_duration, get_regular_leaves_for_employee
 from django.views.generic import View, ListView
 # gstam
 import os
+import io
 from phaistos.utils import convert_duration_to_words, first_name_to_geniki
 from phaistos.settings.common import BASE_DIR
 from django.template.loader import render_to_string
@@ -317,6 +318,7 @@ class EmployeeLeavesListView(LoginRequiredMixin, PermissionRequiredMixin, ListVi
 class LeavePrintDecisionToPdfView(LoginRequiredMixin, View):
 
     def get(self, request, *args, **kwargs):
+        buffer = io.BytesIO()
         # Get data
         employee = Employee.objects.get(pk = self.kwargs['employee_pk'])
         leave = Leave.objects.get(pk = self.kwargs['pk'])
@@ -355,5 +357,6 @@ class LeavePrintDecisionToPdfView(LoginRequiredMixin, View):
         # so, in the end the file path is 
         # /home/gstam/src/phaistos/phaistos/app/static_files/main/greek_flag_icon.png'
         base_url=request.build_absolute_uri('/')
-        HTML(string=content_string, base_url=base_url).write_pdf(target='/tmp/leave.pdf')
-        return  FileResponse(open('/tmp/leave.pdf', 'rb'), as_attachment=True, filename='Report.pdf')
+        HTML(string=content_string, base_url=base_url).write_pdf(buffer)
+        buffer.seek(0)
+        return  FileResponse(buffer, as_attachment=True, filename='Report.pdf')
