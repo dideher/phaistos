@@ -117,7 +117,7 @@
                                     <td>{{ leave.date_from|date:"d-m-Y" }}</td>
                                     <td>{{ leave.date_until|date:"d-m-Y" }}</td>
                                     <td>{{ leave.current_unit }}</td>
-                                    <td>{{ leave.comment|truncatechars:20 }}</td>
+                                    <td>{{ leave.comment|default:""|truncatechars:20 }}</td>
                                     <td>
                                         {% if perms.leaves.change_leave %}
                                         <button id="update-leave-button" data-form-url="{% url 'leaves:leave-update' leave.id %}" class="update-leave btn btn-sm btn-primary" type="button" name="button">
