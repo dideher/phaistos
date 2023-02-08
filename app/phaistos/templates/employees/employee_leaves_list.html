@@ -170,6 +170,8 @@
     <script type="text/javascript">
         $(document).ready(function()  {
 
+            $.fn.dataTable.moment( 'DD-MM-YYYY' );
+
             var table = $('#employee_leave_list_table').DataTable({
                 initComplete: function () {
                     this.api()
@@ -206,7 +208,7 @@
                 paging: true,
                 pageLength: 10,
                 ordering: true,
-                order: [[2, 'asc']],
+                order: [[4, 'desc']],
                 autoWidth: false,
                 language: {
                     url: 'https://cdn.datatables.net/plug-ins/1.13.1/i18n/el.json',
