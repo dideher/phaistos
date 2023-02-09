@@ -115,7 +115,6 @@ LOGOUT_REDIRECT_URL = "/"
 STATIC_URL = 'static/'
 MEDIA_URL = 'media/'
 STATIC_ROOT = os.path.join(BASE_DIR, "..", "static_files")
-print(STATIC_ROOT)
 
 AUTH_USER_MODEL = "users.CustomUser"
 
