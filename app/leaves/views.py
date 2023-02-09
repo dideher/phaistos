@@ -18,6 +18,7 @@ import os
 import io
 from phaistos.utils import convert_duration_to_words, first_name_to_geniki
 from phaistos.settings.common import BASE_DIR
+from phaistos.settings.production import STATIC_ROOT
 from django.template.loader import render_to_string
 from weasyprint import HTML
 import logging
@@ -356,7 +357,7 @@ class LeavePrintDecisionToPdfView(LoginRequiredMixin, View):
         # e.g. in our case STATIC_ROOT = '/home/gstam/src/phaistos/phaistos/app/static_files/'
         # so, in the end the file path is 
         # /home/gstam/src/phaistos/phaistos/app/static_files/main/greek_flag_icon.png'
-        base_url=request.build_absolute_uri('/')
+        base_url= STATIC_ROOT # os.path.join(BASE_DIR, "..", "static_files") #request.build_absolute_uri('/')
         HTML(string=content_string, base_url=base_url).write_pdf(buffer)
         buffer.seek(0)
         return  FileResponse(buffer, as_attachment=True, filename=f'{employee.last_name}_{employee.first_name}.pdf')
