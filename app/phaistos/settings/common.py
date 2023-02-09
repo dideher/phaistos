@@ -62,6 +62,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'phaistos.commons.context_processors.static_root'
             ],
         },
     },
@@ -113,7 +114,7 @@ LOGOUT_REDIRECT_URL = "/"
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
 STATIC_URL = 'static/'
-# STATIC_ROOT = '/home/gstam/src/phaistos/phaistos/app/static_files/'
+#STATIC_ROOT = '/home/gstam/src/phaistos/phaistos/app/static_files/'
 MEDIA_URL = 'media/'
 
 AUTH_USER_MODEL = "users.CustomUser"
