@@ -3,6 +3,10 @@
 {% load django_bootstrap5 %}
 
 {% block bootstrap5_extra_head %}
+
+<p>
+    {{ STATIC_ROOT }}/main/greek_flag_icon.png
+</p>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 <script src="{% static 'js/jquery.bootstrap.modal.forms.js' %}"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
