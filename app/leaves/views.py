@@ -17,8 +17,7 @@ from django.views.generic import View, ListView
 import os
 import io
 from phaistos.utils import convert_duration_to_words, first_name_to_geniki
-from phaistos.settings.common import BASE_DIR
-from phaistos.settings.common import STATIC_ROOT
+from phaistos.settings.common import BASE_DIR, STATIC_ROOT
 from django.template.loader import render_to_string
 from weasyprint import HTML
 import logging
@@ -340,7 +339,7 @@ class LeavePrintDecisionToPdfView(LoginRequiredMixin, View):
         logging.getLogger('weasyprint').setLevel(logging.ERROR)
         
         content_string = render_to_string(template_path, context)#.encode('iso-8859-7')
-        print()
+        # print()
         # How to locate the Greek crest image and embed it in the pdf file:
         # In this view function I provide Weasyprint with the base URI 
         # in the form "http://<ip_address:port>/"
