@@ -21,7 +21,7 @@ DATABASES = {
     }
 }
 
-STATIC_ROOT = '/home/gstam/src/phaistos/hope/phaistos/app/static_files/'
+# STATIC_ROOT = '/home/gstam/src/phaistos/hope/phaistos/app/static_files/'
 # STATICFILES_DIRS = [
 #     BASE_DIR / "static_files",
 # ]
