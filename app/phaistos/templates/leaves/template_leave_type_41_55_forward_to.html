@@ -7,7 +7,7 @@
     @font-face {
         font-family: DejaVu-Sans;
         font-size: 14pt;
-        {% comment %} src: file://{{ STATIC_ROOT }}/main/fonts/Kerkis-Bold.ttf ; {% endcomment %}
+        {% comment %} src: url({% static 'main/fonts/Kerkis-Bold.ttf' %}); {% endcomment %}
     }
    
     @page {
@@ -134,7 +134,7 @@
   <div class="break">
     <div class="prometopida">
         <div id="foreas">
-            <img src="file://{{STATIC_ROOT}}/main/greek_flag_icon.png" class="greek_flag_image" class="center-flag" alt="Σημαία" alt="Τεστ">
+            <img src={% static 'main/greek_flag_icon.png'%} class="greek_flag_image" class="center-flag" alt="Σημαία" alt="Τεστ">
             ΕΛΛΗΝΙΚΗ ΔΗΜΟΚΡΑΤΙΑ <br>
             ΥΠΟΥΡΓΕΙΟ ΠΑΙΔΕΙΑΣ & ΘΡΗΣΚΕΥΜΑΤΩΝ <br>
             <div class="thin-dashed-line"> ----- </div>
