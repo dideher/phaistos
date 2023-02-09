@@ -18,7 +18,7 @@ import os
 import io
 from phaistos.utils import convert_duration_to_words, first_name_to_geniki
 from phaistos.settings.common import BASE_DIR
-from phaistos.settings.production import STATIC_ROOT
+from phaistos.settings.common import STATIC_ROOT
 from django.template.loader import render_to_string
 from weasyprint import HTML
 import logging
