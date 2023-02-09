@@ -1,5 +1,5 @@
 from phaistos.settings.common import *
-
+import os
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
@@ -20,3 +20,10 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+STATIC_ROOT = '/home/gstam/src/phaistos/hope/phaistos/app/static_files/'
+# STATICFILES_DIRS = [
+#     BASE_DIR / "static_files",
+# ]
+# print(STATICFILES_DIRS)
+# print(f'My base dir is: {os.path.join(BASE_DIR, "..", "static_files")}')
