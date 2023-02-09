@@ -17,7 +17,7 @@ from django.views.generic import View, ListView
 import os
 import io
 from phaistos.utils import convert_duration_to_words, first_name_to_geniki
-from phaistos.settings.common import BASE_DIR
+from django.conf import settings
 from django.template.loader import render_to_string
 from weasyprint import HTML
 import logging
@@ -324,9 +324,9 @@ class LeavePrintDecisionToPdfView(LoginRequiredMixin, View):
         leave = Leave.objects.get(pk = self.kwargs['pk'])
         # Select Template
         if (employee.employee_type != "ADMINISTRATIVE") and (leave.leave_type.legacy_code == "41" or leave.leave_type.legacy_code == "55"):
-            template_path = os.path.join(BASE_DIR, 'templates/leaves/template_leave_type_41_55_forward_to.html')
+            template_path = os.path.join(settings.BASE_DIR, 'templates/leaves/template_leave_type_41_55_forward_to.html')
         else:
-            template_path = os.path.join(BASE_DIR, 'templates/leaves/template_leave_type_empty.html')
+            template_path = os.path.join(settings.BASE_DIR, 'templates/leaves/template_leave_type_empty.html')
         
         context = {'employee': employee,
                    'leave': leave,
@@ -339,7 +339,7 @@ class LeavePrintDecisionToPdfView(LoginRequiredMixin, View):
         logging.getLogger('weasyprint').setLevel(logging.ERROR)
         
         content_string = render_to_string(template_path, context)#.encode('iso-8859-7')
-        print()
+        # print()
         # How to locate the Greek crest image and embed it in the pdf file:
         # In this view function I provide Weasyprint with the base URI 
         # in the form "http://<ip_address:port>/"
@@ -356,7 +356,7 @@ class LeavePrintDecisionToPdfView(LoginRequiredMixin, View):
         # e.g. in our case STATIC_ROOT = '/home/gstam/src/phaistos/phaistos/app/static_files/'
         # so, in the end the file path is 
         # /home/gstam/src/phaistos/phaistos/app/static_files/main/greek_flag_icon.png'
-        base_url=request.build_absolute_uri('/')
+        base_url= settings.STATIC_ROOT # os.path.join(BASE_DIR, "..", "static_files") #request.build_absolute_uri('/')
         HTML(string=content_string, base_url=base_url).write_pdf(buffer)
         buffer.seek(0)
         return  FileResponse(buffer, as_attachment=True, filename=f'{employee.last_name}_{employee.first_name}.pdf')
