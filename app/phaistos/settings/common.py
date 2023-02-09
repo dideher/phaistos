@@ -113,8 +113,9 @@ LOGOUT_REDIRECT_URL = "/"
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
 STATIC_URL = 'static/'
-# STATIC_ROOT = '/home/gstam/src/phaistos/phaistos/app/static_files/'
 MEDIA_URL = 'media/'
+STATIC_ROOT = os.path.join(BASE_DIR, "..", "static_files")
+print(STATIC_ROOT)
 
 AUTH_USER_MODEL = "users.CustomUser"
 
