@@ -14,10 +14,11 @@ class LeaveType(models.Model):
     """
     Leave Types
     """
-    minoas_id = models.IntegerField(db_column='MINOAS_ID', default=None, null=False, unique=True)
+    minoas_id = models.IntegerField(db_column='MINOAS_ID', default=None, null=True, unique=False, blank=True,
+                                    db_index=True)
     is_active = models.BooleanField(db_column="IS_ACTIVE", db_index=True, null=False, default=True)
-    description = models.CharField(db_column="DESCRIPTION", db_index=True, max_length=255, null=True)
-    legacy_code = models.CharField(db_column="LEGACY_CODE", db_index=True, max_length=32, null=False)
+    description = models.CharField(db_column="DESCRIPTION", db_index=True, max_length=255, blank=True, null=True)
+    legacy_code = models.CharField(db_column="LEGACY_CODE", db_index=True, max_length=32, blank=True, null=False)
     suitable_for_employee_type = models.CharField(choices=LegacyEmployeeType.choices,
                                                   default=LegacyEmployeeType.REGULAR,
                                                   max_length=32,
