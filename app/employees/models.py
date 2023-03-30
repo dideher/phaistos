@@ -49,9 +49,9 @@ class Unit(models.Model):
 
 
 class Specialization(models.Model):
-    code = models.CharField(db_column='CODE', max_length=9, null=False, unique=True)
+    code = models.CharField(db_column='CODE', max_length=20, null=False, unique=True)
     title = models.CharField(db_column='TITLE', max_length=70, null=False)
-    public_code = models.CharField(db_column='PUBLIC_CODE', max_length=9, null=True)
+    public_code = models.CharField(db_column='PUBLIC_CODE', max_length=20, null=True)
     public_title = models.CharField(db_column='PUBLIC_TITLE', max_length=70, null=True)
     is_disabled = models.BooleanField(db_column='DISABLED', default=False)
 
