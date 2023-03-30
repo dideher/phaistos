@@ -9,6 +9,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import serializers, status
 from rest_framework.generics import get_object_or_404, CreateAPIView
+from rest_framework.exceptions import ValidationError
 from api.serializers import (
     EmployeeSerializer, 
     SpecializationSerializer, 
@@ -21,6 +22,7 @@ from api.serializers import (
     AthinaEmployeeImportSerializer,
     MySchoolEmployeeImportSerializer
 )
+from api.cache import get_cached_employee_type, get_cached_employee_specialization, get_cached_unit
 from employees.models import (
     Employee, 
     Specialization,
@@ -498,9 +500,9 @@ class AthinaEmployeeImportAPIView(APIView):
                 if employee_type_name == 'Μόνιμος Εκπαιδευτικός':
                     employee_legacy_type_code = LegacyEmployeeType.REGULAR
 
-                employee_type: EmployeeType = EmployeeType.objects.get(code=validated_data.get('employee_type'))
+                employee_type: EmployeeType = EmployeeType.objects.get(athina_code=validated_data.get('employee_type'))
             except EmployeeType.DoesNotExist:
-                employee_type = EmployeeType.objects.create(code=validated_data.get('employee_type'),
+                employee_type = EmployeeType.objects.create(athina_code=validated_data.get('employee_type'),
                                                             title=employee_type_name,
                                                             legacy_type=employee_legacy_type_code)
 
@@ -594,7 +596,6 @@ class AthinaEmployeeImportAPIView(APIView):
                     work_experience_work_duration = work_experience_duration_years * 360 + \
                                                     work_experience_duration_months * 30 + \
                                                     work_experience_duration_days
-
 
                     work_experience_document_number = work_experience.get('document_number')
                     work_experience_document_date = work_experience.get('document_date')
@@ -745,7 +746,7 @@ class MySchoolEmployeeImportAPIView(APIView):
         employee_email = validated_data.get('employee_email')
         employee_email_psd = validated_data.get('employee_email_psd')
         employee_sex = validated_data.get('employee_sex')
-        employee_type_name = validated_data.get('employee_type_name')
+        employee_type_name: str = validated_data.get('employee_type_name')
         employee_birthday = validated_data.get('employee_birthday')
         employee_specialization_id = validated_data.get('employee_specialization_id')
         employee_specialization_name = validated_data.get('employee_specialization_name')
@@ -768,10 +769,14 @@ class MySchoolEmployeeImportAPIView(APIView):
         myschool_employee_label = f'({employee_registry_id}) {employee_last_name} {employee_first_name} ' \
                                 f'{employee_father_name} [{employee_specialization_id}]'
 
+        # if the employee is "REGULAR" then require employee_registry_id
+        if len(employee_registry_id.strip()) == 0 and employee_type_name == 'Μόνιμος':
+            raise ValidationError("AM is required")
+
         with transaction.atomic():
 
             try:
-                employee_specialization: Specialization = Specialization.objects.get(code=employee_specialization_id)
+                employee_specialization = get_cached_employee_specialization(employee_specialization_id)
             except Specialization.DoesNotExist:
                 employee_specialization = None
 
@@ -781,8 +786,7 @@ class MySchoolEmployeeImportAPIView(APIView):
 
                 employee_specialization_id_normalized = employee_specialization_id + "01"
                 try:
-                    employee_specialization: Specialization = Specialization.objects.get(
-                        code=employee_specialization_id_normalized)
+                    employee_specialization = get_cached_employee_specialization(employee_specialization_id_normalized)
                 except Specialization.DoesNotExist:
                     employee_specialization = None
 
@@ -790,7 +794,7 @@ class MySchoolEmployeeImportAPIView(APIView):
                 # failed to create specialization, go ahead and create a new one
                 employee_specialization: Specialization = Specialization.objects.create(
                     code=employee_specialization_id,
-                    title=employee_current_unit_name
+                    title=employee_specialization_name
                 )
                 logging.error(f'specialization {employee_specialization_id} created !')
 
@@ -803,7 +807,7 @@ class MySchoolEmployeeImportAPIView(APIView):
                 employee_specialization.save()
 
             try:
-                employee_current_unit: Unit = Unit.objects.get(ministry_code=employee_current_unit_id)
+                employee_current_unit: Unit = get_cached_unit(employee_current_unit_id)
             except Unit.DoesNotExist:
                 employee_current_unit: Unit = Unit.objects.create(
                     ministry_code=employee_current_unit_id,
@@ -811,31 +815,34 @@ class MySchoolEmployeeImportAPIView(APIView):
                     myschool_title=employee_current_unit_name,
                 )
                 logging.error(f'******* created unit {employee_current_unit_id} - {employee_current_unit_name}')
-            except Unit.MultipleObjectsReturned:
-                logging.warning(f'unit {employee_current_unit_id} is duplicate in phaistos')
-                employee_current_unit: Unit = Unit.objects.filter(ministry_code=employee_current_unit_id).order_by('title').first()
 
             if employee_current_unit.myschool_title != employee_current_unit_name:
                 employee_current_unit.myschool_title = employee_current_unit_name
                 employee_current_unit.save()
 
             try:
-                employee_legacy_type_code = LegacyEmployeeType.REGULAR
-
                 if employee_type_name == 'Μόνιμος':
                     employee_legacy_type_code = LegacyEmployeeType.REGULAR
+                elif employee_type_name.startswith('Αναπληρωτής'):
+                    employee_legacy_type_code = LegacyEmployeeType.DEPUTY
+                elif employee_type_name.startswith('Ωρομίσθιος'):
+                    employee_legacy_type_code = LegacyEmployeeType.HOURLYPAID
+                elif employee_type_name.startswith('Διοικητικός'):
+                    employee_legacy_type_code = LegacyEmployeeType.ADMINISTRATIVE
+                else:
+                    raise ValidationError(f"unsupported employee type '{employee_type_name}'")
 
-                employee_type: EmployeeType = EmployeeType.objects.get(legacy_type=employee_legacy_type_code)
+                employee_type: EmployeeType = get_cached_employee_type(employee_type_name)
+
             except EmployeeType.DoesNotExist:
-                employee_type = EmployeeType.objects.create(code=employee_type_name,
-                                                            title=employee_type_name,
+                employee_type = EmployeeType.objects.create(title=employee_type_name,
                                                             legacy_type=employee_legacy_type_code)
 
             # first try to match employee with AM
             employees: QuerySet[Employee] = Employee.objects.filter(
                 registry_id=employee_registry_id,
                 is_active=True,
-                employee_type=employee_legacy_type_code)
+                employee_type=employee_type.legacy_type)
 
             if employees.count() == 1:
                 employee: Employee = employees.first()
@@ -850,12 +857,11 @@ class MySchoolEmployeeImportAPIView(APIView):
                 employees: QuerySet[Employee] = Employee.objects.filter(
                     vat_number=employee_vat_number,
                     is_active=True,
-                    employee_type=employee_legacy_type_code)
+                    employee_type=employee_type.legacy_type)
 
                 if employees.count() == 1:
                     employee = employees.first()
                 elif employees.count() > 1:
-
                     employee: Employee = merge_employee(employees)
 
             if employee is not None:
@@ -893,7 +899,7 @@ class MySchoolEmployeeImportAPIView(APIView):
                 #Employee.objects.filter(pk=employee.pk).update(**employee_update_dict)
                 employee.save()
                 employee_serializer = EmployeeSerializer(employee)
-                logging.info("employee '%s' updated", myschool_employee_label)
+                logging.info("employee [%s] '%s' updated", employee.pk, myschool_employee_label)
 
                 return Response(employee_serializer.data, status=status.HTTP_200_OK)
             else:
@@ -916,6 +922,8 @@ class MySchoolEmployeeImportAPIView(APIView):
                     'current_unit': employee_current_unit,
                     'telephone': employee_communication_telephone,
                     'mobile': employee_communication_mobile,
+                    'employee_type': employee_type.legacy_type,
+                    'employee_type_extended': employee_type,
                     'fek_diorismou': employee_fek_diorismou,
                     'fek_diorismou_date': employee_fek_diorismou_date,
                     'mk': employee_mk,
