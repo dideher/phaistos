@@ -160,8 +160,8 @@ class MySchoolEmployeeImportSerializer(serializers.Serializer):
     employee_type_name = serializers.CharField(allow_null=False, required=True)
     employee_specialization_id = serializers.CharField(allow_null=False, allow_blank=False, required=True)
     employee_specialization_name = serializers.CharField(allow_null=False, allow_blank=False, required=True)
-    employee_afm = serializers.CharField(allow_null=True, required=False)
-    employee_am = serializers.CharField(allow_null=False, required=True)
+    employee_afm = serializers.CharField(allow_blank=True, required=False)
+    employee_am = serializers.CharField(allow_blank=True, required=True)
     employee_birthday = serializers.DateField(format='%d/%m/%Y', input_formats=['%d/%m/%Y', ], required=False,
                                               allow_null=True)
     employee_current_unit_id = serializers.CharField(allow_null=True, allow_blank=False, required=True)

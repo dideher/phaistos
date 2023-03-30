@@ -4,14 +4,13 @@ from .models import Employee, Specialization, Unit, EmployeeType, WorkExperience
 
 @admin.register(EmployeeType)
 class EmployeeTypeAdmin(admin.ModelAdmin):
-    list_display = ('code', 'title', 'legacy_type')
-    ordering = ('code', )
-    search_fields = ('code', 'title',)
+    list_display = ('title', 'legacy_type')
+    search_fields = ('title',)
 
 
 @admin.register(Employee)
 class EmployeeAdmin(admin.ModelAdmin):
-    list_display = ('registry_id', 'last_name', 'first_name', 'father_name', 'employee_type')
+    list_display = ('pk', 'registry_id', 'vat_number', 'last_name', 'first_name', 'father_name', 'employee_type')
     ordering = ('last_name', 'first_name', 'father_name', )
     search_fields = ('registry_id', 'vat_number', 'last_name', 'first_name', )
 

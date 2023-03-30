@@ -82,10 +82,10 @@ class MaritalStatusType(models.TextChoices):
 
 class EmployeeType(models.Model):
 
-    code = models.PositiveSmallIntegerField(null=False, db_index=True)
-    title = models.CharField(null=False, blank=False, max_length=128)
+    title = models.CharField(null=False, blank=False, max_length=128, db_index=True)
     legacy_type = models.CharField(choices=LegacyEmployeeType.choices, default=LegacyEmployeeType.REGULAR,
-                                   max_length=32, blank=False)
+                                   max_length=32, blank=False, db_index=True)
+    athina_code = models.PositiveSmallIntegerField(null=True, blank=True, db_index=True)
 
     def __str__(self):
         return f"{self.title} ({self.legacy_type})"
@@ -114,7 +114,7 @@ class Employee(BaseUUIDModel):
                                    blank=True)
     employee_type = models.CharField(choices=LegacyEmployeeType.choices, default=LegacyEmployeeType.REGULAR,
                                      max_length=32, db_column='EMPLOYEE_TYPE')
-    employee_type_extended = models.ForeignKey(EmployeeType, null=True, on_delete=models.SET_NULL, default=None,
+    employee_type_extended = models.ForeignKey(EmployeeType, null=True, on_delete=models.CASCADE, default=None,
                                                blank=True)
     marital_status = models.CharField(choices=MaritalStatusType.choices, default=MaritalStatusType.UNKNOWN,
                                       max_length=30, db_column='MARITAL_STATUS')
