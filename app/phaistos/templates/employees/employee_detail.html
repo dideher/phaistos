@@ -50,6 +50,7 @@
                         <div class="nav nav-tabs" id="nav-tab" role="tablist">
                             <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">Άδειες</button>
                             <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">Προϋπηρεσία</button>
+                            <button class="nav-link" id="nav-employments-tab" data-bs-toggle="tab" data-bs-target="#nav-employments" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">Τοποθετήσεις</button>
                         </div>
                     </nav>
 
@@ -67,6 +68,14 @@
                             <div class="card shadow">
                                 <div class="card-body">
                                     {% show_work_experience %}
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Employments Tab -->
+                        <div class="tab-pane fade" id="nav-employments" role="tabpanel" aria-labelledby="nav-profile-tab">
+                            <div class="card shadow">
+                                <div class="card-body">
+                                    {% show_employments %}
                                 </div>
                             </div>
                         </div>

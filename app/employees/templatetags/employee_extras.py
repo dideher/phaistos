@@ -3,7 +3,7 @@ from django.core.paginator import Paginator
 from django.db.models.query import QuerySet
 from django.utils import timezone
 
-from employees.models import Employee, WorkExperience
+from employees.models import Employee, WorkExperience, Employment
 from leaves.models import Leave
 from phaistos.commons import days360
 
@@ -56,6 +56,21 @@ def show_work_experience(context):
     else:
         return {'workexperiences': None}
 
+
+@register.inclusion_tag('employees/custom_tag_show_employments.html', takes_context=True)
+def show_employments(context):
+    employee: Employee = context.get('employee')
+    request = context.get('request')
+    if employee is not None:
+        employments_list: QuerySet[Employment] = Employment.objects.filter(employee_id=employee).order_by('-is_active',
+                                                                                                          'effective_from')
+        # paginator = Paginator(workexperiences_list, 5)  # Show 25 contacts per page.
+        # page = request.GET.get('wpage')
+        # workexperiences = paginator.get_page(page)
+        # return {'workexperiences': workexperiences}
+        return {'employments': employments_list}
+    else:
+        return {'employments': None}
 
 @register.inclusion_tag('employees/custom_tag_show_work_experience_totals.html', takes_context=True)
 def show_work_experience_totals(context):
