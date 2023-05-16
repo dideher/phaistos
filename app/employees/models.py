@@ -26,10 +26,10 @@ class UnitType(models.TextChoices):
 class Unit(models.Model):
     minoas_id = models.IntegerField(db_column='MINOAS_ID', null=True, default=None, db_index=True, blank=True)
     title = models.CharField(db_column='TITLE', max_length=80, null=False, unique=True)
-    myschool_title = models.CharField(db_column='MYSCHOOL_TITLE', max_length=80, null=True, default=None, blank=True)
+    myschool_title = models.CharField(db_column='MYSCHOOL_TITLE', max_length=255, null=True, default=None, blank=True)
     address = models.ForeignKey(Address, null=True, default=None, blank=True, on_delete=models.CASCADE)
     public_sector = models.BooleanField(db_column='PUBLIC_SECTOR', null=False, default=True)
-    ministry_code = models.CharField(db_column='MINISTRY_CODE', max_length=7, null=True, db_index=True)
+    ministry_code = models.CharField(db_column='MINISTRY_CODE', max_length=20, null=True, db_index=True)
     unit_type = models.CharField(db_column='UNIT_TYPE', choices=UnitType.choices, default=UnitType.SCHOOL, null=False,max_length=28)
     school_type = models.CharField(db_column='SCHOOL_TYPE', choices=SchoolType.choices, default=None,
                                    max_length=28, null=True)
