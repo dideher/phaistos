@@ -1,3 +1,4 @@
+import json
 import logging
 
 from django.db.models.query import QuerySet
@@ -868,7 +869,8 @@ class MySchoolEmployeeImportAPIView(APIView):
                 if employees.count() == 1:
                     employee = employees.first()
                 elif employees.count() > 1:
-                    employee: Employee = merge_employee(employees)
+                    #employee: Employee = merge_employee(employees)
+                    employee = employees.first()
 
             if employee is not None:
 
