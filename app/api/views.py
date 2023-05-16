@@ -1,9 +1,9 @@
+import json
 import logging
 
 from django.db.models.query import QuerySet
 from django.utils.timezone import now
 from django.db import transaction
-from django.core.exceptions import MultipleObjectsReturned
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -11,7 +11,8 @@ from rest_framework import serializers, status
 from rest_framework.generics import get_object_or_404, CreateAPIView
 from rest_framework.exceptions import ValidationError
 from api.serializers import (
-    EmployeeSerializer, 
+    EmployeeSerializer,
+    EmploymentSerializer,
     SpecializationSerializer, 
     EmployeeImportSerializer,
     LeaveImportSerializer,
@@ -20,9 +21,10 @@ from api.serializers import (
     UnitImportSerializer,
     UnitSerializer,
     AthinaEmployeeImportSerializer,
-    MySchoolEmployeeImportSerializer
+    MySchoolEmployeeImportSerializer,
+    MySchoolEmploymentImportSerializer
 )
-from api.cache import get_cached_employee_type, get_cached_employee_specialization, get_cached_unit
+from api.cache import get_cached_employee_type, get_cached_employee_specialization, get_cached_unit, get_cached_employment_type
 from employees.models import (
     Employee, 
     Specialization,
@@ -31,12 +33,17 @@ from employees.models import (
     EmployeeType,
     LegacyEmployeeType,
     WorkExperience,
-    WorkExperienceType
+    WorkExperienceType,
+    Employment,
+    EmploymentType,
+    LegacyEmploymentType,
+    EmploymentStatus
 )
 from leaves.models import (
     Leave,
     LeaveType,
 )
+from main.models import SchoolYear
 from django.views.generic.list import ListView
 
 
@@ -862,7 +869,8 @@ class MySchoolEmployeeImportAPIView(APIView):
                 if employees.count() == 1:
                     employee = employees.first()
                 elif employees.count() > 1:
-                    employee: Employee = merge_employee(employees)
+                    #employee: Employee = merge_employee(employees)
+                    employee = employees.first()
 
             if employee is not None:
 
@@ -938,5 +946,183 @@ class MySchoolEmployeeImportAPIView(APIView):
                 employee = Employee.objects.create(**employee_update_dict)
                 employee_serializer = EmployeeSerializer(employee)
                 return Response(employee_serializer.data, status=status.HTTP_201_CREATED)
+
+
+class MySchoolEmploymentImportAPIView(APIView):
+
+    def post(self, request):
+
+        serializer = MySchoolEmploymentImportSerializer(data=request.data)
+
+        if serializer.is_valid() is False:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        validated_data = serializer.validated_data
+
+        employee_afm = validated_data.get('employee_afm')
+        employee_am = validated_data.get('employee_am')
+        employee_last_name = validated_data.get('employee_last_name')
+        employee_first_name = validated_data.get('employee_first_name')
+        employee_employment_unit_id = validated_data.get('employee_employment_unit_id')
+        employee_employment_unit_name = validated_data.get('employee_employment_unit_name')
+        employee_specialization_id = validated_data.get('employee_specialization_id')
+        employee_type_str: str = validated_data.get('employee_type')
+        employee_employment_type = validated_data.get('employee_employment_type')
+        employee_employment_days = validated_data.get('employee_employment_days')
+        employee_employment_hours = validated_data.get('employee_employment_hours')
+        employee_employment_from = validated_data.get('employee_employment_from')
+        employee_employment_until = validated_data.get('employee_employment_until')
+        employee_employment_status = validated_data.get('employee_employment_status')
+
+
+        myschool_employment_label = f'({employee_am}/{employee_am}) {employee_last_name} {employee_first_name} ' \
+                                f'[{employee_specialization_id}]'
+
+        with transaction.atomic():
+
+            try:
+                if employee_type_str == 'Μόνιμος':
+                    legacy_employee_type_code = LegacyEmployeeType.REGULAR
+                elif employee_type_str.startswith('Αναπληρωτής'):
+                    legacy_employee_type_code = LegacyEmployeeType.DEPUTY
+                elif employee_type_str.startswith('Ωρομίσθιος'):
+                    legacy_employee_type_code = LegacyEmployeeType.HOURLYPAID
+                elif employee_type_str.startswith('Διοικητικός'):
+                    legacy_employee_type_code = LegacyEmployeeType.ADMINISTRATIVE
+                elif employee_type_str == 'Ιδιωτικού Δικαίου Αορίστου Χρόνου (Ι.Δ.Α.Χ.)':
+                    legacy_employee_type_code = LegacyEmployeeType.IDAX
+                else:
+                    raise ValidationError(f"unsupported employee type '{employee_type_str}'")
+
+                employee_type: EmployeeType = get_cached_employee_type(employee_type_str)
+
+            except EmployeeType.DoesNotExist:
+                employee_type = EmployeeType.objects.create(title=employee_type_str,
+                                                            legacy_type=legacy_employee_type_code)
+
+            try:
+                employment_type = get_cached_employment_type(employee_employment_type)
+            except EmploymentType.DoesNotExist:
+
+                employment_type = EmploymentType.objects.create(title=employee_employment_type)
+
+            try:
+                employee_specialization = get_cached_employee_specialization(employee_specialization_id)
+            except Specialization.DoesNotExist:
+                employee_specialization = None
+
+            if employee_specialization is None:
+                # we failed to find the specialization. Perhaps the code was the legacy coce, ie "ΠΕ02"
+                # and we have stored (in the db) the old type, ie "ΠΕ0201"
+
+                employee_specialization_id_normalized = employee_specialization_id + "01"
+                try:
+                    employee_specialization = get_cached_employee_specialization(employee_specialization_id_normalized)
+                except Specialization.DoesNotExist:
+                    employee_specialization = None
+
+            if employee_specialization is None:
+                # failed to create specialization, go ahead and create a new one
+                employee_specialization: Specialization = Specialization.objects.create(
+                    code=employee_specialization_id,
+                    title=''
+                )
+                logging.error(f'specialization {employee_specialization_id} created !')
+
+            if employee_specialization.code != employee_specialization_id:
+                employee_specialization.code = employee_specialization_id
+                employee_specialization.save()
+
+            try:
+                employment_unit: Unit = get_cached_unit(employee_employment_unit_id)
+            except Unit.DoesNotExist:
+                employment_unit: Unit = Unit.objects.create(
+                    ministry_code=employee_employment_unit_id,
+                    title=employee_employment_unit_name,
+                    myschool_title=employee_employment_unit_name,
+                )
+                logging.error(f'******* created unit {employee_employment_unit_id} - {employee_employment_unit_name}')
+
+            if employment_unit.myschool_title != employee_employment_unit_name:
+                employment_unit.myschool_title = employee_employment_unit_name
+                employment_unit.save()
+
+            # first try to match employee with AM
+            employee = None
+
+            if len(employee_am) > 0:
+                employees: QuerySet[Employee] = Employee.objects.filter(
+                    registry_id=employee_am,
+                    is_active=True,
+                    employee_type=employee_type.legacy_type)
+
+                if employees.count() == 1:
+                    employee: Employee = employees.first()
+                elif employees.count() > 1:
+                    employee: Employee = merge_employee(employees)
+
+            # if we failed to match, then try with AFM
+            if employee is None and len(employee_afm) > 0:
+                employees: QuerySet[Employee] = Employee.objects.filter(
+                    vat_number=employee_afm,
+                    is_active=True,
+                    employee_type=employee_type.legacy_type)
+
+                if employees.count() == 1:
+                    employee = employees.first()
+                elif employees.count() > 1:
+                    employee: Employee = merge_employee(employees)
+
+            today = now()
+
+            if employee is None:
+                # employee not found
+
+                employee_dict = {
+                    'vat_number': employee_afm,
+                    'registry_id': employee_am,
+                    'first_name': employee_first_name,
+                    'last_name': employee_last_name,
+                    'specialization': employee_specialization,
+                    'current_unit': employment_unit,
+                    'employee_type': employee_type.legacy_type,
+                    'employee_type_extended': employee_type,
+                    'imported_from_myschool': today,
+                    'created_on': today
+                }
+                employee = Employee.objects.create(**employee_dict)
+
+            employment_dict = {
+                'employee': employee,
+                'specialization': employee_specialization,
+                'current_unit': employment_unit,
+                'school_year': SchoolYear.get_or_create_school_year(reference_date=employee_employment_from),
+                'employment_type': employee_type.legacy_type,
+                'employment_type_extended': employment_type,
+                'is_active': employee_employment_status == 'ΠΑΡΟΥΣΙΑ',
+                'myschool_status': employee_employment_status,
+                'mandatory_week_workhours': employee_employment_hours,
+                'week_workdays': employee_employment_days,
+                'effective_from': employee_employment_from,
+                'effective_until': employee_employment_until,
+                'praksi_topothetisis': '',
+                'praksi_topothetisis_date': None,
+                'imported_from_myschool': today,
+            }
+
+            employement: Employment = Employment.objects.create(**employment_dict)
+
+            # check if we need to update the employee's current unit
+            if employment_type.title == 'Οργανικά' and employement.is_active is True:
+                employee.current_unit = employement.current_unit
+                employement.save()
+
+            employment_serializer = EmploymentSerializer(employement)
+            return Response(employment_serializer.data, status=status.HTTP_201_CREATED)
+
+
+
+
+
 
 

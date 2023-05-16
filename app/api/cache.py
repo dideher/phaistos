@@ -1,7 +1,7 @@
 import logging
 
 from functools import lru_cache
-from employees.models import EmployeeType, Specialization, Unit
+from employees.models import EmployeeType, Specialization, Unit, EmploymentType
 
 
 @lru_cache()
@@ -21,3 +21,8 @@ def get_cached_unit(unit_id) -> Unit:
     except Unit.MultipleObjectsReturned:
         logging.warning(f'unit {unit_id} is duplicate in phaistos')
         return Unit.objects.filter(ministry_code=unit_id).order_by('title').first()
+
+
+@lru_cache(maxsize=200)
+def get_cached_employment_type(employment_type_name) -> EmploymentType:
+    return EmploymentType.objects.get(title=employment_type_name)

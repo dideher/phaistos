@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
-from phaistos.commons.models import BaseUUIDModel
+from main.models import BaseUUIDModel, SchoolYear
 
 
 class Address(models.Model):
@@ -69,6 +69,7 @@ class LegacyEmployeeType(models.TextChoices):
     DEPUTY = 'DEPUTY', _('Αναπληρωτής')
     REGULAR = 'REGULAR', _('Μόνιμος')
     HOURLYPAID = 'HOURLYPAID', _('Ωρομίσθιος')
+    IDAX = 'IDAX', _('Ιδιωτικού Δικαίου Αορίστου Χρόνου (Ι.Δ.Α.Χ.)'),
     ADMINISTRATIVE = 'ADMINISTRATIVE', _('Διοικητικός')
 
 
@@ -78,6 +79,28 @@ class MaritalStatusType(models.TextChoices):
     MARRIED = 'MARRIED', _('Έγγαμος')
     DIVORCED = 'DIVORCED', _('Διαζευγμένος')
     WIDOWER = 'WIDOWER', _('Χηρεία')
+
+
+class EmploymentStatus(models.TextChoices):
+    PRESENT = 'PRESENT', _('Παρουσία')
+    UNPRESENT = 'UNPRESENT', _('Απουσία')
+    EXPIRED = 'EXPIRED', _('Παρήλθε')
+
+
+class LegacyEmploymentType(models.TextChoices):
+    DEPUTY = 'DEPUTY', _('Αναπληρωτής')
+    REGULAR = 'REGULAR', _('Μόνιμος')
+    HOURLYPAID = 'HOURLYPAID', _('Ωρομίσθιος')
+    IDAX = 'IDAX', _('Ιδιωτικού Δικαίου Αορίστου Χρόνου (Ι.Δ.Α.Χ.)')
+    ADMINISTRATIVE = 'ADMINISTRATIVE', _('Διοικητικός')
+
+
+class EmploymentType(models.Model):
+
+    title = models.CharField(null=False, blank=False, max_length=128, db_index=True)
+
+    def __str__(self):
+        return f"{self.title}"
 
 
 class EmployeeType(models.Model):
@@ -173,6 +196,54 @@ class Employee(BaseUUIDModel):
 
     def __str__(self):
         return f"{ self.last_name } {self.first_name} του {self.father_name}"
+
+
+class Employment(BaseUUIDModel):
+    employee = models.ForeignKey(Employee, null=False, db_column="EMPLOYEE_ID", on_delete=models.CASCADE)
+    specialization = models.ForeignKey(Specialization, null=False, on_delete=models.CASCADE)
+    current_unit = models.ForeignKey(Unit, null=False, on_delete=models.CASCADE)
+    school_year = models.ForeignKey(SchoolYear, null=False, on_delete=models.CASCADE)
+    employment_type = models.CharField(choices=LegacyEmploymentType.choices, default=LegacyEmploymentType.REGULAR,
+                                     max_length=32, null=False, blank=False, db_column='EMPLOYMENT_TYPE')
+    employment_type_extended = models.ForeignKey(EmploymentType, null=True, blank=True, on_delete=models.CASCADE,
+                                                 default=None)
+    is_active = models.BooleanField(db_column="IS_ACTIVE", null=False, default=True)
+    myschool_status = models.CharField(db_column='MYSCHOOL_STATUS', null=True, default=None, blank=True, max_length=68)
+    mandatory_week_workhours = models.PositiveSmallIntegerField(db_column='WORK_HOURS', blank=True, null=True,
+                                                                default=None,
+                                                                help_text='Υποχρεωτικό Διδακτικό Ωράριο')
+    week_workdays = models.CharField(max_length=10, blank=True)
+    effective_from = models.DateField(default=timezone.now, null=False)
+    effective_until = models.DateField(null=False)
+
+    praksi_topothetisis = models.CharField(db_column='PRAKSI_TOPOTHETISIS', max_length=64, blank=True, null=True,
+                                           default=None)
+    praksi_topothetisis_date = models.DateField(db_column='PRAKSI_TOPOTHETISIS_DATE', null=True, blank=True, default=None)
+
+    deleted_on = models.DateField(db_column="DELETED_ON", null=True, blank=True, default=None)
+    deleted_comment = models.TextField(db_column="DELETED_COMMENT", blank=True, verbose_name='Σχόλιο Διαγραφής',
+                                       help_text='Προαιρετικά εισάγετε σχόλιο ή περιγραφή διαγραφής',
+                                       null=True, max_length=255, default=None)
+    created_on = models.DateTimeField(db_column="CREATED_ON", null=False, blank=True, default=timezone.now)
+    updated_on = models.DateTimeField(db_column="UPDATED_ON", null=True, blank=True)
+    updated_from_myschool = models.DateTimeField(db_column='MYSCHOOL_UPDATED', blank=True, null=True, default=None)
+    imported_from_myschool = models.DateTimeField(db_column='MYSCHOOL_IMPORTED', blank=True, null=True, default=None)
+
+    class Meta:
+        indexes = [
+            models.Index(fields=['is_active', ]),
+            models.Index(fields=['employment_type', ]),
+        ]
+
+    def get_smart_specialization_str(self):
+        old_specialization: Specialization = self.specialization
+        if old_specialization is not None:
+            return f"{old_specialization.code} - {old_specialization.title}"
+
+    def __str__(self):
+        employee = self.employee
+        return f'{employee} [{self.employment_type}] ({self.specialization.code}) {self.current_unit} για {self.mandatory_week_workhours} ώρες από ' \
+               f'{self.effective_from} έως {self.effective_until}'
 
 
 class WorkExperienceType(models.Model):

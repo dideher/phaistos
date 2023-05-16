@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from employees.models import Employee, Specialization, Unit
+from employees.models import Employee, Specialization, Unit, Employment
 from leaves.models import Leave, LeaveType
 
 
@@ -177,3 +177,32 @@ class MySchoolEmployeeImportSerializer(serializers.Serializer):
                                                         required=False, allow_null=True)
     employee_mandatory_week_workhours = serializers.IntegerField(allow_null=True, required=False)
 
+
+class EmploymentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Employment
+        fields = "__all__"
+
+
+class MySchoolEmploymentImportSerializer(serializers.Serializer):
+    """
+    Special Serializer to be used for bulk importing employees from myschool
+    """
+    employee_afm = serializers.CharField(allow_blank=True, required=True)
+    employee_am = serializers.CharField(allow_blank=True, required=True)
+    employee_last_name = serializers.CharField(allow_null=False, required=True)
+    employee_first_name = serializers.CharField(allow_null=False, required=True)
+
+    employee_specialization_id = serializers.CharField(allow_null=False, allow_blank=False, required=True)
+
+    employee_employment_unit_id = serializers.CharField(allow_null=False, allow_blank=False, required=True)
+    employee_employment_unit_name = serializers.CharField(allow_null=False, allow_blank=False, required=True)
+
+    employee_type = serializers.CharField(allow_null=False, required=False, allow_blank=False)
+    employee_employment_type = serializers.CharField(allow_null=False, required=True, allow_blank=False)
+    employee_employment_days = serializers.CharField(allow_null=False, allow_blank=True, required=True)
+    employee_employment_hours = serializers.IntegerField(allow_null=False, required=True)
+    employee_employment_from = serializers.DateField(format='%d/%m/%Y', input_formats=['%d/%m/%Y', ], required=True, allow_null=False)
+    employee_employment_until = serializers.DateField(format='%d/%m/%Y', input_formats=['%d/%m/%Y', ],
+                                                      required=True, allow_null=False)
+    employee_employment_status = serializers.CharField(allow_null=False, allow_blank=False, required=True)

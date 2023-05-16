@@ -30,12 +30,11 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'impersonate',
+    'main',
     'users',
     'api',
     'employees',
     'leaves',
-    'main'
-
 ]
 
 MIDDLEWARE = [

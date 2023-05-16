@@ -1,0 +1,40 @@
+{% load django_bootstrap5 %}
+
+<table id="employee_leaves_table" class="table table-sm table-hover">
+    <thead class="thead-dark">
+        <tr>
+            <th scope="col">Σχολ. Χρονία</th>
+            <th scope="col">Φορέας Τοποθέτησης</th>
+            <th scope="col">Ειδικότητα</th>
+            <th scope="col">Σχέση Εργασίας</th>
+            <th scope="col">Τύπος Τοποθέτησης</th>
+            <th scope="col">Ωρ.</th>
+            <th scope="col">Ημέρες</th>
+            <th scope="col">Από</th>
+            <th scope="col">Έως</th>
+            <th scope="col">Κατάσταση</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for employment in employments %}
+        {% if employment.myschool_status == 'ΑΠΟΥΣΙΑ' %}
+        <tr class="table-danger">
+        {% elif employment.myschool_status == 'ΠΑΡΗΛΘΕ' %}
+        <tr class="table-info">
+        {% endif %}
+            <td>{{ employment.school_year }} </td>
+            <td>{{ employment.current_unit.title }}</td>
+            <td>{{ employment.specialization.code }}</td>
+            <td>{{ employment.get_employment_type_display }}</td>
+            <td>{{ employment.employment_type_extended }}</td>
+            <td>{{ employment.mandatory_week_workhours }}</td>
+            <td>{{ employment.week_workdays }}</td>
+            <td>{{ employment.effective_from|date:"d-m-Y" }}</td>
+            <td>{{ employment.effective_until|date:"d-m-Y" }}</td>
+            <td>{{ employment.myschool_status|default:'' }}</td>
+
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+

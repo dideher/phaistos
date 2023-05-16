@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import Employee, Specialization, Unit, EmployeeType, WorkExperience, WorkExperienceType
+from .models import Employee, Specialization, Unit, EmployeeType, WorkExperience, WorkExperienceType, EmploymentType, \
+    Employment
 
 
 @admin.register(EmployeeType)
@@ -42,3 +43,14 @@ class WorkExperienceAdmin(admin.ModelAdmin):
                     'duration_days', 'duration_months', 'duration_years')
     search_fields = ('employee', 'work_duration_total_in_days')
     ordering = ('employee', 'date_from')
+
+
+@admin.register(Employment)
+class EmploymentAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(EmploymentType)
+class EmploymentTypeAdmin(admin.ModelAdmin):
+    pass
+
