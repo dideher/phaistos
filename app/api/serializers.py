@@ -10,9 +10,15 @@ class SpecializationSerializer(serializers.ModelSerializer):
 
 
 class EmployeeSerializer(serializers.ModelSerializer):
+
+    specialization = serializers.SlugRelatedField(
+        read_only=True,
+        slug_field='code'
+    )
     class Meta:
         model = Employee
-        fields = "__all__"
+        fields = ("uuid", 'last_name', 'first_name', 'father_name', 'mother_name', 'vat_number', 'registry_id',
+                  'employee_type', 'specialization', 'current_unit', 'date_of_birth')
 
 
 class UnitImportSerializer(serializers.Serializer):
