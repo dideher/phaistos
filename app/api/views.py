@@ -8,7 +8,9 @@ from django.db import transaction
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import serializers, status
-from rest_framework.generics import get_object_or_404, CreateAPIView
+
+from rest_framework.generics import get_object_or_404, CreateAPIView, ListCreateAPIView
+from rest_framework.permissions import IsAdminUser
 from rest_framework.exceptions import ValidationError
 from api.serializers import (
     EmployeeSerializer,
@@ -24,6 +26,7 @@ from api.serializers import (
     MySchoolEmployeeImportSerializer,
     MySchoolEmploymentImportSerializer
 )
+from api.core.pagination import StandardResultsSetPagination
 from api.cache import get_cached_employee_type, get_cached_employee_specialization, get_cached_unit, get_cached_employment_type
 from employees.models import (
     Employee, 
@@ -44,25 +47,29 @@ from leaves.models import (
     LeaveType,
 )
 from main.models import SchoolYear
-from django.views.generic.list import ListView
 
 
-class EmployeeListAPIView(APIView):
+class EmployeeList(ListCreateAPIView):
 
-    def get(self, request):
-        employees = Employee.objects.filter()
-        serializer = EmployeeSerializer(employees, many=True)
+    serializer_class = EmployeeSerializer
+    permission_classes = [IsAdminUser, ]
+
+    def get_queryset(self):
+        return Employee.objects.filter(is_active=True)
+
+    def list(self, request, *args, **kwargs):
+
+        queryset = self.filter_queryset(self.get_queryset())
+        page = self.paginate_queryset(queryset)
+
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
-    def post(self, request):
 
-        serializer = EmployeeSerializer(data=request.data)
-
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class UnitImportAPIView(APIView):

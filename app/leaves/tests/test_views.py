@@ -87,7 +87,6 @@ class LeaveCreateViewTest(TestCase):
         self.assertEqual(Leave.objects.all().count(), 1)
 
         self.assertTrue(leave.is_active)
-
         self.assertFalse(leave.deleted_on)
         self.assertIsNone(leave.deleted_comment)
 
@@ -106,9 +105,7 @@ class LeaveCreateViewTest(TestCase):
         # re-read the leave from db
         leave.refresh_from_db()
 
-        # this should be false actually
-        self.assertTrue(leave.is_active)
-
+        self.assertFalse(leave.is_active)
         self.assertTrue(leave.deleted_on)
         self.assertEqual(leave.deleted_comment, 'Το σβήσαμε')
 

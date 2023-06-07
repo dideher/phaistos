@@ -1,7 +1,7 @@
 from django.urls import path
 
 from api.views import (
-    EmployeeListAPIView,
+    EmployeeList,
     EmployeeDetailAPI, 
     SpecializationAPIView, 
     SpecializationDetailAPI, 
@@ -16,7 +16,7 @@ from api.views import (
 )
 
 urlpatterns = [
-    path('employees/', EmployeeListAPIView.as_view(), name="employees-list"),
+    path('employees/', EmployeeList.as_view(), name="employees-list"),
     path('employees/<int:pk>/', EmployeeDetailAPI.as_view(), name="employee-detail"),
     path('bulk_import/employees/', EmployeeImportAPIView.as_view(), name='employees-import'),
     path('bulk_import/units/', UnitImportAPIView.as_view(), name='units-import'),
