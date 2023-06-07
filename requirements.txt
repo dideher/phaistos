@@ -2,7 +2,7 @@ Django==4.0.10
 django-registration
 djangorestframework
 django-bootstrap5
-django-bootstrap-modal-forms
+django-bootstrap-modal-forms==3.0.3
 django-impersonate
 mysql-connector-python
 openpyxl
