@@ -51,6 +51,22 @@ class LeaveDeleteView(LoginRequiredMixin, PermissionRequiredMixin, BaseDeleteVie
     def get_success_url(self):
         return reverse("leaves:employee-leaves-list", kwargs={"uuid": self.object.employee.uuid})
 
+    def form_valid(self, form):
+
+        leave: Leave = form.instance
+
+        # make sure the leave is longer active
+        leave.is_active = False
+
+        return super().form_valid(form)
+
+
+
+
+
+        # return original response
+        return response
+
 
 def compute_leave_calendar_duration(request: HttpRequest):
     if request.method == 'POST':
