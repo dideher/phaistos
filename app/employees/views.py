@@ -2,10 +2,11 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
+from django.views.generic.edit import FormMixin
 
-from employees.forms import EmployeeSearchForm
-from employees.models import Employee
-
+from employees.forms import EmployeeSearchForm, SubstituteEmploymentAnnouncementSearchForm
+from employees.models import Employee, SubstituteEmploymentAnnouncement
+from main.models import SchoolYear
 # from phaistos.commons.views import OurServerSideDatatableView
 # class EmployeeListDatatableView(OurServerSideDatatableView):
 #     # WONT USE IT FOR THE TIME
@@ -90,3 +91,46 @@ class EmployeeDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailView
         return Employee.objects.get(uuid=self.kwargs.get("uuid"))
 
 
+class SubstituteEmploymentAnnouncementListView(LoginRequiredMixin, PermissionRequiredMixin, ListView ):
+
+    model = SubstituteEmploymentAnnouncement
+    context_object_name = 'announcements'
+    paginator_per_page_count = 12
+    form_class = SubstituteEmploymentAnnouncementSearchForm
+    permission_required = ['employees.view_employee']
+    template_name = 'employees/substitute/employment_announcement_list.html'
+
+    def get_queryset(self):
+        form = self.form_class(self.request.GET)
+
+        if form.is_valid():
+            filters = {}
+
+            specialization = form.cleaned_data['specialization']
+            school_year = form.cleaned_data['school_year']
+            financing = form.cleaned_data['financing']
+            employment_source = form.cleaned_data['employment_source']
+            is_pending = form.cleaned_data['is_pending']
+
+            if specialization:
+                filters['specialization'] = specialization
+
+            if school_year:
+                filters['school_year'] = school_year
+
+            if financing:
+                filters['financing'] = financing
+
+            if employment_source:
+                filters['employment_source'] = employment_source
+
+            return SubstituteEmploymentAnnouncement.objects.filter(**filters)
+        else:
+            # filtering form is not valid yet ?
+            return SubstituteEmploymentAnnouncement.objects.all()
+
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = self.form_class(initial=self.request.GET)
+        return context

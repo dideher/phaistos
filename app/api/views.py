@@ -24,7 +24,9 @@ from api.serializers import (
     UnitSerializer,
     AthinaEmployeeImportSerializer,
     MySchoolEmployeeImportSerializer,
-    MySchoolEmploymentImportSerializer
+    MySchoolEmploymentImportSerializer,
+    SubstituteEmploymentAnnouncementImportSerializer,
+
 )
 from api.core.pagination import StandardResultsSetPagination
 from api.cache import get_cached_employee_type, get_cached_employee_specialization, get_cached_unit, get_cached_employment_type
@@ -39,8 +41,9 @@ from employees.models import (
     WorkExperienceType,
     Employment,
     EmploymentType,
-    LegacyEmploymentType,
-    EmploymentStatus
+    EmploymentFinancialSource,
+    SubstituteEmploymentAnnouncement,
+    SubstituteEmploymentSource
 )
 from leaves.models import (
     Leave,
@@ -68,8 +71,6 @@ class EmployeeList(ListCreateAPIView):
 
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
-
-
 
 
 class UnitImportAPIView(APIView):
@@ -1126,6 +1127,138 @@ class MySchoolEmploymentImportAPIView(APIView):
 
             employment_serializer = EmploymentSerializer(employement)
             return Response(employment_serializer.data, status=status.HTTP_201_CREATED)
+
+
+class SubstituteEmploymentAnnouncementImportAPIView(APIView):
+
+    def post(self, request):
+
+        serializer = SubstituteEmploymentAnnouncementImportSerializer(data=request.data)
+
+        if serializer.is_valid() is False:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        validated_data = serializer.validated_data
+
+        employee_afm = validated_data.get('employee_afm')
+        employee_last_name = validated_data.get('employee_last_name')
+        employee_first_name = validated_data.get('employee_first_name')
+        employee_father_name = validated_data.get('employee_father_name')
+        employee_mother_name = validated_data.get('employee_mother_name')
+        employee_specialization_id = validated_data.get('employee_specialization_id')
+        financing_source_code = validated_data.get('financing_source_code')
+        employment_source_code = validated_data.get('employment_source_code')
+        employment_table = validated_data.get('employment_table')
+        employment_table_position = validated_data.get('employment_table_position')
+        employment_table_score = validated_data.get('employment_table_score')
+        employee_address_city = validated_data.get('employee_address_city')
+        employee_address_line = validated_data.get('employee_address_line')
+        employee_address_postal_code = validated_data.get('employee_address_postal_code')
+        employee_telephone = validated_data.get('employee_telephone')
+        employee_mobile = validated_data.get('employee_mobile')
+        employee_email = validated_data.get('employee_email')
+        # 'employee_birthday': _employee_birthday,
+        employee_adt = validated_data.get('employee_adt')
+        print(validated_data)
+
+        with transaction.atomic():
+            legacy_employee_type_code = LegacyEmployeeType.DEPUTY
+
+            #                                                 legacy_type=legacy_employee_type_code)
+
+            financing_source = EmploymentFinancialSource.get_or_create(code=financing_source_code)
+            employment_source = SubstituteEmploymentSource.get_or_create(code=employment_source_code)
+
+            try:
+                employee_specialization = get_cached_employee_specialization(employee_specialization_id)
+            except Specialization.DoesNotExist:
+                employee_specialization = None
+
+            if employee_specialization is None:
+                # we failed to find the specialization. Perhaps the code was the legacy coce, ie "ΠΕ02"
+                # and we have stored (in the db) the old type, ie "ΠΕ0201"
+
+                employee_specialization_id_normalized = employee_specialization_id + "01"
+                try:
+                    employee_specialization = get_cached_employee_specialization(employee_specialization_id_normalized)
+                except Specialization.DoesNotExist:
+                    employee_specialization = None
+
+            if employee_specialization is None:
+                # failed to create specialization, go ahead and create a new one
+                employee_specialization: Specialization = Specialization.objects.create(
+                    code=employee_specialization_id,
+                    title=''
+                )
+                logging.error(f'specialization {employee_specialization_id} created !')
+
+            today = now()
+
+            employee, employee_created = Employee.objects.update_or_create(
+                vat_number=employee_afm, is_active=True,
+                defaults={
+                    'vat_number': employee_afm,
+                    'first_name': employee_first_name,
+                    'last_name': employee_last_name,
+                    'father_name': employee_father_name,
+                    'mother_name': employee_mother_name,
+                    'address_line': employee_address_line,
+                    'address_city': employee_address_city,
+                    'address_zip': employee_address_postal_code,
+                    'telephone': employee_telephone,
+                    'mobile': employee_mobile,
+                    'email': employee_email,
+                    'adt': employee_adt,
+                    'specialization': employee_specialization,
+                    'updated_on': today,
+                    'employee_type': legacy_employee_type_code,
+                }
+            )
+
+            if employee_created is True:
+                employee.created_on = today
+                employee.save()
+
+
+
+
+            sea: SubstituteEmploymentAnnouncement = SubstituteEmploymentAnnouncement.objects.create(
+                employee=employee,
+                specialization=employee_specialization,
+                school_year=SchoolYear.get_current_school_year(),
+                financing=financing_source,
+                employment_source=employment_source,
+                table=employment_table,
+                table_rank=employment_table_position,
+                table_points=employment_table_score
+            )
+
+            # employment_dict = {
+            #     'employee': employee,
+            #     'specialization': employee_specialization,
+            #     'current_unit': employment_unit,
+            #     'school_year': SchoolYear.get_or_create_school_year(reference_date=employee_employment_from),
+            #     'employment_type': employee_type.legacy_type,
+            #     'employment_type_extended': employment_type,
+            #     'is_active': employee_employment_status == 'ΠΑΡΟΥΣΙΑ',
+            #     'myschool_status': employee_employment_status,
+            #     'mandatory_week_workhours': employee_employment_hours,
+            #     'week_workdays': employee_employment_days,
+            #     'effective_from': employee_employment_from,
+            #     'effective_until': employee_employment_until,
+            #     'praksi_topothetisis': '',
+            #     'praksi_topothetisis_date': None,
+            #     'imported_from_myschool': today,
+            # }
+            #
+            # employement: Employment = Employment.objects.create(**employment_dict)
+
+            # check if we need to update the employee's current unit
+
+            employment_serializer = EmploymentSerializer({})
+            return Response({}, status=status.HTTP_201_CREATED)
+
+
 
 
 

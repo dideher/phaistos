@@ -212,3 +212,33 @@ class MySchoolEmploymentImportSerializer(serializers.Serializer):
     employee_employment_until = serializers.DateField(format='%d/%m/%Y', input_formats=['%d/%m/%Y', ],
                                                       required=True, allow_null=False)
     employee_employment_status = serializers.CharField(allow_null=False, allow_blank=False, required=True)
+
+
+
+class SubstituteEmploymentAnnouncementImportSerializer(serializers.Serializer):
+    """
+    Special Serializer to be used for bulk importing substitute employment announcement
+    """
+    employee_afm = serializers.CharField(allow_blank=True, required=True)
+    employee_last_name = serializers.CharField(allow_null=False, required=True)
+    employee_first_name = serializers.CharField(allow_null=False, required=True)
+    employee_father_name = serializers.CharField(allow_null=False, required=True)
+    employee_mother_name = serializers.CharField(allow_null=False, required=True)
+    employee_specialization_id = serializers.CharField(allow_null=False, allow_blank=False, required=True)
+    employee_address_city = serializers.CharField(allow_null=False, allow_blank=False, required=True)
+    employee_address_line = serializers.CharField(allow_null=False, allow_blank=False, required=True)
+    employee_address_postal_code = serializers.CharField(allow_null=False, allow_blank=False, required=True)
+    employee_telephone = serializers.CharField(allow_null=False, allow_blank=False, required=True)
+    employee_mobile = serializers.CharField(allow_null=False, allow_blank=False, required=True)
+    employee_email = serializers.CharField(allow_null=False, allow_blank=False, required=True)
+    # 'employee_birthday': _employee_birthday,
+    employee_adt = serializers.CharField(allow_null=False, allow_blank=False, required=True)
+
+    # employee_employment_from = serializers.DateField(format='%d/%m/%Y', input_formats=['%d/%m/%Y', ], required=True, allow_null=False)
+    # employee_employment_until = serializers.DateField(format='%d/%m/%Y', input_formats=['%d/%m/%Y', ],
+    #                                                   required=True, allow_null=False)
+    financing_source_code = serializers.CharField(allow_blank=False, allow_null=False, required=True, max_length=96)
+    employment_source_code = serializers.CharField(allow_blank=False, allow_null=False, required=True, max_length=96)
+    employment_table = serializers.CharField(allow_blank=False, allow_null=False, required=True, max_length=12)
+    employment_table_position = serializers.IntegerField(allow_null=False, required=True, min_value=1, max_value=1000000)
+    employment_table_score = serializers.FloatField(allow_null=False, required=True, min_value=0)

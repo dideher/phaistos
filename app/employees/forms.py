@@ -1,5 +1,8 @@
 from django import forms
-from employees.models import LegacyEmployeeType
+from django.utils.translation import gettext_lazy as _
+from employees.models import LegacyEmployeeType, EmploymentFinancialSource, SubstituteEmploymentSource, Specialization
+from main.models import SchoolYear
+
 
 blank_choice = [('', '---------'), ]
 
@@ -12,3 +15,20 @@ class EmployeeSearchForm(forms.Form):
                                       required=False)
     registration_id = forms.CharField(label='ΑΜ', max_length=100, required=False)
     vat_number = forms.CharField(label="ΑΦΜ", max_length=10, required=False)
+
+
+class SubstituteEmploymentAnnouncementSearchForm(forms.Form):
+
+    school_year = forms.ModelChoiceField(queryset=SchoolYear.objects.all(),  empty_label='Χωρίς Φίλτρο', required=False)
+
+    specialization = forms.ModelChoiceField(queryset=Specialization.objects.all(),  empty_label='Χωρίς Φίλτρο', required=False)
+    financing = forms.ModelChoiceField(queryset=EmploymentFinancialSource.objects.all(),
+                                       label=_('Χρηματοδότηση'),
+                                       help_text=_("Φιλτράρισμα με βάση το πρόγραμμα χρηματοδότησης"),
+                                       empty_label='Χωρίς Φίλτρο',
+                                       required=False)
+    employment_source = forms.ModelChoiceField(queryset=SubstituteEmploymentSource.objects.all(),  empty_label='Χωρίς Φίλτρο',
+                                               required=False)
+    is_pending = forms.BooleanField(label=_('Με Τοποθέτηση'),
+                                    help_text=_('Φιλτράρισμα προσλήψεων με βάση την τοποθέτηση'),
+                                    required=False)

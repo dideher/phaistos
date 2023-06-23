@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
@@ -132,7 +134,8 @@ class Employee(BaseUUIDModel):
     mother_surname = models.CharField(db_column="MOTHER_SURNAME", max_length=35, null=True, blank=True)
     vat_number = models.CharField(db_column="VAT_NUMBER", max_length=10, null=True, default=None, blank=False,
                                   db_index=True)
-    amka = models.CharField(db_column='AMKA', max_length=12, null=True, default=None, blank=True,)
+    amka = models.CharField(db_column='AMKA', max_length=12, null=True, default=None, blank=True)
+    adt = models.CharField(max_length=32, blank=True, verbose_name=_('Α.Δ.Τ.'))
     registry_id = models.CharField(db_column="REGISTRY_ID", max_length=32, null=True, default=None, db_index=True,
                                    blank=True)
     employee_type = models.CharField(choices=LegacyEmployeeType.choices, default=LegacyEmployeeType.REGULAR,
@@ -289,3 +292,67 @@ class WorkExperience(models.Model):
 
     def __str__(self):
         return f"[{ self.work_experience_type }] {self.date_from} - {self.date_until} - {self.duration_total_in_days}"
+
+
+class EmploymentFinancialSource(models.Model):
+    # Χρηματοδότηση (Αναπληρωτή, κλπ)
+    code = models.CharField(blank=True, max_length=96, unique=True)
+    display_title = models.CharField(blank=False, max_length=128)
+
+    @classmethod
+    def create(cls, code: str, display_title: str = None) -> EmploymentFinancialSource:
+        return cls.objects.create(code=code, display_title=code or display_title)
+
+    @classmethod
+    def get_or_create(cls, code: str) -> EmploymentFinancialSource:
+        try:
+            return cls.objects.get(code=code)
+        except cls.DoesNotExist:
+            return cls.create(code=code)
+
+    def __str__(self):
+        if self.display_title != self.code:
+            return f'{self.display_title } ({self.code})'
+        else:
+            return f'{self.display_title}'
+
+
+class SubstituteEmploymentSource(models.Model):
+    # Πινακας Πρόσληψης Αναπληρωτή
+    code = models.CharField(blank=True, max_length=96, unique=True)
+    display_title = models.CharField(blank=False, max_length=128)
+
+    @classmethod
+    def create(cls, code: str, display_title: str = None) -> SubstituteEmploymentSource:
+        return cls.objects.create(code=code, display_title=code or display_title)
+
+    @classmethod
+    def get_or_create(cls, code: str) -> SubstituteEmploymentSource:
+        try:
+            return cls.objects.get(code=code)
+        except cls.DoesNotExist:
+            return cls.create(code=code)
+
+    def __str__(self):
+        if self.display_title != self.code:
+            return f'{self.display_title} ({self.code})'
+        else:
+            return f'{self.display_title}'
+
+
+class SubstituteEmploymentAnnouncement(BaseUUIDModel):
+
+    employee = models.ForeignKey(Employee, null=False, db_column="EMPLOYEE_ID", on_delete=models.CASCADE)
+    specialization = models.ForeignKey(Specialization, null=False, on_delete=models.CASCADE)
+    school_year = models.ForeignKey(SchoolYear, null=False, on_delete=models.CASCADE)
+    financing = models.ForeignKey(EmploymentFinancialSource, null=False, on_delete=models.CASCADE)
+    employment_source = models.ForeignKey(SubstituteEmploymentSource, null=False, on_delete=models.CASCADE)
+    ###type =
+    table = models.CharField(blank=False, max_length=12)
+    table_rank = models.PositiveIntegerField(null=False)
+    table_points = models.FloatField(null=False)
+    workhour_type = None
+
+    class Meta:
+        verbose_name = 'Αναγγελία Πρόσληψης'
+        verbose_name_plural = 'Αναγγελίες Προσλήψεων'

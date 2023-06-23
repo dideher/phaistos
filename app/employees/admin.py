@@ -1,6 +1,6 @@
 from django.contrib import admin
 from .models import Employee, Specialization, Unit, EmployeeType, WorkExperience, WorkExperienceType, EmploymentType, \
-    Employment
+    Employment, SubstituteEmploymentAnnouncement, EmploymentFinancialSource, SubstituteEmploymentSource
 
 
 @admin.register(EmployeeType)
@@ -54,3 +54,18 @@ class EmploymentAdmin(admin.ModelAdmin):
 class EmploymentTypeAdmin(admin.ModelAdmin):
     pass
 
+
+@admin.register(EmploymentFinancialSource)
+class EmploymentFinancialSourceAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(SubstituteEmploymentAnnouncement)
+class SubstituteEmploymentAnnouncementAdmin(admin.ModelAdmin):
+    list_display = ["employee", "specialization", "financing", "employment_source", "table", "table_rank", "table_points"]
+
+
+
+@admin.register(SubstituteEmploymentSource)
+class SubstituteEmploymentSourceAdmin(admin.ModelAdmin):
+    pass
