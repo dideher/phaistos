@@ -1,6 +1,7 @@
 from django import forms
 from django.utils.translation import gettext_lazy as _
-from employees.models import LegacyEmployeeType, EmploymentFinancialSource, SubstituteEmploymentSource, Specialization
+from employees.models import LegacyEmployeeType, EmploymentFinancialSource, SubstituteEmploymentSource, Specialization, \
+    SubstituteEmploymentAnnouncement
 from main.models import SchoolYear
 
 
@@ -18,7 +19,7 @@ class EmployeeSearchForm(forms.Form):
 
 
 class SubstituteEmploymentAnnouncementSearchForm(forms.Form):
-
+    phase = forms.ChoiceField(choices=[('', '')], required=False)
     school_year = forms.ModelChoiceField(queryset=SchoolYear.objects.all(),  empty_label='Χωρίς Φίλτρο', required=False)
 
     specialization = forms.ModelChoiceField(queryset=Specialization.objects.all(),  empty_label='Χωρίς Φίλτρο', required=False)
@@ -32,3 +33,12 @@ class SubstituteEmploymentAnnouncementSearchForm(forms.Form):
     is_pending = forms.BooleanField(label=_('Με Τοποθέτηση'),
                                     help_text=_('Φιλτράρισμα προσλήψεων με βάση την τοποθέτηση'),
                                     required=False)
+
+    def __init__(self, *args, **kwargs):
+
+        super(SubstituteEmploymentAnnouncementSearchForm, self).__init__(*args, **kwargs)
+
+        ## TODO: We need to make this smarter
+        phase_choices = [('', ''), ]
+        self.fields['phase'].choices = SubstituteEmploymentAnnouncement.objects.all().values_list("phase", "phase").distinct()
+

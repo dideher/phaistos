@@ -1140,6 +1140,7 @@ class SubstituteEmploymentAnnouncementImportAPIView(APIView):
 
         validated_data = serializer.validated_data
 
+        phase = validated_data.get('phase')
         employee_afm = validated_data.get('employee_afm')
         employee_last_name = validated_data.get('employee_last_name')
         employee_first_name = validated_data.get('employee_first_name')
@@ -1157,7 +1158,8 @@ class SubstituteEmploymentAnnouncementImportAPIView(APIView):
         employee_telephone = validated_data.get('employee_telephone')
         employee_mobile = validated_data.get('employee_mobile')
         employee_email = validated_data.get('employee_email')
-        # 'employee_birthday': _employee_birthday,
+        employee_birthday =  validated_data.get('employee_birthday')
+        employment_workhour_type = validated_data.get('employment_workhour_type')
         employee_adt = validated_data.get('employee_adt')
         print(validated_data)
 
@@ -1212,6 +1214,7 @@ class SubstituteEmploymentAnnouncementImportAPIView(APIView):
                     'specialization': employee_specialization,
                     'updated_on': today,
                     'employee_type': legacy_employee_type_code,
+                    'date_of_birth': employee_birthday
                 }
             )
 
@@ -1219,10 +1222,8 @@ class SubstituteEmploymentAnnouncementImportAPIView(APIView):
                 employee.created_on = today
                 employee.save()
 
-
-
-
             sea: SubstituteEmploymentAnnouncement = SubstituteEmploymentAnnouncement.objects.create(
+                phase=phase,
                 employee=employee,
                 specialization=employee_specialization,
                 school_year=SchoolYear.get_current_school_year(),
@@ -1230,7 +1231,8 @@ class SubstituteEmploymentAnnouncementImportAPIView(APIView):
                 employment_source=employment_source,
                 table=employment_table,
                 table_rank=employment_table_position,
-                table_points=employment_table_score
+                table_points=employment_table_score,
+                workhour_type=employment_workhour_type
             )
 
             # employment_dict = {

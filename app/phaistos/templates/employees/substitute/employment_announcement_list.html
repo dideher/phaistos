@@ -19,6 +19,9 @@
                         {% bootstrap_field form.school_year placeholder='' show_label=True%}
                     </div>
                     <div class="col-md-2">
+                        {% bootstrap_field form.phase placeholder='' show_label=True%}
+                    </div>
+                    <div class="col-md-2">
                         {% bootstrap_field form.is_pending placeholder='' show_label=True%}
                     </div>
                     <div class="col-md-2">
@@ -47,6 +50,7 @@
                     <table id="announcements_list_table" class="table table-sm table-hover">
                         <thead class="table-light">
                             <tr>
+                                <th scope="col">Φάση</th>
                                 <th scope="col">Χρηματ.</th>
                                 <th scope="col">Τύπος</th>
                                 <th scope="col">ΑΦΜ</th>
@@ -55,10 +59,12 @@
                                 <th scope="col">Όνομα Πατρός</th>
                                 <th scope="col">Ειδι.</th>
                                 <th scope="col">Ετ.Γεν.</th>
+                                <th scope="col">Ωράριο</th>
                                 <th scope="col">Πίν.</th>
                                 <th scope="col">Σειρά Π.</th>
                                 <th scope="col">Μόρια Π.</th>
                                 <th scope="col">Τηλ.</th>
+                                <th scope="col">e-mail</th>
                                 <th scope="col">action</th>
 
                             </tr>
@@ -66,6 +72,7 @@
                         <tbody class="table-group-divider">
                         {% for announcement in announcements %}
                             <tr class="clickable-table-row" style="cursor: pointer" data-href="url goto_target employee.uuid">
+                                <td>{{ announcement.phase|default:""}}</td>
                                 <td>{{ announcement.financing|default:""}}</td>
                                 <td>{{ announcement.employment_source|default:""}}</td>
                                 <td>{{ announcement.employee.vat_number|default:""}}</td>
@@ -74,14 +81,13 @@
                                 <td>{{ announcement.employee.father_name|default:""}}</td>
                                 <td>{{ announcement.specialization.code|default:""}}</td>
                                 <td>{{ announcement.employee.date_of_birth|default:""}}</td>
-
-
+                                <td>{{ announcement.workhour_type|default:""}}</td>
                                 <td>{{ announcement.table|default:""}}</td>
                                 <td>{{ announcement.table_rank|default:""}}</td>
                                 <td>{{ announcement.table_points|default:""}}</td>
 
                                 <td>{{ announcement.employee.mobile|default:""}}</td>
-
+                                <td>{{ announcement.employee.email|default:""}}</td>
                                 <td>
                                     {% if perms.leaves.change_leave %}
                                     <button id="delete-leave-btn" data-form-url="url 'leaves:leave-delete' leave.id" class="delete-leave btn btn-sm btn-danger" type="button" name="button">
@@ -89,6 +95,7 @@
                                     </button>
                                     {% endif %}
                                 </td>
+
                             </tr>
                         {% endfor %}
                         </tbody>

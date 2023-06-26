@@ -341,7 +341,7 @@ class SubstituteEmploymentSource(models.Model):
 
 
 class SubstituteEmploymentAnnouncement(BaseUUIDModel):
-
+    phase = models.CharField(max_length=64, blank=False)
     employee = models.ForeignKey(Employee, null=False, db_column="EMPLOYEE_ID", on_delete=models.CASCADE)
     specialization = models.ForeignKey(Specialization, null=False, on_delete=models.CASCADE)
     school_year = models.ForeignKey(SchoolYear, null=False, on_delete=models.CASCADE)
@@ -351,8 +351,16 @@ class SubstituteEmploymentAnnouncement(BaseUUIDModel):
     table = models.CharField(blank=False, max_length=12)
     table_rank = models.PositiveIntegerField(null=False)
     table_points = models.FloatField(null=False)
-    workhour_type = None
+    workhour_type = models.CharField(max_length=32, blank=False)
 
     class Meta:
         verbose_name = 'Αναγγελία Πρόσληψης'
         verbose_name_plural = 'Αναγγελίες Προσλήψεων'
+        indexes = [
+            models.Index(fields=['school_year', 'financing', 'employment_source']),
+            models.Index(fields=['specialization']),
+            models.Index(fields=['employee']),
+        ]
+        # constraints = [
+        #     models.UniqueConstraint(fields=['phase', 'school_year'], name='unique_phase_school_year'),
+        # ]

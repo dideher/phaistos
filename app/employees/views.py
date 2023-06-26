@@ -91,7 +91,7 @@ class EmployeeDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailView
         return Employee.objects.get(uuid=self.kwargs.get("uuid"))
 
 
-class SubstituteEmploymentAnnouncementListView(LoginRequiredMixin, PermissionRequiredMixin, ListView ):
+class SubstituteEmploymentAnnouncementListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
 
     model = SubstituteEmploymentAnnouncement
     context_object_name = 'announcements'
@@ -111,6 +111,7 @@ class SubstituteEmploymentAnnouncementListView(LoginRequiredMixin, PermissionReq
             financing = form.cleaned_data['financing']
             employment_source = form.cleaned_data['employment_source']
             is_pending = form.cleaned_data['is_pending']
+            phase = form.cleaned_data['phase']
 
             if specialization:
                 filters['specialization'] = specialization
@@ -123,6 +124,9 @@ class SubstituteEmploymentAnnouncementListView(LoginRequiredMixin, PermissionReq
 
             if employment_source:
                 filters['employment_source'] = employment_source
+
+            if phase:
+                filters['phase'] = phase
 
             return SubstituteEmploymentAnnouncement.objects.filter(**filters)
         else:
