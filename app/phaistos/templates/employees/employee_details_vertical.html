@@ -2,10 +2,12 @@
 
     <div class="col-md">
         <table class="table table-sm table-striped">
+            {% if employee.employee_type == 'REGULAR' %}
             <tr>
                 <th>ΑΜ</th>
                 <td>{{employee.registry_id|default:""}}</td>
             </tr>
+            {% endif %}
             <tr>
                 <th>ΑΦΜ</th>
                 <td>{{employee.vat_number|default:""}}</td>
