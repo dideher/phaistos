@@ -66,10 +66,12 @@
 
     <div class="col-md">
         <table class="table table-sm table-striped">
+            {% if employee.employee_type == 'REGULAR' %}
             <tr>
                 <th>ΦΕΚ Διορισμού</th>
                 <td>{{employee.get_smart_fek_diorismou_str|default:""}}</td>
             </tr>
+            {% endif %}
             <tr>
                 <th>Ημ/νια Πρώτης Ανά/ψης Υπ/σιας</th>
                 <td>{{employee.first_workday_date|default:""}}</td>
