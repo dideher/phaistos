@@ -214,7 +214,6 @@ class MySchoolEmploymentImportSerializer(serializers.Serializer):
     employee_employment_status = serializers.CharField(allow_null=False, allow_blank=False, required=True)
 
 
-
 class SubstituteEmploymentAnnouncementImportSerializer(serializers.Serializer):
     """
     Special Serializer to be used for bulk importing substitute employment announcement
@@ -240,3 +239,23 @@ class SubstituteEmploymentAnnouncementImportSerializer(serializers.Serializer):
     employment_table_position = serializers.IntegerField(allow_null=False, required=True, min_value=1, max_value=1000000)
     employment_table_score = serializers.FloatField(allow_null=False, required=True, min_value=0)
     employment_workhour_type = serializers.CharField(allow_blank=False, allow_null=False, required=True, max_length=12)
+
+
+class SubstituteEmploymentPlacementImportSerializer(serializers.Serializer):
+        """
+        Special Serializer to be used for bulk importing substitute placement (τοποθετήσεις)
+        """
+        phase = serializers.CharField(allow_null=False, allow_blank=False, required=True, max_length=64)
+        employee_afm = serializers.CharField(allow_blank=True, required=True)
+        employment_source_code = serializers.CharField(allow_blank=False, allow_null=False, required=True,
+                                                       max_length=96)
+        employee_last_name = serializers.CharField(allow_null=False, required=True)
+        employee_first_name = serializers.CharField(allow_null=False, required=True)
+        employement_specialization_id = serializers.CharField(allow_null=False, allow_blank=False, required=True)
+        employment_hour_type = serializers.CharField(allow_blank=False, allow_null=False, required=True,
+                                                         max_length=12)
+        employement_school_code = serializers.CharField(allow_null=False, max_length=32, allow_blank=False, required=True)
+        employment_work_hours = serializers.IntegerField(allow_null=False, required=True, max_value=100)
+        employment_start_date = serializers.DateField(format='%d/%m/%Y', input_formats=['%d/%m/%Y', ], required=True,
+                                                      allow_null=False)
+        employement_is_main_school = serializers.BooleanField(required=True, allow_null=False)

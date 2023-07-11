@@ -26,9 +26,9 @@ from api.serializers import (
     MySchoolEmployeeImportSerializer,
     MySchoolEmploymentImportSerializer,
     SubstituteEmploymentAnnouncementImportSerializer,
-
+    SubstituteEmploymentPlacementImportSerializer
 )
-from api.core.pagination import StandardResultsSetPagination
+from api.exceptions import  SubstituteEmploymentAnnouncementNotFound, UnitNotFound, EmploymentConflictError
 from api.cache import get_cached_employee_type, get_cached_employee_specialization, get_cached_unit, get_cached_employment_type
 from employees.models import (
     Employee, 
@@ -37,13 +37,15 @@ from employees.models import (
     UnitType,
     EmployeeType,
     LegacyEmployeeType,
+    LegacyEmploymentType,
     WorkExperience,
     WorkExperienceType,
     Employment,
     EmploymentType,
     EmploymentFinancialSource,
     SubstituteEmploymentAnnouncement,
-    SubstituteEmploymentSource
+    SubstituteEmploymentSource,
+    SubstituteEmploymentPlacementAnnouncement
 )
 from leaves.models import (
     Leave,
@@ -1261,7 +1263,105 @@ class SubstituteEmploymentAnnouncementImportAPIView(APIView):
             return Response({}, status=status.HTTP_201_CREATED)
 
 
+class SubstituteEmploymentPlacementImportAPIView(APIView):
 
+    def post(self, request):
+
+        serializer = SubstituteEmploymentPlacementImportSerializer(data=request.data)
+
+        if serializer.is_valid() is False:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        validated_data = serializer.validated_data
+
+        print(validated_data)
+
+        phase = validated_data.get('phase')
+        employee_afm = validated_data.get('employee_afm')
+        employment_source_code = validated_data.get('employment_source_code')
+        employment_work_hours = validated_data.get('employment_work_hours')
+        employment_start_date = validated_data.get('employment_start_date')
+        employement_school_code = validated_data.get('employement_school_code')
+        employement_is_main_school = validated_data.get('employement_is_main_school')
+
+        with transaction.atomic():
+
+            # find employment announcement
+
+            try:
+                sea: SubstituteEmploymentAnnouncement = SubstituteEmploymentAnnouncement.objects.get(
+                    phase=phase,
+                    employee__vat_number=employee_afm,
+                    employment_source__code=employment_source_code,
+                    school_year=SchoolYear.get_current_school_year()
+                )
+
+            except SubstituteEmploymentAnnouncement.DoesNotExist:
+                # ops, this is fatal, we could not find an employment announcement
+                raise SubstituteEmploymentAnnouncementNotFound()
+
+            # find school
+            try:
+                school_unit: Unit = Unit.objects.get(
+                    ministry_code=employement_school_code,
+                    unit_type=UnitType.SCHOOL
+                )
+            except Unit.DoesNotExist:
+                # ops! this is fatal ?!
+                raise UnitNotFound()
+
+            employee: Employee = sea.employee
+
+            # duplicate check : we need to make sure there is no such employment already
+            try:
+                emp: Employment = Employment.objects.get(
+                    employee=employee,
+                    current_unit=school_unit,
+                    school_year=sea.school_year,
+                    employment_type=LegacyEmploymentType.DEPUTY,
+                    is_active=True
+                )
+                # if we are here, then assume it's ok
+                if emp.mandatory_week_workhours == employment_work_hours and emp.effective_from == employment_start_date:
+                    return Response({}, status=status.HTTP_200_OK)
+                else:
+                    raise EmploymentConflictError()
+            except Employment.DoesNotExist:
+                # ok, no such employment there, so we can safely continue
+                pass
+
+            employee.employee_type = LegacyEmployeeType.DEPUTY
+            employee.updated_on = now()
+
+            employment: Employment = Employment.objects.create(
+                employee=employee,
+                specialization=sea.specialization,
+                current_unit=school_unit,
+                school_year=sea.school_year,
+                employment_type=LegacyEmploymentType.DEPUTY,
+                employment_type_extended=None,
+                mandatory_week_workhours=employment_work_hours,
+                effective_from=employment_start_date,
+                effective_until=sea.school_year.date_until,
+                praksi_topothetisis=None,
+                praksi_topothetisis_date=None,
+            )
+
+            placement_announcement: SubstituteEmploymentPlacementAnnouncement = SubstituteEmploymentPlacementAnnouncement.objects.create(
+                school_year=sea.school_year,
+                employee=sea.employee,
+                employment=employment,
+                employment_announcement=sea
+            )
+
+            if employement_is_main_school is True:
+                # if this placement is "main" then update the employee
+                employee.specialization = sea.specialization
+                employee.current_unit = school_unit
+
+            employee.save()
+
+            return Response({}, status=status.HTTP_201_CREATED)
 
 
 

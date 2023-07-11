@@ -177,7 +177,9 @@ class Employee(BaseUUIDModel):
         indexes = [
             models.Index(fields=['last_name', 'first_name', ]),
             models.Index(fields=['employee_type', ]),
-            models.Index(fields=['minoas_id'], )
+            models.Index(fields=['minoas_id'], ),
+            models.Index(fields=['vat_number'], ),
+            models.Index(fields=['registry_id'], ),
         ]
 
     def get_smart_specialization_str(self):
@@ -231,6 +233,7 @@ class Employment(BaseUUIDModel):
     updated_on = models.DateTimeField(db_column="UPDATED_ON", null=True, blank=True)
     updated_from_myschool = models.DateTimeField(db_column='MYSCHOOL_UPDATED', blank=True, null=True, default=None)
     imported_from_myschool = models.DateTimeField(db_column='MYSCHOOL_IMPORTED', blank=True, null=True, default=None)
+
 
     class Meta:
         indexes = [
@@ -364,3 +367,29 @@ class SubstituteEmploymentAnnouncement(BaseUUIDModel):
         # constraints = [
         #     models.UniqueConstraint(fields=['phase', 'school_year'], name='unique_phase_school_year'),
         # ]
+
+    def __str__(self):
+        return f'({self.phase}) {self.employment_source} {self.financing} {self.specialization}  '
+
+
+class SubstituteEmploymentPlacementAnnouncement(BaseUUIDModel):
+    """
+    Απόφαση Τοποθέτησης ?
+    """
+
+    # TODO: edw mallon prepei na mpei h apofasi topo8etisis ?
+    created_on = models.DateTimeField(db_column="CREATED_ON", null=False, blank=False, default=timezone.now)
+    school_year = models.ForeignKey(SchoolYear, null=False, on_delete=models.CASCADE)
+    employee = models.ForeignKey(Employee, null=False, db_column="EMPLOYEE_ID", on_delete=models.CASCADE)
+    employment = models.ForeignKey(Employment, null=False, db_column="EMPLOYMENT_ID",
+                                   on_delete=models.CASCADE)
+    employment_announcement = models.ForeignKey(SubstituteEmploymentAnnouncement, null=False, related_name='placements',
+                                                on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name = 'Τοποθέτηση Αναπληρωτή'
+        verbose_name_plural = 'Τοποθετήσεις Αναπληρωτών'
+
+    def __str__(self):
+        return f'{self.employee} σε {self.employment.current_unit} για {self.employment.mandatory_week_workhours} ' \
+               f'ώρες ως {self.employment.specialization}'
