@@ -48,9 +48,28 @@
                     <hr />
                     <nav>
                         <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                            <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">Άδειες</button>
-                            <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">Προϋπηρεσία</button>
-                            <button class="nav-link" id="nav-employments-tab" data-bs-toggle="tab" data-bs-target="#nav-employments" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">Τοποθετήσεις</button>
+                            <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab"
+                                    data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home"
+                                    aria-selected="true">
+                                Άδειες
+                            </button>
+                            <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab"
+                                    data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile"
+                                    aria-selected="false">
+                                Προϋπηρεσία
+                            </button>
+                            {% if employee.has_substitute_employment_announcements %}
+                            <button class="nav-link" id="nav-substitute-employment-announcements-tab"
+                                    data-bs-toggle="tab" data-bs-target="#nav-substitute-employment-announcements"
+                                    type="button" role="tab" aria-controls="nav-profile" aria-selected="false">
+                                Προσ. Αναπληρωτών
+                            </button>
+                            {% endif %}
+                            <button class="nav-link" id="nav-employments-tab" data-bs-toggle="tab"
+                                    data-bs-target="#nav-employments" type="button" role="tab"
+                                    aria-controls="nav-profile" aria-selected="false">
+                                Τοποθετήσεις
+                            </button>
                         </div>
                     </nav>
 
@@ -71,6 +90,44 @@
                                 </div>
                             </div>
                         </div>
+                        <!-- substitute_employment_announcements Tab -->
+                        <div class="tab-pane fade" id="nav-substitute-employment-announcements" role="tabpanel" aria-labelledby="nav-profile-tab">
+                            <div class="card shadow">
+                                <div class="card-body">
+
+                                    <table id="employee_substitute_employment_announcements" class="table table-sm table-hover">
+                                        <thead class="thead-dark">
+                                            <tr>
+                                                <th scope="col">Σχολ. Χρονία</th>
+                                                <th scope="col">Φάση</th>
+                                                <th scope="col">Χρηματοδότηση</th>
+                                                <th scope="col">Τύπος</th>
+                                                <th scope="col">Ειδικότητα</th>
+                                                <th scope="col">Πίνακας</th>
+                                                <th scope="col">Σειρά Πιν.</th>
+                                                <th scope="col">Μόρια Πιν.</th>
+                                                <th scope="col">Ωράριο</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for employment_announcements in employee.get_substitute_employment_announcements %}
+                                                <td>{{employment_announcements.school_year }} </td>
+                                                <td>{{employment_announcements.phase }} </td>
+                                                <td>{{ employment_announcements.financing }}</td>
+                                                <td>{{ employment_announcements.employment_source }}</td>
+                                                <td>{{ employment_announcements.specialization }}</td>
+                                                <td>{{ employment_announcements.table }}</td>
+                                                <td>{{ employment_announcements.table_rank }}</td>
+                                                <td>{{ employment_announcements.table_points }}</td>
+                                                <td>{{ employment_announcements.workhour_type }}</td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- Employments Tab -->
                         <div class="tab-pane fade" id="nav-employments" role="tabpanel" aria-labelledby="nav-profile-tab">
                             <div class="card shadow">
@@ -122,6 +179,35 @@ $(document).ready( function () {
         "paging": true,
         "autoWidth": false
     });
+
+        $('#employee_substitute_employment_announcements').DataTable({
+        "lengthChange": false,
+        language: {
+            url: 'https://cdn.datatables.net/plug-ins/1.13.1/i18n/el.json',
+        },
+        "pageLength": 10,
+        "ordering": true,
+        order: [[4, 'desc']],
+        "pagingType": "simple_numbers",
+        "paging": true,
+        "autoWidth": false
+    });
+
+
+    $('#employee_employments_table').DataTable({
+        "lengthChange": false,
+        language: {
+            url: 'https://cdn.datatables.net/plug-ins/1.13.1/i18n/el.json',
+        },
+        "pageLength": 10,
+        "ordering": true,
+        order: [[4, 'desc']],
+        "pagingType": "simple_numbers",
+        "paging": true,
+        "autoWidth": false
+    });
+
+
 } );
 </script>
 {% endblock bootstrap5_extra_script %}

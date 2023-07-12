@@ -87,7 +87,19 @@ class EmployeeDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailView
     permission_required = ['employees.view_employee']
     model = Employee
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        employee: Employee = self.object
+
+        print(employee.substitute_employment_announcements.all())
+        # has the employee ever been hired as an substitute ?
+        for a in employee.substitute_employment_announcements.all():
+            print("***********", a)
+
+        return context
     def get_object(self, queryset=None):
+        print("sssss")
         return Employee.objects.get(uuid=self.kwargs.get("uuid"))
 
 

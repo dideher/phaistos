@@ -3,6 +3,7 @@ from __future__ import annotations
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
+from django.db.models.query import QuerySet
 from main.models import BaseUUIDModel, SchoolYear
 
 
@@ -197,29 +198,40 @@ class Employee(BaseUUIDModel):
         else:
             return self.fek_diorismou
 
-        return f"{old_specialization.code} - {old_specialization.title}"
+    def has_substitute_employment_announcements(self) -> bool:
+        """
+        Returns `True` if the employee has substitute employment announcements in file
+        :return:
+        """
+        return self.get_substitute_employment_announcements().count() > 0
+
+    def get_substitute_employment_announcements(self) -> QuerySet[SubstituteEmploymentAnnouncement] :
+        return self.substitute_employment_announcements.all()
 
     def __str__(self):
         return f"{ self.last_name } {self.first_name} του {self.father_name}"
 
 
 class Employment(BaseUUIDModel):
-    employee = models.ForeignKey(Employee, null=False, db_column="EMPLOYEE_ID", on_delete=models.CASCADE)
-    specialization = models.ForeignKey(Specialization, null=False, on_delete=models.CASCADE)
-    current_unit = models.ForeignKey(Unit, null=False, on_delete=models.CASCADE)
-    school_year = models.ForeignKey(SchoolYear, null=False, on_delete=models.CASCADE)
+    employee = models.ForeignKey(Employee, null=False, db_column="EMPLOYEE_ID", on_delete=models.CASCADE,
+                                 verbose_name='Εργαζόμενος')
+    specialization = models.ForeignKey(Specialization, null=False, on_delete=models.CASCADE, verbose_name='Ειδικότητα')
+    current_unit = models.ForeignKey(Unit, null=False, on_delete=models.CASCADE, verbose_name='Σχ. Μονάδα')
+    school_year = models.ForeignKey(SchoolYear, null=False, on_delete=models.CASCADE, verbose_name='Σχ. Έτος')
     employment_type = models.CharField(choices=LegacyEmploymentType.choices, default=LegacyEmploymentType.REGULAR,
-                                     max_length=32, null=False, blank=False, db_column='EMPLOYMENT_TYPE')
+                                     max_length=32, null=False, blank=False, db_column='EMPLOYMENT_TYPE',
+                                       verbose_name='Τύπος')
     employment_type_extended = models.ForeignKey(EmploymentType, null=True, blank=True, on_delete=models.CASCADE,
                                                  default=None)
     is_active = models.BooleanField(db_column="IS_ACTIVE", null=False, default=True)
     myschool_status = models.CharField(db_column='MYSCHOOL_STATUS', null=True, default=None, blank=True, max_length=68)
     mandatory_week_workhours = models.PositiveSmallIntegerField(db_column='WORK_HOURS', blank=True, null=True,
                                                                 default=None,
+                                                                verbose_name='Ωράριο',
                                                                 help_text='Υποχρεωτικό Διδακτικό Ωράριο')
     week_workdays = models.CharField(max_length=10, blank=True)
-    effective_from = models.DateField(default=timezone.now, null=False)
-    effective_until = models.DateField(null=False)
+    effective_from = models.DateField(default=timezone.now, null=False, verbose_name='Από')
+    effective_until = models.DateField(null=False, verbose_name='Έως')
 
     praksi_topothetisis = models.CharField(db_column='PRAKSI_TOPOTHETISIS', max_length=64, blank=True, null=True,
                                            default=None)
@@ -234,8 +246,9 @@ class Employment(BaseUUIDModel):
     updated_from_myschool = models.DateTimeField(db_column='MYSCHOOL_UPDATED', blank=True, null=True, default=None)
     imported_from_myschool = models.DateTimeField(db_column='MYSCHOOL_IMPORTED', blank=True, null=True, default=None)
 
-
     class Meta:
+        verbose_name = 'Τοποθέτηση'
+        verbose_name_plural = 'Τοποθετήσεις'
         indexes = [
             models.Index(fields=['is_active', ]),
             models.Index(fields=['employment_type', ]),
@@ -345,7 +358,8 @@ class SubstituteEmploymentSource(models.Model):
 
 class SubstituteEmploymentAnnouncement(BaseUUIDModel):
     phase = models.CharField(max_length=64, blank=False)
-    employee = models.ForeignKey(Employee, null=False, db_column="EMPLOYEE_ID", on_delete=models.CASCADE)
+    employee = models.ForeignKey(Employee, null=False, db_column="EMPLOYEE_ID", on_delete=models.CASCADE,
+                                 related_name='substitute_employment_announcements')
     specialization = models.ForeignKey(Specialization, null=False, on_delete=models.CASCADE)
     school_year = models.ForeignKey(SchoolYear, null=False, on_delete=models.CASCADE)
     financing = models.ForeignKey(EmploymentFinancialSource, null=False, on_delete=models.CASCADE)

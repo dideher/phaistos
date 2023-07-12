@@ -48,7 +48,10 @@ class WorkExperienceAdmin(admin.ModelAdmin):
 
 @admin.register(Employment)
 class EmploymentAdmin(admin.ModelAdmin):
-    pass
+    list_display = ('school_year', 'employee', 'specialization', 'employment_type', 'current_unit',
+                    'mandatory_week_workhours', 'effective_from',
+                    'effective_until')
+    search_fields = ('employee__last_name', 'current_unit__title')
 
 
 @admin.register(EmploymentType)

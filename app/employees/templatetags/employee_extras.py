@@ -72,6 +72,7 @@ def show_employments(context):
     else:
         return {'employments': None}
 
+
 @register.inclusion_tag('employees/custom_tag_show_work_experience_totals.html', takes_context=True)
 def show_work_experience_totals(context):
     employee: Employee = context.get('employee')
@@ -156,4 +157,3 @@ def show_work_experience_totals(context):
         result.update(computed_totals)
 
     return result
-
