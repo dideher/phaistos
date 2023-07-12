@@ -19,16 +19,21 @@ class EmployeeSearchForm(forms.Form):
 
 
 class SubstituteEmploymentAnnouncementSearchForm(forms.Form):
-    phase = forms.ChoiceField(choices=[('', '')], required=False)
+    phase = forms.ChoiceField(choices=[('', '')], required=False, label=_('Φάση Προσλήψεων'))
     school_year = forms.ModelChoiceField(queryset=SchoolYear.objects.all(),  empty_label='Χωρίς Φίλτρο', required=False)
 
-    specialization = forms.ModelChoiceField(queryset=Specialization.objects.all(),  empty_label='Χωρίς Φίλτρο', required=False)
+    specialization = forms.ModelChoiceField(queryset=Specialization.objects.all(),
+                                            empty_label='Χωρίς Φίλτρο',
+                                            label=_('Ειδικότητα'),
+                                            required=False)
     financing = forms.ModelChoiceField(queryset=EmploymentFinancialSource.objects.all(),
                                        label=_('Χρηματοδότηση'),
                                        help_text=_("Φιλτράρισμα με βάση το πρόγραμμα χρηματοδότησης"),
                                        empty_label='Χωρίς Φίλτρο',
                                        required=False)
-    employment_source = forms.ModelChoiceField(queryset=SubstituteEmploymentSource.objects.all(),  empty_label='Χωρίς Φίλτρο',
+    employment_source = forms.ModelChoiceField(queryset=SubstituteEmploymentSource.objects.all(),
+                                               empty_label='Χωρίς Φίλτρο',
+                                               label=_('Τύπος'),
                                                required=False)
     is_pending = forms.BooleanField(label=_('Με Τοποθέτηση'),
                                     help_text=_('Φιλτράρισμα προσλήψεων με βάση την τοποθέτηση'),
