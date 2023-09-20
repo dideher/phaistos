@@ -4,6 +4,7 @@ djangorestframework
 django-bootstrap5
 django-bootstrap-modal-forms==3.0.3
 django-impersonate
+django-constance==3.1
 mysql-connector-python
 openpyxl
 weasyprint
