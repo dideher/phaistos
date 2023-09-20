@@ -8,7 +8,7 @@ from django.http.request import HttpRequest
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.utils import timezone
-from django.views.generic import ListView
+from constance import config
 
 from .utils import compute_leaves_real_duration, get_regular_leaves_for_employee_established_in_year, \
         get_medical_leaves_for_employee_established_in_year
@@ -349,7 +349,8 @@ class LeavePrintDecisionToPdfView(LoginRequiredMixin, View):
                    'range': range(2),
                    'geniki_father_name': first_name_to_geniki(employee.father_name), 
                    'leave_duration_verbal': convert_duration_to_words(leave.effective_number_of_days),
-                   'charset': 'iso-8859-7'}
+                   'charset': 'iso-8859-7',
+                   'config': config}
         
         logging.getLogger('fontTools').setLevel(logging.ERROR)
         logging.getLogger('weasyprint').setLevel(logging.ERROR)
@@ -375,4 +376,4 @@ class LeavePrintDecisionToPdfView(LoginRequiredMixin, View):
         base_url= settings.STATIC_ROOT # os.path.join(BASE_DIR, "..", "static_files") #request.build_absolute_uri('/')
         HTML(string=content_string, base_url=base_url).write_pdf(buffer)
         buffer.seek(0)
-        return  FileResponse(buffer, as_attachment=True, filename=f'{employee.last_name}_{employee.first_name}.pdf')
+        return FileResponse(buffer, as_attachment=True, filename=f'{employee.last_name}_{employee.first_name}.pdf')

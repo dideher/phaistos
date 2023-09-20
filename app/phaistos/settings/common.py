@@ -26,6 +26,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sites',
     'django_bootstrap5',
+    'constance',
     'bootstrap_modal_forms',
     'rest_framework',
     'rest_framework.authtoken',
@@ -160,5 +161,11 @@ LOGGING = {
         'handlers': ['console'],
         'level': 'INFO',
     },
+}
+
+CONSTANCE_BACKEND = 'constance.backends.database.DatabaseBackend'
+CONSTANCE_CONFIG = {
+    'DIRECTOR_TITLE': ("Δ/ΝΣΗΣ Δ/ΘΜΙΑΣ ΕΚΠ/ΣΗΣ ΗΡΑΚΛΕΙΟΥ", "Το ονοματεπώνυμο του διευθυντή της υπηρεσίας"),
+    'DIRECTOR_NAME': ("Διευθυντής Διευθυντόπουλος", "O τίτλος του διευθυντή της υπηρεσίας"),
 }
 
