@@ -376,4 +376,6 @@ class LeavePrintDecisionToPdfView(LoginRequiredMixin, View):
         base_url= settings.STATIC_ROOT # os.path.join(BASE_DIR, "..", "static_files") #request.build_absolute_uri('/')
         HTML(string=content_string, base_url=base_url).write_pdf(buffer)
         buffer.seek(0)
-        return FileResponse(buffer, as_attachment=True, filename=f'{employee.last_name}_{employee.first_name}.pdf')
+        filename = (f'{employee.last_name}_{employee.first_name} ([{leave.leave_type.legacy_code}] '
+                    f'{leave.date_from} εως {leave.date_until}).pdf')
+        return FileResponse(buffer, as_attachment=False, filename=filename)
