@@ -131,12 +131,22 @@
                                     </button>
                                     {% endif %}
                                     
-                                    {% if employee.employee_type != 'ADMINISTRATIVE' and leave.leave_type.legacy_code == '41' or leave.leave_type.legacy_code == '55' %}
-                                    <a id="print-leave-btn" href="{% url 'leaves:leave-print' leave.id  employee.id %}"
-                                       class="print-leave btn btn-sm btn-warning" type="button" name="button" target="_blank">
-                                        <i class="bi bi-filetype-pdf" aria-hidden="true"></i>&nbspΕκτ.
-                                    </a>
+                                    {% if employee.employee_type != 'ADMINISTRATIVE' %} 
+                                        {% if leave.leave_type.legacy_code == '41' or leave.leave_type.legacy_code == '55' %}
+                                            <a id="print-leave-btn" href="{% url 'leaves:leave-print' leave.id  employee.id %}"
+                                                class="print-leave btn btn-sm btn-warning" type="button" name="button" target="_blank">
+                                                <i class="bi bi-filetype-pdf" aria-hidden="true"></i>&nbspΕκτ.
+                                            </a>
+                                        {% endif %}
+                                    {% elif %}
+                                    {% else %}
+                                        {% if leave.leave_type.legacy_code == '31' or leave.leave_type.legacy_code == '54' %}
+                                            <a id="print-leave-btn" href="{% url 'leaves:leave-print' leave.id  employee.id %}"
+                                                class="print-leave btn btn-sm btn-warning" type="button" name="button" target="_blank">
+                                                <i class="bi bi-filetype-pdf" aria-hidden="true"></i>&nbspΕκτ.
+                                            </a>
                                     {% endif %}
+
                                 </td>
                             </tr>
                             {% endfor %}
