@@ -1,12 +1,12 @@
 {% load static %}
 <!DOCTYPE html>
 <html>
-<head>
-<meta charset="{{charset}}">
-<style>
+  <head>
+    <meta charset="{{ charset }}">
+    <style>
     @font-face {
         font-family: DejaVu-Sans;
-        font-size: 14pt;
+        font-size: 12pt;
         {% comment %} src: url({% static 'main/fonts/Kerkis-Bold.ttf' %}); {% endcomment %}
     }
    
@@ -35,7 +35,7 @@
         margin-left: auto;
         margin-right: auto;
         margin-bottom: 5px;
-       }            
+       }
 
       .prometopida {
         display: flex;
@@ -84,18 +84,19 @@
         padding-top: 50px;
         font-weight: bold;
       }
+      
       h3 {
         text-align:center;
         font-family: DejaVu-Sans;
         font-weight: bold;
       }
       
-       ol{
-        list-style-position: insdide;
-        padding-left: 2em;
-        text-align: justify;
-        text-justify: inter-word;
-        }
+      ol{
+      list-style-position: insdide;
+      padding-left: 2em;
+      text-align: justify;
+      text-justify: inter-word;
+      }
 
        ol.l {
           list-style-type: lower-greek;
@@ -126,158 +127,214 @@
           padding-left: 2px;
           padding-right: 2px;
         }
-      </style>
-</head>
-
-<body>
-  {% for i in range %}
-  <div class="break">
-    <div class="prometopida">
-        <div id="foreas">
-            <img src='main/greek_flag_icon.png' class="greek_flag_image" class="center-flag" alt="Σημαία" alt="Τεστ">
-            ΕΛΛΗΝΙΚΗ ΔΗΜΟΚΡΑΤΙΑ <br>
-            ΥΠΟΥΡΓΕΙΟ ΠΑΙΔΕΙΑΣ, ΘΡΗΣΚΕΥΜΑΤΩΝ ΚΑΙ ΑΘΛΗΤΙΣΜΟΥ<br>
-            <div class="thin-dashed-line"> ----- </div>
-            ΠΕΡΙΦΕΡΕΙΑΚΗ ΔΙΕΥΘΥΝΣΗ Α/ΘΜΙΑΣ & <br>
-            Β/ΘΜΙΑΣ ΕΚΠΑΙΔΕΥΣΗΣ ΚΡΗΤΗΣ <br>
-            Δ/ΝΣΗ Β/ΘΜΙΑΣ ΕΚΠ/ΣΗΣ Ν. ΗΡΑΚΛΕΙΟΥ <br>
-            ΤΜΗΜΑ Γ' ΠΡΟΣΩΠΙΚΟΥ <br>
-            <div class="thin-dashed-line"> ----- </div>
+    </style>
+  </head>
+  <body>
+    {% for i in range %}
+      <div class="break">
+        <div class="prometopida">
+          <div id="foreas">
+            <img src='main/greek_flag_icon.png'
+                 class="greek_flag_image"
+                 class="center-flag"
+                 alt="Σημαία"
+                 alt="Τεστ">
+            ΕΛΛΗΝΙΚΗ ΔΗΜΟΚΡΑΤΙΑ
+            <br>
+            ΥΠΟΥΡΓΕΙΟ ΠΑΙΔΕΙΑΣ, ΘΡΗΣΚΕΥΜΑΤΩΝ ΚΑΙ ΑΘΛΗΤΙΣΜΟΥ
+            <br>
+            <div class="thin-dashed-line">-----</div>
+            ΠΕΡΙΦΕΡΕΙΑΚΗ ΔΙΕΥΘΥΝΣΗ Α/ΘΜΙΑΣ &
+            <br>
+            Β/ΘΜΙΑΣ ΕΚΠΑΙΔΕΥΣΗΣ ΚΡΗΤΗΣ
+            <br>
+            Δ/ΝΣΗ Β/ΘΜΙΑΣ ΕΚΠ/ΣΗΣ Ν. ΗΡΑΚΛΕΙΟΥ
+            <br>
+            ΤΜΗΜΑ Γ' ΠΡΟΣΩΠΙΚΟΥ
+            <br>
+            <div class="thin-dashed-line">-----</div>
             <table id="address-table">
               <tr>
-                <td style="text-align:right"> Ταχ. Δ/νση: </td>
-                <td style="text-align:left"> Μονοφατσίου 8 </td>
+                <td style="text-align:right">Ταχ. Δ/νση:</td>
+                <td style="text-align:left">Μονοφατσίου 8</td>
               </tr>
               <tr>
-                <td style="text-align:right"> T.K. - Πόλη: </td>
-                <td style="text-align:left"> 71201 Ηράκλειο </td>
+                <td style="text-align:right">T.K. - Πόλη:</td>
+                <td style="text-align:left">71201 Ηράκλειο</td>
               </tr>
               {% comment %} <tr> {% endcomment %}
-                {% comment %} <td style="text-align:right"> Ιστοσελίδα: </td> {% endcomment %}
-                {% comment %} <td style="text-align:left"> dide.ira.sch.gr </td> {% endcomment %}
+              {% comment %} <td style="text-align:right"> Ιστοσελίδα: </td> {% endcomment %}
+              {% comment %} <td style="text-align:left"> dide.ira.sch.gr </td> {% endcomment %}
               {% comment %} </tr> {% endcomment %}
-              
               <tr>
-                <td style="text-align:right"> Πληροφορίες: </td>
-                <td style="text-align:left"> Θώμου Ε., Αυγουστάκη Γ., Μπακοθύμιου Ε.</td>
+                <td style="text-align:right">Πληροφορίες:</td>
+                <td style="text-align:left">Θώμου Ε., Αυγουστάκη Γ.</td>
               </tr>
               <tr>
-                <td style="text-align:right"> Τηλέφωνο: </td>
-                <td style="text-align:left"> 2810-333737, 2810-333772 </td>
+                <td style="text-align:right">Τηλέφωνο:</td>
+                <td style="text-align:left">2810-333737</td>
               </tr>
               <tr>
-                <td style="text-align:right"> E-mail: </td>
-                <td style="text-align:left"> adeies@dide.ira.sch.gr </td>
+                <td style="text-align:right">E-mail:</td>
+                <td style="text-align:left">adeies@dide.ira.sch.gr</td>
               </tr>
               <tr>
                 <td style="text-align:right">&nbsp;</td>
                 <td style="text-align:left">&nbsp;</td>
               </tr>
             </table>
-        </div>
-        <div>
-          {% comment %} Βαθμός Ασφαλείας: <br> {% endcomment %}
-          {% comment %} Βαθμός Προτερ.: <br> {% endcomment %}
-          {% comment %} Να διατηρηθεί μέχρι: <br> {% endcomment %}
-          <div id="location-date-protocol">
-            Ηράκλειο, {{leave.incoming_protocol_date}} <br>
-            Αρ. Πρωτ.: {{leave.incoming_protocol}}
           </div>
-          <div id="decision">
-            <h2> ΑΠΟΦΑΣΗ </h2>
-          </div>
-          {% comment %} <div id="recepients"> {% endcomment %}
+          <div>
+            {% comment %} Βαθμός Ασφαλείας: <br> {% endcomment %}
+            {% comment %} Βαθμός Προτερ.: <br> {% endcomment %}
+            {% comment %} Να διατηρηθεί μέχρι: <br> {% endcomment %}
+            <div id="location-date-protocol">
+              Ηράκλειο, {{ leave.incoming_protocol_date }}
+              <br>
+              Αρ. Πρωτ.: {{ leave.incoming_protocol }}
+            </div>
+            <div id="decision">
+              <h2>ΑΠΟΦΑΣΗ</h2>
+            </div>
+            {% comment %} <div id="recepients"> {% endcomment %}
             {% comment %} Προς: <br> {% endcomment %}
             {% comment %} {% for r in recipients %} {% endcomment %}
-             {% comment %} {{forloop.counter }}. {{ r }} <br> {% endcomment %}
+            {% comment %} {{forloop.counter }}. {{ r }} <br> {% endcomment %}
             {% comment %} {% endfor %} {% endcomment %}
           </div>
         </div>
-    </div> 
-      
-    <h3> ΘΕΜΑ: «Χορήγηση κανονικής άδειας απουσίας </h3>
-      Έχοντας υπόψη:
-    <ol>
-    <li> 
-        Τις διατάξεις των άρθρων 48 και 49 του Ν.3528/2007 (ΦΕΚ 26/09-02-2007 τ.Α΄) με θέμα «Κύρωση του Κώδικα Κατάστασης Δημοσίων Πολιτικών 
-        Διοικητικών Υπαλλήλων και Υπαλλήλων Ν.Π.Δ.Δ. και άλλες διατάξεις» όπως τροποποιήθηκε από τον Ν.4210/2013 (ΦΕΚ 254/21-11-2013 τ.Α’) «Ρυθμίσεις Υπουργείου Διοικητικής Μεταρρύθμισης και Ηλεκτρονικής Διακυβέρνησης και άλλες διατάξεις» όπως τροποποιήθηκε από τον Ν. 4210/2013
-    </li>
-    <li> 
-      Την με αρίθμ. πρωτ. 74275/Δ2/10.07.2007 εγκύκλιο του ΥΠ.Π.Δ.Β.Μ.Θ. «Άδειες εκπαιδευτικών Πρωτοβάθμιας και Δευτεροβάθμιας Εκπαίδευσης» 
-    </li>
-    <li> 
-      Τις εγκυκλίους με αρίθμ. Φ.351.5/43/67822/Δ1/05-05-2014 (ΑΔΑ: ΒΙΦΓ9-4ΘΑ) «Άδειες εκπαιδευτικών Πρωτοβάθμιας και Δευτεροβάθμιας Εκπαίδευσης» και Φ.351.5/85/162843/Δ1/08-10-2014 εγκύκλιους του Υ.ΠΑΙ.Θ.</li>
-    <li> 
-     Το άρθρο 6 της με αρ. 170405/ΓΓ1 Κοινής Υπουργικής Απόφασης (ΦΕΚ 6273/28-12-2021) με θέμα «Καθορισμός των ειδικότερων καθηκόντων και αρμοδιοτήτων των Δ/ντων Εκπαίδευσης»
-    </li>
-    <li> 
-      Τις διατάξεις του άρθ.6 της Κ.Υ.Α (ΦΕΚ Αρ.6273/τ.Β’/28-12-2021) «Καθήκοντα και αρμοδιότητες Διευθυντών Εκπαίδευσης». 
-    </li>
-    <li> 
-      Την από {{leave.incoming_protocol_date}} αίτηση 
-      {% if employee.is_man %} 
-        του 
-      {% else %} 
-        της 
-      {% endif %} <b> {{employee.last_name}} {{employee.first_name}} </b> του <b> {{geniki_father_name}} </b> 
-      {% if employee.employee_type != 'ADMINISTRATIVE' %}
-        εκπαιδευτικό κλάδου {{ employee.specialization }}
-      {% else %}
-        {% if employee.is_man %} διοικητικό {% else %} διοικητική {% endif %} υπάλληλο κλάδου {{ employee.specialization }} 
-      {% endif %}
-      που υπηρετεί στην Δ/νση Δ/θμιας Εκπ/σης Ηρακλείου.
-    </li>
-    <li> Την με Αρ. Πρωτ: {{leave.health_committee_protocol}} Γνωμ. της Α/θμιας Υγειονομικής Επιτροπής Περιφερειακής Ενότητας Ηρακλείου που γνωματεύει ότι 
-      {% if employee.is_man %} 
-        ο 
-      {% else %} η {% endif %} <b>{{employee.last_name}} {{employee.first_name}}</b> του <b>{{geniki_father_name}} </b>
-
-      εκπαιδευτικός κλάδου {{employee.specialization }} του {{employee.current_unit }} έχει ανάγκη αναρρωτικής άδειας <b> {{leave_duration_verbal}} ({{leave.effective_number_of_days}}) 
-      {% if leave.effective_number_of_days == 1 %} ημέρας{% else %} ημερών{% endif %}</b>, από <b>{{leave.date_from}}</b> έως και <b>{{leave.date_until}}</b>.</li>
-    </ol> 
-    <h3> Αποφασίζουμε </h3>
-    <p>
-      Χορηγούμε {% if employee.is_man %} στον {% else %} στην {% endif %} <b>{{employee.last_name}} {{employee.first_name}}</b> του <b>{{geniki_father_name}}</b>, 
-      εκπαιδευτικό κλάδου {{employee.specialization }} του <b>{{employee.current_unit }}</b>, της Δ/νσης Δ/θμιας Εκπ/σης Ηρακλείου, αναρρωτική άδεια <b>{{leave_duration_verbal}} ({{leave.effective_number_of_days}}) 
-      {% if leave.effective_number_of_days == 1 %} ημέρας{% else %} ημερών{% endif %}</b> με αποδοχές, από <b>{{leave.date_from}}</b> έως και <b>{{leave.date_until}}</b>.</li>
-    </p>
-    <br>
-    <div class="flex-signature">
-      {% if i == 0 %}
-        <div>  
-        <h4 style="font-weight:normal;text-align:left;"> ΚΟΙΝΟΠΟΙΗΣΗ </h4>
-        <ol >
-          <li style="font-weight:normal;"> Ενδιαφερόμενος </li>
-          <li style="font-weight:normal;"> Α/Φ ΔΔΕ Ηρακλείου </li>
-          <li style="font-weight:normal;"> Σχολείο που υπηρετεί </li>
-        </ol>
-        </div>
-      {% else %}
-        <div>  
-          <p style="font-weight:bold;text-align:center;">
-            ΠΙΣΤΟ ΑΝΤΙΓΡΑΦΟ<br>
-            Η ΑΝ. ΠΡΟΪΣΤΑΜΕΝΗ ΤΟΥ ΤΜΗΜΑΤΟΣ Γ΄<br>
-            ΠΡΟΣΩΠΙΚΟΥ<br>
-            <br>
-            <br>
-            <br>
-            <br>
-            ΕΛΕΝΗ ΚΑΜΠΙΤΑΚΗ
-            </p>
-        </div>
-      {% endif %}
-      <div>
-          {{ config.DIRECTOR_TITLE|safe }}
-          <br>
-          {{ config.DIRECTOR_NAME|safe }}
       </div>
-    </div>
+      <br>
+      <h3 style="text-align:left">ΘΕΜΑ: «Χορήγηση κανονικής άδειας απουσίας»</h3>
+      Έχοντας υπόψη:
+      <ol>
+        <li>
+          Τις διατάξεις των άρθρων 48 και 49 του Ν.3528/2007 (ΦΕΚ 26/09-02-2007 τ.Α΄) με θέμα «Κύρωση του Κώδικα Κατάστασης Δημοσίων Πολιτικών
+          Διοικητικών Υπαλλήλων και Υπαλλήλων Ν.Π.Δ.Δ. και άλλες διατάξεις» όπως τροποποιήθηκε από τον Ν.4210/2013 (ΦΕΚ 254/21-11-2013 τ.Α’) «Ρυθμίσεις Υπουργείου Διοικητικής Μεταρρύθμισης και Ηλεκτρονικής Διακυβέρνησης και άλλες διατάξεις» όπως τροποποιήθηκε από τον Ν. 4210/2013
+        </li>
+        <li>
+          Την με αρίθμ. πρωτ. 74275/Δ2/10.07.2007 εγκύκλιο του ΥΠ.Π.Δ.Β.Μ.Θ. «Άδειες εκπαιδευτικών Πρωτοβάθμιας και Δευτεροβάθμιας Εκπαίδευσης»
+        </li>
+        <li>
+          Τις εγκυκλίους με αρίθμ. Φ.351.5/43/67822/Δ1/05-05-2014 (ΑΔΑ: ΒΙΦΓ9-4ΘΑ) «Άδειες εκπαιδευτικών Πρωτοβάθμιας και Δευτεροβάθμιας Εκπαίδευσης» και Φ.351.5/85/162843/Δ1/08-10-2014 εγκύκλιους του Υ.ΠΑΙ.Θ.
+        </li>
+        <li>
+          Το άρθρο 6 της με αρ. 170405/ΓΓ1 Κοινής Υπουργικής Απόφασης (ΦΕΚ 6273/28-12-2021) με θέμα «Καθορισμός των ειδικότερων καθηκόντων και αρμοδιοτήτων των Δ/ντων Εκπαίδευσης»
+        </li>
+        <li>
+          Τις διατάξεις του άρθ.6 της Κ.Υ.Α (ΦΕΚ Αρ.6273/τ.Β’/28-12-2021) «Καθήκοντα και αρμοδιότητες Διευθυντών Εκπαίδευσης».
+        </li>
+        <li>
+          Την από <b>{{ leave.incoming_protocol_date }}</b> αίτηση
+          {% if employee.is_man == None %}
+            του/της
+          {% else %}
+            {% if employee.is_man %}
+              του
+            {% else %}
+              της
+            {% endif %}
+          {% endif %}
+          <b> {{ geniki_employee_last_name }} {{ geniki_employee_name }} </b> του <b> {{ geniki_father_name }}, </b>
+          {% if employee.employee_type != 'ADMINISTRATIVE' %}
+            εκπαιδευτικό κλάδου {{ employee.specialization }},
+          {% else %}
+            {% if employee.is_man %}
+              διοικητικό
+            {% else %}
+              διοικητική
+            {% endif %}
+            υπάλληλο κλάδου {{ employee.specialization }},
+          {% endif %}
+          που υπηρετεί στην Δ/νση Δ/θμιας Εκπ/σης Ηρακλείου.
+        </li>
+      </ol>
+      <h3>Αποφασίζουμε</h3>
+      <p>
+        Χορηγούμε
+        {% if employee.is_man == None %}
+          στον/στην
+        {% else %}
+          {% if employee.is_man %}
+            στον
+          {% else %}
+            στην
+          {% endif %}
+        {% endif %}
+        <b> {{ accusative_employee_last_name }} {{ accusative_employee_name }} </b> του <b> {{ geniki_father_name }}</b>,
+        εκπαιδευτικό κλάδου {{ employee.specialization }} που υπηρετεί στην Δ/νση Δ/θμιας Εκπ/σης Ηρακλείου,
+        κανονική άδεια απουσίας <b> {{ leave_duration_verbal }} ({{ leave.effective_number_of_days }})
+        {% if leave.effective_number_of_days == 1 %}
+          ημέρας
+        {% else %}
+          ημερών
+        {% endif %}
+      </b>
+      με τις δικαιούμενες αποδοχές, από <b> {{ leave.date_from }} </b> έως και <b> {{ leave.date_until }} </b> για λόγους που αναφέρει στην αίτησή
+      {% if employee.is_man %}
+        του.
+      {% else %}
+        της.
+      {% endif %}
+    </li>
+  </p>
+  <br>
+  <div class="flex-signature">
+    {% if i == 0 %}
+      <div>
+        <h4 style="font-weight:normal;text-align:left;">ΚΟΙΝΟΠΟΙΗΣΗ</h4>
+        <ol>
+          <li style="font-weight:normal;">Ενδιαφερόμενος</li>
+          <li style="font-weight:normal;">Α/Φ ΔΔΕ Ηρακλείου</li>
+          {% comment %} <li style="font-weight:normal;"> Σχολείο που υπηρετεί </li> {% endcomment %}
+        </ol>
+      </div>
+      <div>
+        {{ config.DIRECTOR_TITLE|safe }}
+        <br>
+        {{ config.DIRECTOR_NAME|safe }}
+      </div>
+    {% elif i == 1 %}
+      <div>
+        <p style="font-weight:bold;text-align:center;">
+          ΠΙΣΤΟ ΑΝΤΙΓΡΑΦΟ
+          <br>
+          Η ΑΝ. ΠΡΟΪΣΤΑΜΕΝΗ ΤΟΥ ΤΜΗΜΑΤΟΣ Γ΄
+          <br>
+          ΠΡΟΣΩΠΙΚΟΥ
+          <br>
+          <br>
+          <br>
+          <br>
+          <br>
+          ΕΛΕΝΗ ΚΑΜΠΙΤΑΚΗ
+        </p>
+      </div>
+      <div>
+        {{ config.DIRECTOR_TITLE|safe }}
+        <br>
+        {{ config.DIRECTOR_NAME|safe }}
+      </div>
+    {% elif i == 2 %}
+      <div>
+        <h4 style="font-weight:normal;text-align:left;">ΚΟΙΝΟΠΟΙΗΣΗ</h4>
+        <ol>
+          <li style="font-weight:normal;">Ενδιαφερόμενος</li>
+          <li style="font-weight:normal;">Α/Φ ΔΔΕ Ηρακλείου</li>
+          {% comment %} <li style="font-weight:normal;"> Σχολείο που υπηρετεί </li> {% endcomment %}
+        </ol>
+      </div>
+      <div>
+        {{ config.REPLACEMENT_DIRECTOR_TITLE|safe }}
+        <br>
+        {{ config.REPLACEMENT_DIRECTOR_NAME|safe }}
+      </div>
+    {% endif %}
   </div>
-  {% endfor %}
-  </body>
-</html> 
-
-    {% comment %} <table class="data-table">
+{% endfor %}
+</body>
+</html>
+{% comment %} <table class="data-table">
       <legend style="text-align: center; font-weight: bold;"> Δεδομένα </legend>
       <thead>
           <tr>
@@ -296,14 +353,11 @@
                   <td> {{ d.1 }} </td>
                   <td> {{ d.2 }} </td>
                   <td> {{ d.3 }} </td>
-                  <td style="text-align: center;" > {{ d.4 }} </td> 
+                  <td style="text-align: center;"> {{ d.4 }} </td> 
                   <td style="text-align: center;"> {{ d.5 }} </td> 
                   <td style="text-align: center;"> {{ d.6 }} </td> 
                   <td style="text-align: center;"> {{ d.7 }} </td> 
               </tr>
           {% endfor %}
       </tbody>
-  </table> {% endcomment %}
-  
-
-
+</table> {% endcomment %}

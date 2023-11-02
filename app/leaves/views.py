@@ -16,7 +16,7 @@ from django.views.generic import View, ListView
 # gstam
 import os
 import io
-from phaistos.utils import convert_duration_to_words, first_name_to_geniki
+from phaistos.utils import convert_duration_to_words, first_name_to_geniki, first_name_to_accusative, last_name_to_geniki, last_name_to_accusative
 from django.conf import settings
 from django.template.loader import render_to_string
 from weasyprint import HTML
@@ -339,15 +339,24 @@ class LeavePrintDecisionToPdfView(LoginRequiredMixin, View):
         employee = Employee.objects.get(pk = self.kwargs['employee_pk'])
         leave = Leave.objects.get(pk = self.kwargs['pk'])
         # Select Template
-        if (employee.employee_type != "ADMINISTRATIVE") and (leave.leave_type.legacy_code == "41" or leave.leave_type.legacy_code == "55"):
-            template_path = os.path.join(settings.BASE_DIR, 'templates/leaves/template_leave_type_41_55_forward_to.html')
+        if (leave.leave_type.legacy_code == "31" or leave.leave_type.legacy_code == "54"):
+            template_path = os.path.join(settings.BASE_DIR, 'templates/leaves/template_leave_type_31_54_forward_to.html')
         else:
-            template_path = os.path.join(settings.BASE_DIR, 'templates/leaves/template_leave_type_empty.html')
+            if (employee.employee_type != "ADMINISTRATIVE"):
+                if (leave.leave_type.legacy_code == "41" or leave.leave_type.legacy_code == "55"):
+                    template_path = os.path.join(settings.BASE_DIR, 'templates/leaves/template_leave_type_41_55_forward_to.html')
+            else:
+                template_path = os.path.join(settings.BASE_DIR, 'templates/leaves/template_leave_type_empty.html')
+        
         
         context = {'employee': employee,
                    'leave': leave,
-                   'range': range(2),
+                   'range': range(3),
                    'geniki_father_name': first_name_to_geniki(employee.father_name), 
+                   'geniki_employee_name': first_name_to_geniki(employee.first_name),
+                   'accusative_employee_name': first_name_to_accusative(employee.first_name),
+                   'geniki_employee_last_name': last_name_to_geniki(employee.last_name),
+                   'accusative_employee_last_name': last_name_to_accusative(employee.last_name),
                    'leave_duration_verbal': convert_duration_to_words(leave.effective_number_of_days),
                    'charset': 'iso-8859-7',
                    'config': config}
