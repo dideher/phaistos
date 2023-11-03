@@ -177,6 +177,7 @@ class Employee(BaseUUIDModel):
             models.Index(fields=['minoas_id'], )
         ]
 
+
     def get_smart_specialization_str(self):
         old_specialization: Specialization = self.specialization
         if old_specialization is not None:

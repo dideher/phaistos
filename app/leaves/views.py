@@ -351,7 +351,7 @@ class LeavePrintDecisionToPdfView(LoginRequiredMixin, View):
         
         context = {'employee': employee,
                    'leave': leave,
-                   'range': range(3),
+                   'range': range(2),
                    'geniki_father_name': first_name_to_geniki(employee.father_name), 
                    'geniki_employee_name': first_name_to_geniki(employee.first_name),
                    'accusative_employee_name': first_name_to_accusative(employee.first_name),
