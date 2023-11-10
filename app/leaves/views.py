@@ -356,7 +356,7 @@ class LeavePrintDecisionToPdfView(LoginRequiredMixin, View):
         
         
         context = {'employee': employee,
-                   'is_principal': True,
+                   'is_principal': False,
                    'principal_school_unit': "ΙΔΙΩΤΙΚΟ ΛΥΚΕΙΟ - ΕΚΠΑΙΔΕΥΤΗΡΙΟ ΤΟ ΠΑΓΚΡΗΤΙΟΝ",
                    'is_education_consultant': False,
                    'education_consultant_specialization': 'ΠΕ86',
