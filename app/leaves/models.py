@@ -62,7 +62,7 @@ class Leave(models.Model):
     updated_on = models.DateTimeField(db_column="UPDATED_ON", null=True, blank=True)
 
     health_committee_protocol = models.CharField(db_column="HEALTH_COMMITTEE_PROTOCOL", max_length=128, blank=True,
-                                                 verbose_name="Πρωτόκολλο Γνωμάτευσης Υγ. Επιτροπής",
+                                                 verbose_name="Πρωτόκολλο Υγειονομικής Επιτροπής ή Πρωτόκολλο Βεβαίωσης Δ/ντη Σχολ. Μονάδας ή Ημερομηνία Γνωμάτευσης Ιατρού ή Ημερομηνία Υπεύθυνης Δήλωσης",
                                                  default='',
                                                  help_text="Καταχωρίστε το πρωτόκολλο της γνωμάτευσης της Α/θμιας "
                                                            "Υγειονομικής Επιτροπής")
@@ -70,7 +70,6 @@ class Leave(models.Model):
     incoming_protocol = models.CharField(db_column="INCOMING_PROTOCOL", max_length=64, blank=True, default='',
                                          verbose_name="Αριθμός Εισερχόμενου Πρωτοκόλλου",
                                          help_text="Καταχωρίστε τον αριθμό του εισερχόμενου πρωτοκόλλου")
-
     incoming_protocol_date = models.DateField(db_column="INCOMING_PROTOCOL_DATE", null=True, default=None, blank=True,
                                               verbose_name="Ημ/νια Εισερχόμενου Πρωτοκόλλου",
                                               help_text="Καταχωρίστε την ημ/νία του εισερχόμενου πρωτοκόλλου")

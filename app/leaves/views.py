@@ -341,6 +341,12 @@ class LeavePrintDecisionToPdfView(LoginRequiredMixin, View):
         # Select Template
         if (leave.leave_type.legacy_code == "31" or leave.leave_type.legacy_code == "54"):
             template_path = os.path.join(settings.BASE_DIR, 'templates/leaves/template_leave_type_31_54_forward_to.html')
+        elif (leave.leave_type.legacy_code == "42"): # or leave.leave_type.legacy_code == "48"):
+            template_path = os.path.join(settings.BASE_DIR, 'templates/leaves/template_leave_type_42_forward_to.html')
+        elif (leave.leave_type.legacy_code == "47"): # or leave.leave_type.legacy_code == "48"):
+            template_path = os.path.join(settings.BASE_DIR, 'templates/leaves/template_leave_type_47_forward_to.html')
+        elif (leave.leave_type.legacy_code == "57"): # or leave.leave_type.legacy_code == "48"):
+            template_path = os.path.join(settings.BASE_DIR, 'templates/leaves/template_leave_type_57_forward_to.html')
         else:
             if (employee.employee_type != "ADMINISTRATIVE"):
                 if (leave.leave_type.legacy_code == "41" or leave.leave_type.legacy_code == "55"):
@@ -350,6 +356,10 @@ class LeavePrintDecisionToPdfView(LoginRequiredMixin, View):
         
         
         context = {'employee': employee,
+                   'is_principal': True,
+                   'principal_school_unit': "ΙΔΙΩΤΙΚΟ ΛΥΚΕΙΟ - ΕΚΠΑΙΔΕΥΤΗΡΙΟ ΤΟ ΠΑΓΚΡΗΤΙΟΝ",
+                   'is_education_consultant': False,
+                   'education_consultant_specialization': 'ΠΕ86',
                    'leave': leave,
                    'range': range(2),
                    'geniki_father_name': first_name_to_geniki(employee.father_name), 
