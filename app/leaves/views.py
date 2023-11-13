@@ -23,6 +23,7 @@ from weasyprint import HTML
 import logging
 ## end-gstam
 from phaistos.commons.export import ExportableListView
+from phaistos.commons.utils import employee_is_principal, principals_school_unit, employee_is_education_consultant
 from django.views.generic.edit import FormMixin
 from django.shortcuts import render
 
@@ -354,12 +355,13 @@ class LeavePrintDecisionToPdfView(LoginRequiredMixin, View):
             else:
                 template_path = os.path.join(settings.BASE_DIR, 'templates/leaves/template_leave_type_empty.html')
         
+        is_education_consultant, education_consultant_specialization = employee_is_education_consultant()
         
         context = {'employee': employee,
-                   'is_principal': False,
-                   'principal_school_unit': "ΙΔΙΩΤΙΚΟ ΛΥΚΕΙΟ - ΕΚΠΑΙΔΕΥΤΗΡΙΟ ΤΟ ΠΑΓΚΡΗΤΙΟΝ",
-                   'is_education_consultant': False,
-                   'education_consultant_specialization': 'ΠΕ86',
+                   'is_principal': employee_is_principal(),
+                   'principal_school_unit': principals_school_unit(),
+                   'is_education_consultant': is_education_consultant,
+                   'education_consultant_specialization': education_consultant_specialization,
                    'leave': leave,
                    'range': range(2),
                    'geniki_father_name': first_name_to_geniki(employee.father_name), 
