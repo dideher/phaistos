@@ -1,6 +1,6 @@
 from django.contrib import admin
 from .models import Employee, Specialization, Unit, EmployeeType, WorkExperience, WorkExperienceType, EmploymentType, \
-    Employment
+    Employment, SchoolPrincipals
 
 
 @admin.register(EmployeeType)
@@ -54,3 +54,9 @@ class EmploymentAdmin(admin.ModelAdmin):
 class EmploymentTypeAdmin(admin.ModelAdmin):
     pass
 
+
+@admin.register(SchoolPrincipals)
+class SchoolPrincipalsAdmin(admin.ModelAdmin):
+    class Meta:
+        verbose_name = 'Σχολικός Διευθυντής'
+        verbose_name_plural = 'Σχολικοί Διευθυντές'

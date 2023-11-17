@@ -12,8 +12,10 @@ from api.views import (
     UnitImportAPIView,
     AthinaEmployeeImportAPIView,
     MySchoolEmployeeImportAPIView,
-    MySchoolEmploymentImportAPIView
+    MySchoolEmploymentImportAPIView,
+    SchoolPrincipalList
 )
+from api.imports.myschool import SchoolPrincipalImportAPIView
 
 urlpatterns = [
     path('employees/', EmployeeList.as_view(), name="employees-list"),
@@ -26,8 +28,11 @@ urlpatterns = [
          name='myschool-employees-import'),
     path('bulk_import/myschool/employments/', MySchoolEmploymentImportAPIView.as_view(),
          name='myschool-employment-import'),
+    path('bulk_import/myschool/schoolprincipals/', SchoolPrincipalImportAPIView.as_view(),
+         name='myschool-schoolprincipals-import'),
     path('specializations/', SpecializationAPIView.as_view(), name="specializations"),
     path('specializations/<str:code>/', SpecializationDetailAPI.as_view(), name="specialization-detail"),
     path('leavetypes/', LeaveTypesAPIView.as_view(), name="leavetypes-list"),
     path('leavetypes/<int:pk>/', LeaveTypeDetailAPI.as_view(), name="leavetype-detail"),
+    path('schoolprincipals/', SchoolPrincipalList.as_view(), name='school-principal-list')
 ]
