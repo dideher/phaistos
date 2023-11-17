@@ -229,12 +229,18 @@
           {% if employee.is_man == None %} του/της {% else %} {% if employee.is_man %} του {% else %} της {% endif %} {% endif %}
           <b> {{ geniki_employee_last_name }} {{ geniki_employee_name }} </b> του <b> {{ geniki_father_name }}, </b>
           {% if employee.employee_type != 'ADMINISTRATIVE' %}
-            εκπαιδευτικό κλάδου {{ employee.specialization }},
-          {% else %} 
-            {% if employee.is_man %} διοικητικό {% else %} διοικητική {% endif %}
-            υπάλληλο κλάδου {{ employee.specialization }},
+          {% if is_principal %} 
+            {% if employee.is_man == None %} Διευθυντή/ρια {% else %}  {% if employee.is_man %} Διευθυντή {% else %} Διευθύντρια  {% endif %} {% endif %}
+            του {{ principal_school_unit }}.
+          {% elif is_education_consultant %} 
+            <b> ΣΕ ({{ education_consultant_specialization }}). </b>
+          {% else %}
+            εκπαιδευτικό κλάδου {{ employee.specialization }}, που υπηρετεί στην Δ/νση Δ/θμιας Εκπ/σης Ηρακλείου,
           {% endif %}
-          που υπηρετεί στην Δ/νση Δ/θμιας Εκπ/σης Ηρακλείου.
+        {% else %}
+          {% if employee.is_man %} διοικητικό {% else %} διοικητική {% endif %}
+            υπάλληλο κλάδου {{ employee.specialization }}, που υπηρετεί στην Δ/νση Δ/θμιας Εκπ/σης Ηρακλείου,
+        {% endif %}
         </li>
       </ol>
       <h3>Αποφασίζουμε</h3>
@@ -243,12 +249,19 @@
         {% if employee.is_man == None %} στον/στην {% else %} {% if employee.is_man %} στον {% else %} στην {% endif %} {% endif %}
         <b> {{ accusative_employee_last_name }} {{ accusative_employee_name }} </b> του <b> {{ geniki_father_name }}</b>,
         {% if employee.employee_type != 'ADMINISTRATIVE' %}
-            εκπαιδευτικό κλάδου {{ employee.specialization }},
-          {% else %} 
-            {% if employee.is_man %} διοικητικό {% else %} διοικητική {% endif %}
-            υπάλληλο κλάδου {{ employee.specialization }},
+          {% if is_principal %} 
+            {% if employee.is_man == None %} Διευθυντή/ρια {% else %}  {% if employee.is_man %} Διευθυντή {% else %} Διευθύντρια  {% endif %} {% endif %}
+            του {{ principal_school_unit }}
+          {% elif is_education_consultant %} 
+            <b> ΣΕ ({{ education_consultant_specialization }}), </b>
+          {% else %}
+            εκπαιδευτικό κλάδου {{ employee.specialization }}, που υπηρετεί στην Δ/νση Δ/θμιας Εκπ/σης Ηρακλείου,
           {% endif %}
-        που υπηρετεί στην Δ/νση Δ/θμιας Εκπ/σης Ηρακλείου, κανονική άδεια απουσίας <b> {{ leave_duration_verbal }} ({{ leave.effective_number_of_days }})
+        {% else %}
+          {% if employee.is_man %} διοικητικό {% else %} διοικητική {% endif %}
+            υπάλληλο κλάδου {{ employee.specialization }}, που υπηρετεί στην Δ/νση Δ/θμιας Εκπ/σης Ηρακλείου,
+        {% endif %} 
+        κανονική άδεια απουσίας <b> {{ leave_duration_verbal }} ({{ leave.effective_number_of_days }})
         {% if leave.effective_number_of_days == 1 %} ημέρας {% else %} ημερών {% endif %} </b>
         με τις δικαιούμενες αποδοχές, από <b> {{ leave.date_from }} </b> έως και <b> {{ leave.date_until }} </b> για λόγους που αναφέρει στην αίτησή
       {% if employee.is_man %} του. {% else %} της. {% endif %}
