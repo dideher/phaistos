@@ -299,8 +299,8 @@ class SchoolPrincipals(models.Model):
     current_unit = models.ForeignKey(Unit, null=False, on_delete=models.CASCADE)
     school_year = models.ForeignKey(SchoolYear, null=False, on_delete=models.CASCADE)
 
-    date_from = models.DateField(db_column="DATE_FROM", null=False, verbose_name='Έναρξη')
-    date_until = models.DateField(db_column="DATE_UNTIL", null=False, verbose_name='Λήξη')
+    # date_from = models.DateField(db_column="DATE_FROM", null=False, verbose_name='Έναρξη')
+    # date_until = models.DateField(db_column="DATE_UNTIL", null=False, verbose_name='Λήξη')
 
     created_on = models.DateTimeField(db_column="CREATED_ON", null=False, blank=False, default=timezone.now)
     updated_on = models.DateTimeField(db_column="UPDATED_ON", null=True, blank=True)
@@ -309,6 +309,9 @@ class SchoolPrincipals(models.Model):
         indexes = [
             models.Index(fields=['school_year', 'current_unit']),
             models.Index(fields=['employee', ]),
+        ]
+        constraints = [
+            models.UniqueConstraint(fields=['school_year', 'employee'], name='unique employee')
         ]
 
     def delete(self, *args, **kwargs):
