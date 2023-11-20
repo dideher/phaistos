@@ -23,7 +23,7 @@ from weasyprint import HTML
 import logging
 ## end-gstam
 from phaistos.commons.export import ExportableListView
-from phaistos.commons.utils import employee_is_principal, principals_school_unit, employee_is_education_consultant
+from phaistos.commons.utils import employee_is_education_consultant
 from django.views.generic.edit import FormMixin
 from django.shortcuts import render
 
@@ -337,8 +337,8 @@ class LeavePrintDecisionToPdfView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         buffer = io.BytesIO()
         # Get data
-        employee = Employee.objects.get(pk = self.kwargs['employee_pk'])
-        leave = Leave.objects.get(pk = self.kwargs['pk'])
+        employee: Employee = Employee.objects.get(pk = self.kwargs['employee_pk'])
+        leave: Leave = Leave.objects.get(pk = self.kwargs['pk'])
         # Select Template
         if (leave.leave_type.legacy_code == "31" or leave.leave_type.legacy_code == "54"):
             template_path = os.path.join(settings.BASE_DIR, 'templates/leaves/template_leave_type_31_54_forward_to.html')
@@ -358,8 +358,8 @@ class LeavePrintDecisionToPdfView(LoginRequiredMixin, View):
         is_education_consultant, education_consultant_specialization = employee_is_education_consultant()
         
         context = {'employee': employee,
-                   'is_principal': employee_is_principal(),
-                   'principal_school_unit': principals_school_unit(),
+                   'is_principal': employee.is_school_principal,
+                   'principal_school_unit': employee.school_principal_unit.title,
                    'is_education_consultant': is_education_consultant,
                    'education_consultant_specialization': education_consultant_specialization,
                    'leave': leave,
