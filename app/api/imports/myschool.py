@@ -78,7 +78,6 @@ class SchoolPrincipalImportAPIView(APIView):
         employee_am = validated_data.get('employee_am')
         assignment_unit_id = validated_data.get('assignment_unit_id')
 
-
         with transaction.atomic():
 
             try:
@@ -114,7 +113,13 @@ class SchoolPrincipalImportAPIView(APIView):
                 logging.error(msg)
                 return Response({"error": msg}, status=status.HTTP_404_NOT_FOUND)
 
-            today = now()
+            # before inserting, let's be more clever
+            try:
+                existing_school_principal = SchoolPrincipals.objects.get(employee=employee, current_unit=assignment_unit,
+                                             school_year=SchoolYear.get_current_school_year())
+                return Response(SchoolPrincipalSerializer(existing_school_principal).data, status=status.HTTP_200_OK)
+            except SchoolPrincipals.DoesNotExist:
+                pass
 
             school_principal_dict = {
                 'employee': employee,
@@ -125,8 +130,7 @@ class SchoolPrincipalImportAPIView(APIView):
             try:
                 school_principal: SchoolPrincipals = SchoolPrincipals.objects.create(**school_principal_dict)
             except IntegrityError as e:
-                logging.warning("failed to process request '%s' due to : %s", school_principal_dict, e)
-                return Response({"error": e.args[0], 'payload': school_principal_dict}, status=status.HTTP_409_CONFLICT)
-                pass
+                logging.warning("failed to process request '%s' due to : %s", validated_data, e)
+                return Response({"error": e.args[0], 'payload': validated_data}, status=status.HTTP_409_CONFLICT)
 
             return Response(SchoolPrincipalSerializer(school_principal).data, status=status.HTTP_201_CREATED)
