@@ -157,6 +157,8 @@ class Employee(BaseUUIDModel):
                                           help_text="Ημερομηνία 1ης Ανάληψης Υπηρεσίας")
     is_school_principal = models.BooleanField(db_column="IS_PRINCIPAL", default=False, null=False,
                                               help_text="Είναι Διευθυντής ;")
+    school_principal_unit = models.ForeignKey(Unit, null=True, default=None, blank=True, on_delete=models.SET_NULL,
+                                              related_name="school_principal_unit", help_text='Διευθυντής σε μονάδα')
     mandatory_week_workhours = models.PositiveSmallIntegerField(db_column='WORK_HOURS', blank=True, null=True,
                                                                 default=None,
                                                                 help_text='Υποχρεωτικό Διδακτικό Ωράριο')
@@ -321,6 +323,7 @@ class SchoolPrincipals(models.Model):
 
         if employee is not None:
             employee.is_school_principal = False
+            employee.school_principal_unit = None
             employee.save()
 
         return super().delete(*args, **kwargs)  # Call the "real" save() method.
@@ -333,6 +336,7 @@ class SchoolPrincipals(models.Model):
         if employee is not None:
             # TODO: make this smarter and set the flag only if current date is within the range
             employee.is_school_principal = True
+            employee.school_principal_unit = self.current_unit
             employee.save()
 
         return r
