@@ -8,6 +8,7 @@ from django.db import transaction
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import serializers, status
+from rest_framework import generics
 
 from rest_framework.generics import get_object_or_404, CreateAPIView, ListCreateAPIView
 from rest_framework.permissions import IsAdminUser
@@ -24,7 +25,8 @@ from api.serializers import (
     UnitSerializer,
     AthinaEmployeeImportSerializer,
     MySchoolEmployeeImportSerializer,
-    MySchoolEmploymentImportSerializer
+    MySchoolEmploymentImportSerializer,
+    SchoolPrincipalSerializer
 )
 from api.core.pagination import StandardResultsSetPagination
 from api.cache import get_cached_employee_type, get_cached_employee_specialization, get_cached_unit, get_cached_employment_type
@@ -40,7 +42,8 @@ from employees.models import (
     Employment,
     EmploymentType,
     LegacyEmploymentType,
-    EmploymentStatus
+    EmploymentStatus,
+    SchoolPrincipals
 )
 from leaves.models import (
     Leave,
@@ -1127,6 +1130,11 @@ class MySchoolEmploymentImportAPIView(APIView):
             employment_serializer = EmploymentSerializer(employement)
             return Response(employment_serializer.data, status=status.HTTP_201_CREATED)
 
+
+class SchoolPrincipalList(generics.ListCreateAPIView):
+
+    serializer_class = SchoolPrincipalSerializer
+    queryset = SchoolPrincipals.objects.all().order_by('employee')
 
 
 

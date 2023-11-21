@@ -155,6 +155,10 @@ class Employee(BaseUUIDModel):
     bathmos = models.CharField(db_column='BATHMOS', max_length=32, null=True, blank=True, default=None)
     first_workday_date = models.DateField(db_column='FIRST_WORKDAY_DATE', null=True, blank=True, default=None,
                                           help_text="Ημερομηνία 1ης Ανάληψης Υπηρεσίας")
+    is_school_principal = models.BooleanField(db_column="IS_PRINCIPAL", default=False, null=False,
+                                              help_text="Είναι Διευθυντής ;")
+    school_principal_unit = models.ForeignKey(Unit, null=True, default=None, blank=True, on_delete=models.SET_NULL,
+                                              related_name="school_principal_unit", help_text='Διευθυντής σε μονάδα')
     mandatory_week_workhours = models.PositiveSmallIntegerField(db_column='WORK_HOURS', blank=True, null=True,
                                                                 default=None,
                                                                 help_text='Υποχρεωτικό Διδακτικό Ωράριο')
@@ -176,6 +180,7 @@ class Employee(BaseUUIDModel):
             models.Index(fields=['employee_type', ]),
             models.Index(fields=['minoas_id'], )
         ]
+
 
     def get_smart_specialization_str(self):
         old_specialization: Specialization = self.specialization
@@ -289,3 +294,52 @@ class WorkExperience(models.Model):
 
     def __str__(self):
         return f"[{ self.work_experience_type }] {self.date_from} - {self.date_until} - {self.duration_total_in_days}"
+
+
+class SchoolPrincipals(models.Model):
+
+    employee = models.ForeignKey(Employee, null=False, on_delete=models.CASCADE)
+    current_unit = models.ForeignKey(Unit, null=False, on_delete=models.CASCADE)
+    school_year = models.ForeignKey(SchoolYear, null=False, on_delete=models.CASCADE)
+
+    # date_from = models.DateField(db_column="DATE_FROM", null=False, verbose_name='Έναρξη')
+    # date_until = models.DateField(db_column="DATE_UNTIL", null=False, verbose_name='Λήξη')
+
+    created_on = models.DateTimeField(db_column="CREATED_ON", null=False, blank=False, default=timezone.now)
+    updated_on = models.DateTimeField(db_column="UPDATED_ON", null=True, blank=True)
+
+    class Meta:
+        indexes = [
+            models.Index(fields=['school_year', 'current_unit']),
+            models.Index(fields=['employee', ]),
+        ]
+        constraints = [
+            models.UniqueConstraint(fields=['school_year', 'employee'], name='unique employee')
+        ]
+
+    def delete(self, *args, **kwargs):
+
+        employee: Employee = self.employee
+
+        if employee is not None:
+            employee.is_school_principal = False
+            employee.school_principal_unit = None
+            employee.save()
+
+        return super().delete(*args, **kwargs)  # Call the "real" save() method.
+
+    def save(self, *args, **kwargs):
+
+        r = super().save(*args, **kwargs)   # Call the "real" save() method.
+        employee: Employee = self.employee
+
+        if employee is not None:
+            # TODO: make this smarter and set the flag only if current date is within the range
+            employee.is_school_principal = True
+            employee.school_principal_unit = self.current_unit
+            employee.save()
+
+        return r
+
+    def __str__(self):
+        return f'{self.employee} στο {self.current_unit}'

@@ -165,7 +165,6 @@ LOGGING = {
 
 CONSTANCE_BACKEND = 'constance.backends.database.DatabaseBackend'
 CONSTANCE_CONFIG = {
-    'DIRECTOR_TITLE': ("Δ/ΝΣΗΣ Δ/ΘΜΙΑΣ ΕΚΠ/ΣΗΣ ΗΡΑΚΛΕΙΟΥ", "Το ονοματεπώνυμο του διευθυντή της υπηρεσίας"),
-    'DIRECTOR_NAME': ("Διευθυντής Διευθυντόπουλος", "O τίτλος του διευθυντή της υπηρεσίας"),
+    'DIRECTOR_TITLE': ("Δ/ΝΤΗΣ Δ/ΘΜΙΑΣ ΕΚΠ/ΣΗΣ ΗΡΑΚΛΕΙΟΥ", "Ονοματεπώνυμο υπογράφοντος"),
+    'DIRECTOR_NAME': ("ΦΟΥΝΤΟΥΛΑΚΗΣ ΑΝΤΩΝΙΟΣ", "Τίτλος υπογράφοντος"),
 }
-

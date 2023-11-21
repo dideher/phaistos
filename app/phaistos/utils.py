@@ -1,8 +1,8 @@
 below_twenty_numwords = ["", # empty in place of μηδέν
                             "μίας", 
                             "δύο", 
-                            "τρεις", 
-                            "τέσσερις", 
+                            "τριών", 
+                            "τεσσάρων", 
                             "πέντε", 
                             "έξι", 
                             "επτά", 
@@ -11,8 +11,8 @@ below_twenty_numwords = ["", # empty in place of μηδέν
                             "δέκα",  
                             "ένδεκα", 
                             "δώδεκα",  
-                            "δεκατρείς", 
-                            "δεκατέσσερις", 
+                            "δεκατριών", 
+                            "δεκατεσσάρων", 
                             "δεκαπέντε", 
                             "δεκαέξι",  
                             "δεκαεπτά", 
@@ -116,13 +116,84 @@ def convert_duration_to_words(number):
     return number_in_words
 
 
-
 def first_name_to_geniki(first_name):
     geniki = first_name
-    name_ends_with = first_name[-2:]
-    if name_ends_with == 'ΟΣ':
-        geniki = first_name[:-1] + 'Y'
+    name_ends_with = first_name[-4:]
+    if name_ends_with == 'ΛΕΩΝ':
+        geniki = first_name[:] + 'ΤΑ'
+    else:
+        name_ends_with = first_name[-2:]
+        if name_ends_with == 'ΟΣ':
+            geniki = first_name[:-1] + 'Y'
+        elif name_ends_with == 'ΑΣ':
+            geniki = first_name[:-1]
+        elif name_ends_with == 'ΗΣ':
+            geniki = first_name[:-1]
+        elif name_ends_with == 'ΗΣ':
+            geniki = first_name[:-1]
+        elif name_ends_with == 'ΩΝ':
+            geniki = first_name[:] + 'Α'
+        else:
+            name_ends_with = first_name[-1]
+            if name_ends_with == 'Η':
+                geniki = first_name + "Σ"
+            elif name_ends_with == 'Α':
+                geniki = first_name + "Σ"
+            else:
+                pass
     return geniki
+
+def first_name_to_accusative(first_name):
+    accusative = first_name
+    name_ends_with = first_name[-4:]
+    if name_ends_with == 'ΛΕΩΝ':
+        accusative = first_name[:] + 'ΤΑ'
+    else:
+        name_ends_with = first_name[-1:]
+        if name_ends_with == 'Σ':
+            accusative = first_name[:-1]
+    return accusative
+
+
+
+def last_name_to_geniki(last_name):
+    geniki = last_name
+    name_ends_with = last_name[-2:]
+    if name_ends_with == 'ΟΣ':
+        geniki = last_name[:-1] + 'Y'
+
+    elif name_ends_with == 'ΗΣ':
+        geniki = last_name[:-1]
+    elif name_ends_with == 'ΑΣ':
+        geniki = last_name[:-1]
+    elif name_ends_with == 'ΕΣ':
+        geniki = last_name[:-1]
+    elif name_ends_with == 'ΙΣ':
+        geniki = last_name[:-1]
+    elif name_ends_with == 'ΗΣ':
+        geniki = last_name[:-1]
+    else:
+        pass
+    return geniki
+
+
+def last_name_to_accusative(last_name):
+    geniki = last_name
+    name_ends_with = last_name[-2:]
+    if name_ends_with == 'ΟΣ':
+        geniki = last_name[:-1]
+    elif name_ends_with == 'ΗΣ':
+        geniki = last_name[:-1]
+    elif name_ends_with == 'ΑΣ':
+        geniki = last_name[:-1]
+    elif name_ends_with == 'ΕΣ':
+        geniki = last_name[:-1]
+    elif name_ends_with == 'ΙΣ':
+        geniki = last_name[:-1]
+    else:
+        pass
+    return geniki
+
 
 # for i in range(0, 900):
 #     print (f'{i} -> {convert_duration_to_words(i)}')

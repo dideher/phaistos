@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from employees.models import Employee, Specialization, Unit, Employment
+from employees.models import Employee, Specialization, Unit, Employment, SchoolPrincipals
 from leaves.models import Leave, LeaveType
 
 
@@ -212,3 +212,9 @@ class MySchoolEmploymentImportSerializer(serializers.Serializer):
     employee_employment_until = serializers.DateField(format='%d/%m/%Y', input_formats=['%d/%m/%Y', ],
                                                       required=True, allow_null=False)
     employee_employment_status = serializers.CharField(allow_null=False, allow_blank=False, required=True)
+
+
+class SchoolPrincipalSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SchoolPrincipals
+        fields = "__all__"
