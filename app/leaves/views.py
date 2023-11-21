@@ -356,10 +356,10 @@ class LeavePrintDecisionToPdfView(LoginRequiredMixin, View):
                 template_path = os.path.join(settings.BASE_DIR, 'templates/leaves/template_leave_type_empty.html')
         
         is_education_consultant, education_consultant_specialization = employee_is_education_consultant()
-        
+        school_principal_unit = employee.school_principal_unit.title if employee.school_principal_unit else None
         context = {'employee': employee,
                    'is_principal': employee.is_school_principal,
-                   'principal_school_unit': employee.school_principal_unit.title,
+                   'principal_school_unit': school_principal_unit,
                    'is_education_consultant': is_education_consultant,
                    'education_consultant_specialization': education_consultant_specialization,
                    'leave': leave,
