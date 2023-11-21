@@ -272,7 +272,7 @@
         <div>
           <h4 style="font-weight:normal;text-align:left;">ΚΟΙΝΟΠΟΙΗΣΗ</h4>
           <ol>
-            <li style="font-weight:normal;">Ενδιαφερόμενος</li>
+            <li style="font-weight:normal;">{% if employee.is_man %} Ενδιαφερόμενος {% else %} Ενδιαφερόμενη  {% endif %}</li>
             <li style="font-weight:normal;">Α/Φ ΔΔΕ Ηρακλείου</li>
             {% if is_principal %} <li style="font-weight:normal;"> Θέση που υπηρετεί: {{ principal_school_unit }} </li> {% endif %}
           </ol>

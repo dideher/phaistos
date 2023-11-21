@@ -235,11 +235,11 @@
           {% elif is_education_consultant %} 
             <b> ΣΕ ({{ education_consultant_specialization }}). </b>
           {% else %}
-            εκπαιδευτικό κλάδου {{ employee.specialization }}, που υπηρετεί στην Δ/νση Δ/θμιας Εκπ/σης Ηρακλείου,
+            εκπαιδευτικό κλάδου {{ employee.specialization }}, που υπηρετεί στην Δ/νση Δ/θμιας Εκπ/σης Ηρακλείου.
           {% endif %}
         {% else %}
           {% if employee.is_man %} διοικητικό {% else %} διοικητική {% endif %}
-            υπάλληλο κλάδου {{ employee.specialization }}, που υπηρετεί στην Δ/νση Δ/θμιας Εκπ/σης Ηρακλείου,
+            υπάλληλο κλάδου {{ employee.specialization }}, που υπηρετεί στην Δ/νση Δ/θμιας Εκπ/σης Ηρακλείου.
         {% endif %}
         </li>
       </ol>
@@ -272,7 +272,7 @@
       <div>
         <h4 style="font-weight:normal;text-align:left;">ΚΟΙΝΟΠΟΙΗΣΗ</h4>
         <ol>
-          <li style="font-weight:normal;">Ενδιαφερόμενος</li>
+          <li style="font-weight:normal;">{% if employee.is_man %} Ενδιαφερόμενος {% else %} Ενδιαφερόμενη  {% endif %}</li>
           <li style="font-weight:normal;">Α/Φ ΔΔΕ Ηρακλείου</li>
           {% comment %} <li style="font-weight:normal;"> Σχολείο που υπηρετεί </li> {% endcomment %}
         </ol>
