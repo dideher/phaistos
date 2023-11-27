@@ -112,7 +112,9 @@
           text-align: center;
           font-weight: bold;
         }
-        
+        #vertical-space {
+          margin-top: 2cm;
+          }
         p {
           text-align: justify;
           text-justify: inter-word;
@@ -183,9 +185,9 @@
             Ηράκλειο, {{leave.incoming_protocol_date}} <br>
             Αρ. Πρωτ.: {{leave.incoming_protocol}}
           </div>
-          <div id="decision">
-            <h2> ΑΠΟΦΑΣΗ </h2>
-          </div>
+          {% comment %} <div id="decision"> {% endcomment %}
+            {% comment %} <h2> ΑΠΟΦΑΣΗ </h2> {% endcomment %}
+          {% comment %} </div> {% endcomment %}
           {% comment %} <div id="recepients"> {% endcomment %}
             {% comment %} Προς: <br> {% endcomment %}
             {% comment %} {% for r in recipients %} {% endcomment %}
@@ -216,21 +218,13 @@
     </ol> 
     <h3> Αποφασίζουμε </h3>
     <p>
-      Χορηγούμε {% if employee.is_man %} στον {% else %} στην {% endif %} <b>{{employee.last_name}} {{employee.first_name}}</b> του <b>{{geniki_father_name}}</b>, 
+      Χορηγούμε {% if employee.is_man %} στον {% else %} {{ female_article }} {% endif %} <b>{{employee.last_name}} {{employee.first_name}}</b> του <b>{{geniki_father_name}}</b>, 
       εκπαιδευτικό κλάδου {{employee.specialization }} του <b>{{employee.current_unit }}</b>, της Δ/νσης Δ/θμιας Εκπ/σης Ηρακλείου, αναρρωτική άδεια <b>{{leave_duration_verbal}} ({{leave.effective_number_of_days}}) 
       {% if leave.effective_number_of_days == 1 %} ημέρας{% else %} ημερών{% endif %}</b> με αποδοχές, από <b>{{leave.date_from}}</b> έως και <b>{{leave.date_until}}</b>.</li>
     </p>
     <br>
     <div class="flex-signature">
       {% if i == 0 %}
-        <div>  
-        <h4 style="font-weight:normal;text-align:left;"> ΚΟΙΝΟΠΟΙΗΣΗ </h4>
-        <ol >
-          <li style="font-weight:normal;">{% if employee.is_man %} Ενδιαφερόμενος {% else %} Ενδιαφερόμενη  {% endif %}</li>
-          <li style="font-weight:normal;"> Α/Φ ΔΔΕ Ηρακλείου </li>
-          <li style="font-weight:normal;"> Σχολείο που υπηρετεί </li>
-        </ol>
-        </div>
       {% else %}
         <div>  
           <p style="font-weight:bold;text-align:center;">
@@ -252,6 +246,13 @@
       </div>
     </div>
   </div>
+    <div id="vertical-space">
+      <h4><u>ΚΟΙΝΟΠΟΙΗΣΗ:</u></h4>
+      <li style="font-weight:normal;">{% if employee.is_man %} Ενδιαφερόμενος {% else %} Ενδιαφερόμενη  {% endif %}</li>
+      <li style="font-weight:normal;"> Α/Φ ΔΔΕ Ηρακλείου </li>
+      <li style="font-weight:normal;"> Σχολείο που υπηρετεί </li>
+    </ol>
+    </div>
   {% endfor %}
   </body>
 </html> 

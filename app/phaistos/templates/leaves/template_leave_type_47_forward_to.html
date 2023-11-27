@@ -113,7 +113,9 @@
           text-align: center;
           font-weight: bold;
         }
-        
+        #vertical-space {
+          margin-top: 2cm;
+          }
         p {
           text-align: justify;
           text-justify: inter-word;
@@ -193,9 +195,9 @@
             <br>
             Αρ. Πρωτ.: {{ leave.incoming_protocol }}
           </div>
-          <div id="decision">
-            <h2>ΑΠΟΦΑΣΗ</h2>
-          </div>
+          {% comment %} <div id="decision"> {% endcomment %}
+            {% comment %} <h2>ΑΠΟΦΑΣΗ</h2> {% endcomment %}
+          {% comment %} </div> {% endcomment %}
           {% comment %} <div id="recepients"> {% endcomment %}
           {% comment %} Προς: <br> {% endcomment %}
           {% comment %} {% for r in recipients %} {% endcomment %}
@@ -272,12 +274,6 @@
     <div class="flex-signature">
       {% if i == 0 %}
         <div>
-          <h4 style="font-weight:normal;text-align:left;">ΚΟΙΝΟΠΟΙΗΣΗ</h4>
-          <ol>
-            <li style="font-weight:normal;">{% if employee.is_man %} Ενδιαφερόμενος {% else %} Ενδιαφερόμενη  {% endif %}</li>
-            <li style="font-weight:normal;">Α/Φ ΔΔΕ Ηρακλείου</li>
-            {% if is_principal %} <li style="font-weight:normal;"> Θέση που υπηρετεί: <br> {{ principal_school_unit }} </li> {% endif %}
-          </ol>
         </div>
         <div>
           {{ config.DIRECTOR_TITLE|safe }}
@@ -305,21 +301,17 @@
           <br>
           {{ config.DIRECTOR_NAME|safe }}
         </div>
-      {% elif i == 2 %}
-        <div>
-          <h4 style="font-weight:normal;text-align:left;">ΚΟΙΝΟΠΟΙΗΣΗ</h4>
-          <ol>
-            <li style="font-weight:normal;">Ενδιαφερόμενος</li>
-            <li style="font-weight:normal;">Α/Φ ΔΔΕ Ηρακλείου</li>
-            {% comment %} <li style="font-weight:normal;"> Σχολείο που υπηρετεί </li> {% endcomment %}
-          </ol>
-        </div>
-        <div>
-          {{ config.REPLACEMENT_DIRECTOR_TITLE|safe }}
-          <br>
-          {{ config.REPLACEMENT_DIRECTOR_NAME|safe }}
-        </div>
       {% endif %}
+    </div>
+    <div id="vertical-space">
+      <h4><u>ΚΟΙΝΟΠΟΙΗΣΗ:</u></h4>
+      <ol>
+        <li style="font-weight:normal;">{% if employee.is_man %} Ενδιαφερόμενος {% else %} Ενδιαφερόμενη  {% endif %}</li>
+        <li style="font-weight:normal;">Α/Φ ΔΔΕ Ηρακλείου</li>
+        {% if is_principal %} 
+        <li style="font-weight:normal;"> Θέση που υπηρετεί: </li> <ul style="list-style-type:none;"> <li> {{ principal_school_unit }} </li> </ul>
+        {% endif %}     
+       </ol>
     </div>
   {% endfor %}
 </body>
