@@ -83,7 +83,8 @@ def show_work_experience_totals(context):
     total_days_from_diorismos: int = 0
     ekpaideutiki_yphresia_meta_diorismo: int = 0
     didaktiki_yphresia_meta_diorismo: int = 0
-
+    synoliki_ekpaideutiki_yphresia: int = 0
+    synoliki_didaktiki_yphresia: int = 0
     result = {}
 
     # ta koritisia elenitsa & manola
@@ -144,6 +145,10 @@ def show_work_experience_totals(context):
             else:
                 proy_gia_orario += we.duration_total_in_days
 
+        # compute sums
+        synoliki_didaktiki_yphresia = didaktiki_yphresia_meta_diorismo + proy_gia_orario
+        synoliki_ekpaideutiki_yphresia = ekpaideutiki_yphresia_meta_diorismo + bathmologiki_proyp
+
         computed_totals = {
             'misthologiki_proyp': misthologiki_proyp,
             'bathmologiki_proyp': bathmologiki_proyp,
@@ -151,6 +156,8 @@ def show_work_experience_totals(context):
             'ekpaideutiki_yphresia_meta_diorismo': ekpaideutiki_yphresia_meta_diorismo,
             'didaktiki_yphresia_meta_diorismo': didaktiki_yphresia_meta_diorismo,
             'total_days_from_diorismos': total_days_from_diorismos,
+            'synoliki_didaktiki_yphresia': synoliki_didaktiki_yphresia,
+            'synoliki_ekpaideutiki_yphresia': synoliki_ekpaideutiki_yphresia,
         }
 
         result.update(computed_totals)
