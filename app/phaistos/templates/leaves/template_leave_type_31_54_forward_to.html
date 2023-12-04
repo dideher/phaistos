@@ -273,7 +273,7 @@
             υπάλληλο κλάδου {{ employee.specialization }}, που υπηρετεί στην Δ/νση Δ/θμιας Εκπ/σης Ηρακλείου,
         {% endif %} 
         κανονικής άδεια απουσίας <b> {{ leave_duration_verbal }} ({{ leave.effective_number_of_days }})
-        {% if leave.effective_number_of_days == 1 %} ημέρας {% else %} ημερών {% endif %} </b>
+        {% if leave.effective_number_of_days == 1 %} εργάσιμης ημέρας {% else %} εργάσιμων ημερών {% endif %} </b>
         με τις δικαιούμενες αποδοχές, από <b> {{ leave.date_from }} </b> έως και <b> {{ leave.date_until }} </b> για λόγους που αναφέρει στην αίτησή
       {% if employee.is_man %} του. {% else %} της. {% endif %}
     </p>
