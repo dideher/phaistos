@@ -16,7 +16,7 @@ from django.views.generic import View, ListView
 # gstam
 import os
 import io
-from phaistos.utils import convert_duration_to_words, first_name_to_geniki, first_name_to_accusative, last_name_to_geniki, last_name_to_accusative
+from phaistos.utils import convert_duration_to_words, first_name_to_geniki, first_name_to_accusative, last_name_to_geniki, last_name_to_accusative, remove_last_n_from_female_article
 from django.conf import settings
 from django.template.loader import render_to_string
 from weasyprint import HTML
@@ -369,6 +369,7 @@ class LeavePrintDecisionToPdfView(LoginRequiredMixin, View):
                    'accusative_employee_name': first_name_to_accusative(employee.first_name),
                    'geniki_employee_last_name': last_name_to_geniki(employee.last_name),
                    'accusative_employee_last_name': last_name_to_accusative(employee.last_name),
+                   'female_article': remove_last_n_from_female_article(employee.last_name),
                    'leave_duration_verbal': convert_duration_to_words(leave.effective_number_of_days),
                    'charset': 'iso-8859-7',
                    'config': config}

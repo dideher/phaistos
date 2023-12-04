@@ -113,7 +113,9 @@
           text-align: center;
           font-weight: bold;
         }
-        
+        #vertical-space {
+          margin-top: 2cm;
+          }
         p {
           text-align: justify;
           text-justify: inter-word;
@@ -193,9 +195,9 @@
             <br>
             Αρ. Πρωτ.: {{ leave.incoming_protocol }}
           </div>
-          <div id="decision">
-            <h2>ΑΠΟΦΑΣΗ</h2>
-          </div>
+          {% comment %} <div id="decision"> {% endcomment %}
+            {% comment %} <h2>ΑΠΟΦΑΣΗ</h2> {% endcomment %}
+          {% comment %} </div> {% endcomment %}
           {% comment %} <div id="recepients"> {% endcomment %}
           {% comment %} Προς: <br> {% endcomment %}
           {% comment %} {% for r in recipients %} {% endcomment %}
@@ -246,7 +248,7 @@
     <h3>Αποφασίζουμε</h3>
     <p>
       Τη χορήγηση 
-      {% if employee.is_man == None %} στον/στην {% else %} {% if employee.is_man %} στον {% else %} στην {% endif %} {% endif %}
+      {% if employee.is_man == None %} στον/στην {% else %} {% if employee.is_man %} στον {% else %} {{ female_article }} {% endif %} {% endif %}
       <b> {{ accusative_employee_last_name }} {{ accusative_employee_name }} </b> του <b> {{ geniki_father_name }}</b>,
       {% if employee.employee_type != 'ADMINISTRATIVE' %}
         {% if is_principal %} 
@@ -261,21 +263,29 @@
         {% if employee.is_man %} διοικητικό {% else %} διοικητική {% endif %}
           υπάλληλο κλάδου {{ employee.specialization }}, που υπηρετεί στην Δ/νση Δ/θμιας Εκπ/σης Ηρακλείου,
       {% endif %}
-          αναρρωτικής άδειας <b> {{ leave_duration_verbal }} ({{ leave.effective_number_of_days }})
+          άδειας διευκόλυνσης για την παρακολούθηση της σχολικής επίδοσης τέκνου <b> {{ leave_duration_verbal }} ({{ leave.effective_number_of_days }})
       {% if leave.effective_number_of_days == 1 %} ημέρας {% else %} ημερών {% endif %}</b>
-      με τις δικαιούμενες αποδοχές, από <b> {{ leave.date_from }} </b> έως και <b> {{ leave.date_until }} </b> για λόγους που αναφέρει στην αίτησή
-      {% if employee.is_man %} του. {% else %} της. {% endif %}
+      με τις δικαιούμενες αποδοχές, από <b> {{ leave.date_from }} </b> έως και <b> {{ leave.date_until }}.</b>
+      {% comment %} {% if employee.is_man %} του. {% else %} της. {% endif %} {% endcomment %}
+      {% if employee.is_man %} Ο {% else %} Η {% endif %} παραπάνω 
+      {% if employee.employee_type != 'ADMINISTRATIVE' %}
+        {% if is_principal %} 
+          {% if employee.is_man == None %} Διευθυντής/ντρια {% else %}  {% if employee.is_man %} Διευθυντής {% else %} Διευθύντρια  {% endif %} {% endif %}
+        {% elif is_education_consultant %} 
+          <b> ΣΕ ({{ education_consultant_specialization }}), </b>
+        {% else %}
+          εκπαιδευτικός
+        {% endif %}
+      {% else %}
+        {% if employee.is_man %} διοικητικός {% else %} διοικητική {% endif %}
+          υπάλληλος
+      {% endif %}
+      οφείλει να προσκομίσει σχετική βεβαίωση του/της Διευθυντή/ντριας του σχολείου φοίτησης του τέκνου.
     </p>
     <br>
     <div class="flex-signature">
       {% if i == 0 %}
         <div>
-          <h4 style="font-weight:normal;text-align:left;">ΚΟΙΝΟΠΟΙΗΣΗ</h4>
-          <ol>
-            <li style="font-weight:normal;">Ενδιαφερόμενος</li>
-            <li style="font-weight:normal;">Α/Φ ΔΔΕ Ηρακλείου</li>
-            {% if is_principal %} <li style="font-weight:normal;"> Θέση που υπηρετεί: {{ principal_school_unit }} </li> {% endif %}
-          </ol>
         </div>
         <div>
           {{ config.DIRECTOR_TITLE|safe }}
@@ -303,21 +313,17 @@
           <br>
           {{ config.DIRECTOR_NAME|safe }}
         </div>
-      {% elif i == 2 %}
-        <div>
-          <h4 style="font-weight:normal;text-align:left;">ΚΟΙΝΟΠΟΙΗΣΗ</h4>
-          <ol>
-            <li style="font-weight:normal;">Ενδιαφερόμενος</li>
-            <li style="font-weight:normal;">Α/Φ ΔΔΕ Ηρακλείου</li>
-            {% comment %} <li style="font-weight:normal;"> Σχολείο που υπηρετεί </li> {% endcomment %}
-          </ol>
-        </div>
-        <div>
-          {{ config.REPLACEMENT_DIRECTOR_TITLE|safe }}
-          <br>
-          {{ config.REPLACEMENT_DIRECTOR_NAME|safe }}
-        </div>
       {% endif %}
+    </div>
+    <div id="vertical-space">
+      <h4><u>ΚΟΙΝΟΠΟΙΗΣΗ:</u></h4>
+      <ol>
+        <li style="font-weight:normal;">{% if employee.is_man %} Ενδιαφερόμενος {% else %} Ενδιαφερόμενη  {% endif %}</li>
+        <li style="font-weight:normal;">Α/Φ ΔΔΕ Ηρακλείου</li>
+        {% if is_principal %} 
+        <li style="font-weight:normal;"> Θέση που υπηρετεί: </li> <ul style="list-style-type:none;"> <li> {{ principal_school_unit }} </li> </ul>
+        {% endif %}      
+      </ol>
     </div>
   {% endfor %}
 </body>

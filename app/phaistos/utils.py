@@ -194,6 +194,13 @@ def last_name_to_accusative(last_name):
         pass
     return geniki
 
+def remove_last_n_from_female_article(last_name):
+    repetitive_consonant_tuple = ('Γ', 'Β', 'Δ', 'Χ', 'Φ', 'Θ', 'Μ', 'Ν', 'Λ', 'Ρ', 'Σ', 'Ζ')
+    female_article = 'στην'
+    if last_name[0] in repetitive_consonant_tuple:
+        female_article = 'στη'
+    return female_article
+    
 
 # for i in range(0, 900):
 #     print (f'{i} -> {convert_duration_to_words(i)}')
