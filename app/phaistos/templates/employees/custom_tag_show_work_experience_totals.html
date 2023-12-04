@@ -22,11 +22,11 @@
                 <td>{{misthologiki_proyp|default:"0"|duration_string_from_days}} ({{misthologiki_proyp|default:"0"}} ημέρες)</td>
             </tr>
             <tr>
-                <th>Βαθμολογική Προϋπ.</th>
+                <th>Βαθμολογική Προϋπ. (v1566/1985)</th>
                 <td>{{bathmologiki_proyp|default:"0"|duration_string_from_days}} ({{bathmologiki_proyp|default:"0"}} ημέρες)</td>
             </tr>
             <tr>
-                <th>Προϋπ. για Ωράριο</th>
+                <th>Προϋπ. για Ωράριο (εγκύκλιος 2010)</th>
                 <td>{{proy_gia_orario|default:"0"|duration_string_from_days}} ({{proy_gia_orario|default:"0"}} ημέρες)</td>
             </tr>
         </table>
@@ -50,11 +50,11 @@
         {% else %}
         <table class="table table-sm table-striped">
             <tr>
-                <th>Εκπαιδευτική Υπηρεσία</th>
+                <th>Εκπαιδευτική Υπηρεσία (v1566/1985)</th>
                 <td>{{ekpaideutiki_yphresia_meta_diorismo|default:"0"|duration_string_from_days}} ({{ekpaideutiki_yphresia_meta_diorismo|default:"0"}} ημέρες)</td>
             </tr>
             <tr>
-                <th>Διδακτική Υπηρεσία</th>
+                <th>Διδακτική Υπηρεσία (εγκύκλιος 2010)</th>
                 <td>{{didaktiki_yphresia_meta_diorismo|default:"0"|duration_string_from_days}} ({{didaktiki_yphresia_meta_diorismo|default:"0"}} ημέρες)</td>
             </tr>
         </table>
@@ -67,22 +67,22 @@
     <div class="col-md">
         <h6>
             Συνολικά -
-            <small class="text-muted">Προύπηρεσία και υπηρεσία μετά το διορισμό</small>
+            <small class="text-muted">Προϋπηρεσία και υπηρεσία μετά το διορισμό</small>
         </h6>
 
         {% if no_fek_diorismou %}
         <div class="alert alert-warning" role="alert">
-            Δεν υπάρχει καταχωρημένο ΦΕΚ Διορισμόυ για να υπολογισθεί η συνολική υπηρεσία
+            Δεν υπάρχει καταχωρημένο ΦΕΚ Διορισμού για να υπολογισθεί η συνολική υπηρεσία
         </div>
         {% else %}
         <table class="table table-sm table-striped">
             <tr>
-                <th>Συνολική Εκπαιδευτική Υπηρεσία</th>
-                <td>{{ekpaideutiki_yphresia_meta_diorismo|default:"0"|duration_string_from_days}} ({{ekpaideutiki_yphresia_meta_diorismo|default:"0"}} ημέρες)</td>
+                <th>Συνολική Εκπαιδευτική Υπηρεσία (v1566/1985)</th>
+                <td>{{synoliki_ekpaideutiki_yphresia|default:"0"|duration_string_from_days}} ({{synoliki_ekpaideutiki_yphresia|default:"0"}} ημέρες)</td>
             </tr>
             <tr>
-                <th>Συνολική Διδακτική Υπηρεσία</th>
-                <td>{{didaktiki_yphresia_meta_diorismo|default:"0"|duration_string_from_days}} ({{didaktiki_yphresia_meta_diorismo|default:"0"}} ημέρες)</td>
+                <th>Συνολική Διδακτική Υπηρεσία (εγκύκλιος 2010 - για ωράριο)</th>
+                <td>{{synoliki_didaktiki_yphresia|default:"0"|duration_string_from_days}} ({{synoliki_didaktiki_yphresia|default:"0"}} ημέρες)</td>
             </tr>
         </table>
         {% endif %}
