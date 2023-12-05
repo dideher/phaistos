@@ -42,10 +42,13 @@ class Unit(models.Model):
         ]
 
     def __str__(self):
-        if self.unit_type == UnitType.SCHOOL:
-            return f"{self.title} ({self.get_school_type_display()})"
+        if self.myschool_title is not None:
+            return self.myschool_title
         else:
-            return f"{self.title} ({self.get_unit_type_display()})"
+            if self.unit_type == UnitType.SCHOOL:
+                return f"{self.title} ({self.get_school_type_display()})"
+            else:
+                return f"{self.title} ({self.get_unit_type_display()})"
 
 
 class Specialization(models.Model):

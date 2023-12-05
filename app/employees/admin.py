@@ -25,7 +25,8 @@ class SpecializationAdmin(admin.ModelAdmin):
 
 @admin.register(Unit)
 class UnitAdmin(admin.ModelAdmin):
-    list_display = ('ministry_code', 'title', 'unit_type', 'school_type', 'public_sector')
+    list_display = ('ministry_code', 'title', 'myschool_title', 'unit_type', 'school_type', 'public_sector')
+    list_filter = ["unit_type", "school_type", "public_sector"]
     search_fields = ('ministry_code', 'title')
     ordering = ('unit_type', 'title')
 
