@@ -6,7 +6,7 @@
 <style>
     @font-face {
         font-family: DejaVu-Sans;
-        font-size: 14pt;
+        font-size: 12pt;
         {% comment %} src: url({% static 'main/fonts/Kerkis-Bold.ttf' %}); {% endcomment %}
     }
    
@@ -23,7 +23,7 @@
       }
 
       body {
-        font-size: 10pt;
+        font-size: 9pt;
         font-family:DejaVu-Sans;
         {% comment %} font-weight: bold; {% endcomment %}
       }
@@ -113,7 +113,7 @@
           font-weight: bold;
         }
         #vertical-space {
-          margin-top: 2cm;
+          margin-top: 0.75cm;
           }
         p {
           text-align: justify;
@@ -259,34 +259,3 @@
   {% endfor %}
   </body>
 </html> 
-
-    {% comment %} <table class="data-table">
-      <legend style="text-align: center; font-weight: bold;"> Δεδομένα </legend>
-      <thead>
-          <tr>
-              <th scope="col"> Ημερομηνία </th>
-              <th scope="col"> Περιοχή </th>                
-              <th scope="col"> Αντιπρόσωπος </th>      
-              <th scope="col"> Προϊόν </th>
-              <th scope="col"> Μονάδες </th>
-              <th scope="col"> Κόστος Μονάδας </th>
-              <th scope="col"> Συνολικό Κόστος </th>
-          </tr>
-      </thead>
-      <tbody>
-          {% for d in data %}
-              <tr>
-                  <td> {{ d.1 }} </td>
-                  <td> {{ d.2 }} </td>
-                  <td> {{ d.3 }} </td>
-                  <td style="text-align: center;" > {{ d.4 }} </td> 
-                  <td style="text-align: center;"> {{ d.5 }} </td> 
-                  <td style="text-align: center;"> {{ d.6 }} </td> 
-                  <td style="text-align: center;"> {{ d.7 }} </td> 
-              </tr>
-          {% endfor %}
-      </tbody>
-  </table> {% endcomment %}
-  
-
-

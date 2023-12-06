@@ -119,7 +119,7 @@
           text-justify: inter-word;
         }
         #vertical-space {
-          margin-top: 2cm;
+          margin-top: 0.5cm;
           }
      .data-table, .data-table th, .data-table td {
           border: 1px solid black;
@@ -323,30 +323,3 @@
 {% endfor %}
 </body>
 </html>
-{% comment %} <table class="data-table">
-      <legend style="text-align: center; font-weight: bold;"> Δεδομένα </legend>
-      <thead>
-          <tr>
-              <th scope="col"> Ημερομηνία </th>
-              <th scope="col"> Περιοχή </th>                
-              <th scope="col"> Αντιπρόσωπος </th>      
-              <th scope="col"> Προϊόν </th>
-              <th scope="col"> Μονάδες </th>
-              <th scope="col"> Κόστος Μονάδας </th>
-              <th scope="col"> Συνολικό Κόστος </th>
-          </tr>
-      </thead>
-      <tbody>
-          {% for d in data %}
-              <tr>
-                  <td> {{ d.1 }} </td>
-                  <td> {{ d.2 }} </td>
-                  <td> {{ d.3 }} </td>
-                  <td style="text-align: center;"> {{ d.4 }} </td> 
-                  <td style="text-align: center;"> {{ d.5 }} </td> 
-                  <td style="text-align: center;"> {{ d.6 }} </td> 
-                  <td style="text-align: center;"> {{ d.7 }} </td> 
-              </tr>
-          {% endfor %}
-      </tbody>
-</table> {% endcomment %}
