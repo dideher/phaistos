@@ -2,6 +2,7 @@ from django import template
 from django.core.paginator import Paginator
 from django.db.models.query import QuerySet
 from django.utils import timezone
+from django.db.models import Sum
 
 from employees.models import Employee, WorkExperience, Employment
 from leaves.models import Leave
@@ -114,6 +115,16 @@ def show_work_experience_totals(context):
 
     if employee is not None:
 
+        # find leaves with count_against_teaching_experience set to True
+        leave_days_against_teaching_experience = Leave.objects.filter(
+            employee=employee,
+            is_deleted=False,
+            count_against_teaching_experience=True
+        ).aggregate(Sum('effective_number_of_days')).get('effective_number_of_days__sum', 0)
+
+        if leave_days_against_teaching_experience is None:
+            leave_days_against_teaching_experience = 0
+
         if employee.fek_diorismou_date is not None:
             # FEK DIORISMOU is present, let's compute things
             now = timezone.now()
@@ -121,7 +132,7 @@ def show_work_experience_totals(context):
             timedelta_from_fek = now_date - employee.fek_diorismou_date
 
             total_days_from_diorismos = days360(employee.fek_diorismou_date, now_date, include_last_lay=True)
-            ekpaideutiki_yphresia_meta_diorismo = total_days_from_diorismos
+            ekpaideutiki_yphresia_meta_diorismo = total_days_from_diorismos - leave_days_against_teaching_experience
             didaktiki_yphresia_meta_diorismo = total_days_from_diorismos
 
         else:
@@ -158,6 +169,7 @@ def show_work_experience_totals(context):
             'total_days_from_diorismos': total_days_from_diorismos,
             'synoliki_didaktiki_yphresia': synoliki_didaktiki_yphresia,
             'synoliki_ekpaideutiki_yphresia': synoliki_ekpaideutiki_yphresia,
+            'leave_days_against_teaching_experience': leave_days_against_teaching_experience
         }
 
         result.update(computed_totals)

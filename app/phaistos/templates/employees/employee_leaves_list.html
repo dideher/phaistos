@@ -89,7 +89,7 @@
                             <thead class="thead-dark">
                                 <tr>
                                     <th scope="col">#</th>
-                                    <th scope="col">Κωδ.Άδ.</th>
+                                    <th scope="col">Κωδ.</th>
                                     <th scope="col">Τύπος Άδειας</th>
                                     <th scope="col">Ημέρες</th>
                                     <th scope="col">Έναρξη</th>
@@ -111,8 +111,17 @@
                                             {{ leave.id }}
                                         {% endif %}
                                     </td>
-                                    <td>{{ leave.leave_type.legacy_code }}</td>
-                                    <td>{{ leave.leave_type.description }} </td>
+                                    <td class="text-center"><code>{{ leave.leave_type.legacy_code }}</code></td>
+                                    <td>
+                                        {% if leave.count_against_teaching_experience %}
+                                        <div class="badge bg-danger">
+                                            <span  data-toggle="tooltip" title="Αφαιρεί ημέρες από την Εκπαιδευτική Υπηρεσία">
+                                                Εκπ. -
+                                            </span>
+                                        </div>
+                                        {% endif %}
+                                        {{ leave.leave_type.description }}
+                                    </td>
                                     <td>{{ leave.effective_number_of_days }}</td>
                                     <td>{{ leave.date_from|date:"d-m-Y" }}</td>
                                     <td>{{ leave.date_until|date:"d-m-Y" }}</td>
@@ -121,13 +130,13 @@
                                     <td>
                                         {% if perms.leaves.change_leave %}
                                         <button id="update-leave-button" data-form-url="{% url 'leaves:leave-update' leave.id %}" class="update-leave btn btn-sm btn-primary" type="button" name="button">
-                                           <i class="bi-pencil-square" aria-hidden="true"></i>&nbspΕ.
+                                           <i class="bi-pencil-square" aria-hidden="true"></i>
                                         </button>
                                         {% endif %}
 
                                    {% if perms.leaves.delete_leave %}
                                     <button id="delete-leave-btn" data-form-url="{% url 'leaves:leave-delete' leave.id %}" class="delete-leave btn btn-sm btn-danger" type="button" name="button">
-                                       <i class="bi-trash" aria-hidden="true"></i>&nbspΔ.
+                                       <i class="bi-trash" aria-hidden="true"></i>
                                     </button>
                                     {% endif %}
                                     
@@ -135,28 +144,28 @@
                                     {% if leave.leave_type.legacy_code == '31' or leave.leave_type.legacy_code == '54' %}
                                         <a id="print-leave-btn" href="{% url 'leaves:leave-print' leave.id  employee.id %}"
                                             class="print-leave btn btn-sm btn-warning" type="button" name="button" target="_blank">
-                                            <i class="bi bi-filetype-pdf" aria-hidden="true"></i>&nbspΕκτ.
+                                            <i class="bi bi-filetype-pdf" aria-hidden="true"></i>
                                         </a>
                                     {% elif leave.leave_type.legacy_code == '42' %}  {% comment %} or leave.leave_type.legacy_code == '48'  {% endcomment %}
                                         <a id="print-leave-btn" href="{% url 'leaves:leave-print' leave.id  employee.id %}"
                                             class="print-leave btn btn-sm btn-warning" type="button" name="button" target="_blank">
-                                            <i class="bi bi-filetype-pdf" aria-hidden="true"></i>&nbspΕκτ.
+                                            <i class="bi bi-filetype-pdf" aria-hidden="true"></i>
                                         </a>
                                     {% elif leave.leave_type.legacy_code == '47' %}  {% comment %} or leave.leave_type.legacy_code == '48'  {% endcomment %}
                                         <a id="print-leave-btn" href="{% url 'leaves:leave-print' leave.id  employee.id %}"
                                             class="print-leave btn btn-sm btn-warning" type="button" name="button" target="_blank">
-                                            <i class="bi bi-filetype-pdf" aria-hidden="true"></i>&nbspΕκτ.
+                                            <i class="bi bi-filetype-pdf" aria-hidden="true"></i>
                                         </a>
                                     {% elif leave.leave_type.legacy_code == '57' %}  {% comment %} or leave.leave_type.legacy_code == '48'  {% endcomment %}
                                         <a id="print-leave-btn" href="{% url 'leaves:leave-print' leave.id  employee.id %}"
                                             class="print-leave btn btn-sm btn-warning" type="button" name="button" target="_blank">
-                                            <i class="bi bi-filetype-pdf" aria-hidden="true"></i>&nbspΕκτ.
+                                            <i class="bi bi-filetype-pdf" aria-hidden="true"></i>
                                         </a>
                                     {% elif leave.leave_type.legacy_code == '41' or leave.leave_type.legacy_code == '55' %}
                                         {% if employee.employee_type != 'ADMINISTRATIVE' %} 
                                             <a id="print-leave-btn" href="{% url 'leaves:leave-print' leave.id  employee.id %}"
                                             class="print-leave btn btn-sm btn-warning" type="button" name="button" target="_blank">
-                                                <i class="bi bi-filetype-pdf" aria-hidden="true"></i>&nbspΕκτ.
+                                                <i class="bi bi-filetype-pdf" aria-hidden="true"></i>
                                             </a>
                                         {% endif %}
                                     {% endif %}

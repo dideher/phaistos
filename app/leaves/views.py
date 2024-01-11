@@ -117,6 +117,8 @@ class LeaveCreateView(LoginRequiredMixin, PermissionRequiredMixin, JsonableRespo
         leave.number_of_days = (leave.date_until - leave.date_from).days + 1
         leave.created_on = timezone.now()
         leave.minoas_id = None
+        # check if the leave type deducts days from "ekpaideutikh yphresia"
+        leave.count_against_teaching_experience = leave.leave_type.count_against_teaching_experience
 
         messages.success(self.request, f'Η άδεια καταχωρήθηκε επιτυχώς')
 
@@ -138,6 +140,9 @@ class LeaveUpdateView(LoginRequiredMixin, PermissionRequiredMixin, JsonableRespo
     def form_valid(self, form):
         leave: Leave = form.instance
         leave.updated_on = timezone.now()
+
+        # check if the leave type deducts days from "ekpaideutikh yphresia"
+        leave.count_against_teaching_experience = leave.leave_type.count_against_teaching_experience
         messages.success(self.request, f'Η άδεια τροποποιήθηκε επιτυχώς')
 
         return super().form_valid(form)

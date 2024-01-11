@@ -4,7 +4,7 @@
     <thead class="thead-dark">
         <tr>
             <th scope="col">#</th>
-            <th scope="col">Κωδ.Άδ.</th>
+            <th scope="col">Κωδ.</th>
             <th scope="col">Τύπος Άδειας</th>
             <th scope="col">Ημέρες</th>
             <th scope="col">Έναρξη</th>
@@ -20,11 +20,20 @@
                 {{ leave.id }}
             </td>
             <td class="text-center"><code>{{ leave.leave_type.legacy_code }}</code></td>
-            <td>{{ leave.leave_type.description }} </td>
+            <td>
+                {% if leave.count_against_teaching_experience %}
+                <div class="badge bg-danger">
+                    <span  data-toggle="tooltip" title="Αφαιρεί ημέρες από την Εκπαιδευτική Υπηρεσία">
+                        - Εκπ.
+                    </span>
+                </div>
+                {% endif %}
+                {{ leave.leave_type.description }}
+            </td>
             <td>{{ leave.effective_number_of_days }}</td>
             <td>{{ leave.date_from|date:"d-m-Y" }}</td>
             <td>{{ leave.date_until|date:"d-m-Y" }}</td>
-            <td>&nbsp;</td>
+            <td>{{ leave.current_unit }}</td>
             <td>{{ leave.comment|default:''|truncatechars:20 }}</td>
         </tr>
         {% endfor %}

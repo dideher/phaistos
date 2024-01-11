@@ -50,9 +50,21 @@
         {% else %}
         <table class="table table-sm table-striped">
             <tr>
-                <th>Εκπαιδευτική Υπηρεσία (v1566/1985)</th>
-                <td>{{ekpaideutiki_yphresia_meta_diorismo|default:"0"|duration_string_from_days}} ({{ekpaideutiki_yphresia_meta_diorismo|default:"0"}} ημέρες)</td>
+                <th scope="row">Εκπαιδευτική Υπηρεσία (v1566/1985)</th>
+                <td>
+                    {{ekpaideutiki_yphresia_meta_diorismo|default:"0"|duration_string_from_days}} ({{ekpaideutiki_yphresia_meta_diorismo|default:"0"}} ημέρες)
+                </td>
             </tr>
+            {% if leave_days_against_teaching_experience > 0 %}
+            <tr>
+                <td colspan="2" class="text-center">
+                    <div class="badge bg-danger text-wrap">
+                        Έχει αφαιρεθεί εκπαιδευτική υπηρεσία {{leave_days_against_teaching_experience|default:"0"|duration_string_from_days}}
+                        ({{leave_days_against_teaching_experience|default:"0"}} ημέρες) λόγω αναρρωτικών αδειών
+                    </div>
+                </td>
+            </tr>
+            {% endif %}
             <tr>
                 <th>Διδακτική Υπηρεσία (εγκύκλιος 2010)</th>
                 <td>{{didaktiki_yphresia_meta_diorismo|default:"0"|duration_string_from_days}} ({{didaktiki_yphresia_meta_diorismo|default:"0"}} ημέρες)</td>
