@@ -1,42 +1,42 @@
-below_twenty_numwords = ["", # empty in place of μηδέν
-                            "μίας", 
-                            "δύο", 
-                            "τριών", 
-                            "τεσσάρων", 
-                            "πέντε", 
-                            "έξι", 
-                            "επτά", 
-                            "οκτώ", 
-                            "εννέα", 
-                            "δέκα",  
-                            "ένδεκα", 
-                            "δώδεκα",  
-                            "δεκατριών", 
-                            "δεκατεσσάρων", 
-                            "δεκαπέντε", 
-                            "δεκαέξι",  
-                            "δεκαεπτά", 
-                            "δεκαοκτώ", 
-                            "δεκαεννέα"]
+below_twenty_numwords = ["",  # empty in place of μηδέν
+                         "μίας",
+                         "δύο",
+                         "τριών",
+                         "τεσσάρων",
+                         "πέντε",
+                         "έξι",
+                         "επτά",
+                         "οκτώ",
+                         "εννέα",
+                         "δέκα",
+                         "ένδεκα",
+                         "δώδεκα",
+                         "δεκατριών",
+                         "δεκατεσσάρων",
+                         "δεκαπέντε",
+                         "δεκαέξι",
+                         "δεκαεπτά",
+                         "δεκαοκτώ",
+                         "δεκαεννέα"]
 
-tens_above_twenty_numwords = [  "είκοσι",
-                                "τριάντα",
-                                "σαράντα",
-                                "πενήντα",
-                                "εξήντα", 
-                                "εβδομήντα",
-                                "ογδόντα", 
-                                "ενενήντα"]
+tens_above_twenty_numwords = ["είκοσι",
+                              "τριάντα",
+                              "σαράντα",
+                              "πενήντα",
+                              "εξήντα",
+                              "εβδομήντα",
+                              "ογδόντα",
+                              "ενενήντα"]
 
-hundreds_numwords = [ "εκατό",
-                        "διακόσιες",
-                        "τριακόσιες",
-                        "τετρακόσιες",  
-                        "πεντακόσιες",  
-                        "εξακόσιες",  
-                        "επτακόσιες",  
-                        "οκτακόσιες",  
-                        "εννιακόσιες"]
+hundreds_numwords = ["εκατό",
+                     "διακόσιες",
+                     "τριακόσιες",
+                     "τετρακόσιες",
+                     "πεντακόσιες",
+                     "εξακόσιες",
+                     "επτακόσιες",
+                     "οκτακόσιες",
+                     "εννιακόσιες"]
 
 thousands_numwords = [(1000, "χίλιες")]
 
@@ -46,6 +46,7 @@ def number_to_word_below_20(number):
     if number < 20:
         number_in_words = below_twenty_numwords[number]
     return number_in_words
+
 
 def number_to_word_between_20_and_99(number):
     number_in_words = ''
@@ -57,7 +58,8 @@ def number_to_word_between_20_and_99(number):
         else:
             number_in_words = f'{tens_above_twenty_numwords[list_of_digits[1]-2]} {below_twenty_numwords[list_of_digits[0]]}'
     return number_in_words
-    
+
+
 def number_to_word_between_100_and_999(number):
     number_in_words = ''
     low_part = number % 100
@@ -95,6 +97,7 @@ def number_to_word_larger_than_1000(number):
 
     return number_in_words 
 
+
 def convert_duration_to_words(number):
 
     number_in_words = ''
@@ -117,6 +120,10 @@ def convert_duration_to_words(number):
 
 
 def first_name_to_geniki(first_name):
+
+    if first_name is None:
+        return None
+
     geniki = first_name
     name_ends_with = first_name[-4:]
     if name_ends_with == 'ΛΕΩΝ':
@@ -143,7 +150,12 @@ def first_name_to_geniki(first_name):
                 pass
     return geniki
 
+
 def first_name_to_accusative(first_name):
+
+    if first_name is None:
+        return None
+
     accusative = first_name
     name_ends_with = first_name[-4:]
     if name_ends_with == 'ΛΕΩΝ':
@@ -155,8 +167,11 @@ def first_name_to_accusative(first_name):
     return accusative
 
 
-
 def last_name_to_geniki(last_name):
+
+    if last_name is None:
+        return None
+
     geniki = last_name
     name_ends_with = last_name[-2:]
     if name_ends_with == 'ΟΣ':
@@ -178,6 +193,10 @@ def last_name_to_geniki(last_name):
 
 
 def last_name_to_accusative(last_name):
+
+    if last_name is None:
+        return None
+
     geniki = last_name
     name_ends_with = last_name[-2:]
     if name_ends_with == 'ΟΣ':
@@ -194,7 +213,12 @@ def last_name_to_accusative(last_name):
         pass
     return geniki
 
+
 def remove_last_n_from_female_article(last_name):
+
+    if last_name is None:
+        return None
+
     repetitive_consonant_tuple = ('Γ', 'Β', 'Δ', 'Χ', 'Φ', 'Θ', 'Μ', 'Ν', 'Λ', 'Ρ', 'Σ', 'Ζ')
     female_article = 'στην'
     if last_name[0] in repetitive_consonant_tuple:
