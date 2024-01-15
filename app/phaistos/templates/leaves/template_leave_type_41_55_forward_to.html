@@ -182,8 +182,8 @@
           {% comment %} Βαθμός Προτερ.: <br> {% endcomment %}
           {% comment %} Να διατηρηθεί μέχρι: <br> {% endcomment %}
           <div id="location-date-protocol">
-            Ηράκλειο, {{leave.incoming_protocol_date}} <br>
-            Αρ. Πρωτ.: {{leave.incoming_protocol}}
+            Ηράκλειο, {{ leave.issued_on | date:"d-m-Y" }} <br>
+            Αρ. Πρωτ.: {{ leave.incoming_protocol }}
           </div>
           {% comment %} <div id="decision"> {% endcomment %}
             {% comment %} <h2> ΑΠΟΦΑΣΗ </h2> {% endcomment %}

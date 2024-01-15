@@ -58,7 +58,8 @@
             <h1>{% block title %}(no title){% endblock %}</h1>
             <div class="row">
                 {% autoescape off %}{% bootstrap_messages %}{% endautoescape %}
-
+            </div>
+            <div class="row">
                 {% block content %}(no content){% endblock %}
             </div>
         </div>
