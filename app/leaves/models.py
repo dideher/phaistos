@@ -68,6 +68,9 @@ class Leave(models.Model):
                                        null=True, blank=True, max_length=255)
     created_on = models.DateTimeField(db_column="CREATED_ON", null=False, blank=False, default=timezone.now)
     updated_on = models.DateTimeField(db_column="UPDATED_ON", null=True, blank=True)
+    issued_on = models.DateTimeField(db_column="ISSUED_ON", null=True, blank=True, default=None,
+                                     verbose_name="Ημ/νια έκδοσης της απόφασης",
+                                     help_text="Καταχωρίστε την ημ/νια έκδοσης της απόφασης της άδειας")
 
     health_committee_protocol = models.CharField(db_column="HEALTH_COMMITTEE_PROTOCOL", max_length=128, blank=True,
                                                  verbose_name="Πρωτόκολλο Υγειονομικής Επιτροπής ή Πρωτόκολλο "

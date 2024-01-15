@@ -82,15 +82,57 @@
                 </div>
 
                 <div class="col-6">
-                    {% bootstrap_field form.health_committee_protocol wrapper_class='invalid' placeholder='' show_help=True show_label=True %}
+                    <div class="row">
+                        <div class="col">
+                            <p>
+                                Ημ/νια έκδοσης της απόφασης της άδειας
+                            </p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            {% bootstrap_field form.issued_on wrapper_class='invalid' placeholder='ηη/μμ/εεεε' show_help=False show_label=False %}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <p class="form-text">
+                                Καταχωρίστε την ημερομηνία έκδοσης της απόφασης της άδειας
+                            </p>
+                        </div>
+                    </div>
                 </div>
 
             </div>
 
             <div class="row">
-                <div class="col">
-                    <p></p>
+                <div class="col-10">
+                    <div class="row">
+                        <div class="col">
+                            <p>
+                                Πρωτόκολλο Γνωμάτευσης
+                            </p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            {% bootstrap_field form.health_committee_protocol wrapper_class='invalid' placeholder='' show_help=False show_label=False %}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <p class="form-text">
+                                Καταχωρίστε το Πρωτόκολλο Υγειονομικής Επιτροπής ή Πρωτόκολλο Βεβαίωσης Δ/ντη Σχολ.
+                                Μονάδας ή Ημερομηνία Γνωμάτευσης Ιατρού ή Ημερομηνία Υπεύθυνης Δήλωσης
+                            </p>
+                        </div>
+                    </div>
+
                 </div>
+                <div class="col-6">
+
+                </div>
+
             </div>
 
             <div class="row">

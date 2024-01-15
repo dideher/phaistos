@@ -27,12 +27,14 @@ class LeaveForm(BSModalModelForm):
     class Meta:
         model = Leave
         fields = ['date_from', 'date_until', 'leave_type', 'comment', 'number_of_days', 'effective_number_of_days',
-                  'incoming_protocol', 'incoming_protocol_date', 'health_committee_protocol']
+                  'incoming_protocol', 'incoming_protocol_date', 'health_committee_protocol',
+                  'issued_on']
         widgets = {
             'comment': forms.Textarea(attrs={'rows': 3}),
             'date_from': DatePickerInput(format='%Y-%m-%d'),
             'date_until': DatePickerInput(format='%Y-%m-%d'),
             'incoming_protocol_date': DatePickerInput(format='%Y-%m-%d'),
+            'issued_on': DatePickerInput(format='%Y-%m-%d'),
         }
 
     def __init__(self, *args, **kwargs):
