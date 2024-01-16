@@ -93,6 +93,8 @@ class Leave(models.Model):
                                                                       "Εκπαιδευτική Υπηρεσία",
                                                             verbose_name='Αφαιρεί Εκπαιδευτική Υπηρεσία')
 
+    original_leave = models.ForeignKey('Leave', null=True, blank=True, default=None, on_delete=models.SET_NULL)
+
     class Meta:
         indexes = [
             models.Index(fields=['employee', 'leave_type', ]),
