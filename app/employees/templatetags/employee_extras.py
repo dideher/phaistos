@@ -176,3 +176,11 @@ def show_work_experience_totals(context):
 
     return result
 
+
+@register.filter(name='split', is_safe=True)
+def split(value, key=','):
+    """
+    Returns the value turned into a list.
+    """
+    return value.split(key)
+

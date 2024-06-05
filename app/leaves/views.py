@@ -27,7 +27,7 @@ from phaistos.commons.utils import employee_is_education_consultant
 from django.views.generic.edit import FormMixin
 from django.shortcuts import render
 
-from employees.models import Employee
+from employees.models import Employee, LegacyEmployeeType
 from leaves.forms import LeaveForm, DeleteLeaveForm, LeaveSearchForm
 from leaves.models import Leave
 from phaistos.commons.mixins import JsonableResponseMixin
@@ -342,47 +342,48 @@ class LeavePrintDecisionToPdfView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         buffer = io.BytesIO()
         # Get data
-        employee: Employee = Employee.objects.get(pk = self.kwargs['employee_pk'])
-        leave: Leave = Leave.objects.get(pk = self.kwargs['pk'])
+        employee: Employee = Employee.objects.get(pk=self.kwargs['employee_pk'])
+        leave: Leave = Leave.objects.get(pk=self.kwargs['pk'])
         # Select Template
-        if (leave.leave_type.legacy_code == "31" or leave.leave_type.legacy_code == "54"):
+        if leave.leave_type.legacy_code in ["31", "54"]:
             template_path = os.path.join(settings.BASE_DIR, 'templates/leaves/template_leave_type_31_54_forward_to.html')
-        elif (leave.leave_type.legacy_code == "42"): # or leave.leave_type.legacy_code == "48"):
+        elif leave.leave_type.legacy_code == "42":  # or leave.leave_type.legacy_code == "48"):
             template_path = os.path.join(settings.BASE_DIR, 'templates/leaves/template_leave_type_42_forward_to.html')
-        elif (leave.leave_type.legacy_code == "47"): # or leave.leave_type.legacy_code == "48"):
+        elif leave.leave_type.legacy_code == "47":  # or leave.leave_type.legacy_code == "48"):
             template_path = os.path.join(settings.BASE_DIR, 'templates/leaves/template_leave_type_47_forward_to.html')
-        elif (leave.leave_type.legacy_code == "57"): # or leave.leave_type.legacy_code == "48"):
+        elif leave.leave_type.legacy_code == "57":  # or leave.leave_type.legacy_code == "48"):
             template_path = os.path.join(settings.BASE_DIR, 'templates/leaves/template_leave_type_57_forward_to.html')
+        elif  leave.leave_type.legacy_code in ['41', '55']:
+            template_path = os.path.join(settings.BASE_DIR, 'templates/leaves/template_leave_type_41_55_forward_to.html')
         else:
-            if (employee.employee_type != "ADMINISTRATIVE"):
-                if (leave.leave_type.legacy_code == "41" or leave.leave_type.legacy_code == "55"):
-                    template_path = os.path.join(settings.BASE_DIR, 'templates/leaves/template_leave_type_41_55_forward_to.html')
-            else:
-                template_path = os.path.join(settings.BASE_DIR, 'templates/leaves/template_leave_type_empty.html')
+            template_path = os.path.join(settings.BASE_DIR, 'templates/leaves/template_leave_type_empty.html')
         
         is_education_consultant, education_consultant_specialization = employee_is_education_consultant()
         school_principal_unit = employee.school_principal_unit.title if employee.school_principal_unit else None
-        context = {'employee': employee,
-                   'is_principal': employee.is_school_principal,
-                   'principal_school_unit': school_principal_unit,
-                   'is_education_consultant': is_education_consultant,
-                   'education_consultant_specialization': education_consultant_specialization,
-                   'leave': leave,
-                   'range': range(2),
-                   'geniki_father_name': first_name_to_geniki(employee.father_name), 
-                   'geniki_employee_name': first_name_to_geniki(employee.first_name),
-                   'accusative_employee_name': first_name_to_accusative(employee.first_name),
-                   'geniki_employee_last_name': last_name_to_geniki(employee.last_name),
-                   'accusative_employee_last_name': last_name_to_accusative(employee.last_name),
-                   'female_article': remove_last_n_from_female_article(employee.last_name),
-                   'leave_duration_verbal': convert_duration_to_words(leave.effective_number_of_days),
-                   'charset': 'iso-8859-7',
-                   'config': config}
-        
+        context = {
+            'employee': employee,
+            'is_principal': employee.is_school_principal,
+            'principal_school_unit': school_principal_unit,
+            'is_education_consultant': is_education_consultant,
+            'education_consultant_specialization': education_consultant_specialization,
+            'leave': leave,
+            'range': range(2),
+            'geniki_father_name': first_name_to_geniki(employee.father_name),
+            'geniki_employee_name': first_name_to_geniki(employee.first_name),
+            'accusative_employee_name': first_name_to_accusative(employee.first_name),
+            'geniki_employee_last_name': last_name_to_geniki(employee.last_name),
+            'accusative_employee_last_name': last_name_to_accusative(employee.last_name),
+            'female_article': remove_last_n_from_female_article(employee.last_name),
+            'leave_duration_verbal': convert_duration_to_words(leave.effective_number_of_days),
+            'charset': 'iso-8859-7',
+            'config': config,
+            'is_administrative': employee.employee_type == LegacyEmployeeType.ADMINISTRATIVE,
+        }
+
         logging.getLogger('fontTools').setLevel(logging.ERROR)
         logging.getLogger('weasyprint').setLevel(logging.ERROR)
         
-        content_string = render_to_string(template_path, context)#.encode('iso-8859-7')
+        content_string = render_to_string(template_path, context)  # .encode('iso-8859-7')
         # print()
         # How to locate the Greek crest image and embed it in the pdf file:
         # In this view function I provide Weasyprint with the base URI 
@@ -400,7 +401,7 @@ class LeavePrintDecisionToPdfView(LoginRequiredMixin, View):
         # e.g. in our case STATIC_ROOT = '/home/gstam/src/phaistos/phaistos/app/static_files/'
         # so, in the end the file path is 
         # /home/gstam/src/phaistos/phaistos/app/static_files/main/greek_flag_icon.png'
-        base_url= settings.STATIC_ROOT # os.path.join(BASE_DIR, "..", "static_files") #request.build_absolute_uri('/')
+        base_url = settings.STATIC_ROOT  # os.path.join(BASE_DIR, "..", "static_files") #request.build_absolute_uri('/')
         HTML(string=content_string, base_url=base_url).write_pdf(buffer)
         buffer.seek(0)
         filename = (f'{employee.last_name}_{employee.first_name} ([{leave.leave_type.legacy_code}] '
