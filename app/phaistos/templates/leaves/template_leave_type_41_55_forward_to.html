@@ -195,9 +195,14 @@
             {% comment %} {% endfor %} {% endcomment %}
           </div>
         </div>
-    </div> 
-      
-    <h3> ΘΕΜΑ: «Χορήγηση αναρρωτικής άδειας σε εκπαιδευτικό λειτουργό» </h3>
+    </div>
+    <h3>
+      {% if is_administrative %}
+      ΘΕΜΑ: «Χορήγηση αναρρωτικής άδειας σε διοικητικό υπάλληλο»
+      {% else %}
+      ΘΕΜΑ: «Χορήγηση αναρρωτικής άδειας σε εκπαιδευτικό λειτουργό»
+      {% endif %}
+    </h3>
       Έχοντας υπόψη:
     <ol>
     {% comment %} <li> Τις διατάξεις : </li> {% endcomment %}
@@ -213,13 +218,13 @@
     <li> Τις διατάξεις του άρθ.6 της Κ.Υ.Α (ΦΕΚ Αρ.6273/τ.Β’/28-12-2021) «Καθήκοντα και αρμοδιότητες Διευθυντών Εκπαίδευσης». </li>
     <li> Την με Αρ. Πρωτ: {{leave.health_committee_protocol}} Γνωμ. της Α/θμιας Υγειονομικής Επιτροπής Περιφερειακής Ενότητας Ηρακλείου που γνωματεύει ότι 
       {% if employee.is_man %} ο {% else %} η {% endif %} <b>{{employee.last_name}} {{employee.first_name}}</b> του <b>{{geniki_father_name}} </b>
-      εκπαιδευτικός κλάδου {{employee.specialization }} του {{employee.current_unit }} έχει ανάγκη αναρρωτικής άδειας <b> {{leave_duration_verbal}} ({{leave.effective_number_of_days}}) 
+      {% if is_administrative %}διοικητικό υπάλληλο{% else %}εκπαιδευτικός{% endif %} κλάδου {{employee.specialization }} του {{employee.current_unit }} έχει ανάγκη αναρρωτικής άδειας <b> {{leave_duration_verbal}} ({{leave.effective_number_of_days}})
       {% if leave.effective_number_of_days == 1 %} ημέρας{% else %} ημερών{% endif %}</b>, από <b>{{leave.date_from}}</b> έως και <b>{{leave.date_until}}</b>.</li>
     </ol> 
     <h3> Αποφασίζουμε </h3>
     <p>
       Χορηγούμε {% if employee.is_man %} στον {% else %} {{ female_article }} {% endif %} <b>{{employee.last_name}} {{employee.first_name}}</b> του <b>{{geniki_father_name}}</b>, 
-      εκπαιδευτικό κλάδου {{employee.specialization }} του <b>{{employee.current_unit }}</b>, της Δ/νσης Δ/θμιας Εκπ/σης Ηρακλείου, αναρρωτική άδεια <b>{{leave_duration_verbal}} ({{leave.effective_number_of_days}}) 
+      {% if is_administrative %}διοικητικό υπάλληλο{% else %}εκπαιδευτικός{% endif %} κλάδου {{employee.specialization }} του <b>{{employee.current_unit }}</b>, της Δ/νσης Δ/θμιας Εκπ/σης Ηρακλείου, αναρρωτική άδεια <b>{{leave_duration_verbal}} ({{leave.effective_number_of_days}})
       {% if leave.effective_number_of_days == 1 %} ημέρας{% else %} ημερών{% endif %}</b> με αποδοχές, από <b>{{leave.date_from}}</b> έως και <b>{{leave.date_until}}</b>.</li>
     </p>
     <br>
