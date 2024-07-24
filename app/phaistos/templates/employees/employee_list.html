@@ -12,73 +12,12 @@
     <div class="card shadow">
         
         <div class="card-body">
-            <form role="form" method="get">
-                {% bootstrap_form_errors form type='non_fields' %}
-                <div class="row">
-                    <div class="col-md-2">
-                        {% bootstrap_field form.last_name placeholder='' show_label=True%}
-                    </div>
-                    <div class="col-md-2">
-                        {% bootstrap_field form.first_name placeholder='' show_label=True%}
-                    </div>
-                    <div class="col-md-3">
-                        {% bootstrap_field form.employee_type placeholder='' show_label=True%}
-                    </div>
-<!--                    <div class="col-md-3">-->
-<!--                        % bootstrap_field form.is_active placeholder='' show_label=True% -->
-<!--                    </div>-->
-                </div>
-                
-                <div class="row">
-                    <div class="col-md-2">
-                        {% bootstrap_field form.vat_number placeholder='' show_label=True%}
-                    </div>
-                    <div class="col-md-2">
-                        {% bootstrap_field form.registration_id placeholder='' show_label=True%}
-                    </div>
-                    <div class="col-md-2 align-self-center">
-                        {% bootstrap_button button_type="submit" content="Αναζήτηση" %}
-                    </div>  
-                </div>
-
-            </form>
 
             <div class="row">
+                <!-- server side datatable -->
                 <div class="col">
-                    <table id="employee_list_table" class="table table-sm table-hover">
-                        <thead class="table-light">
-                            <tr>
-                                <th scope="col">ΑΜ</th>
-                                <th scope="col">ΑΦΜ</th>
-                                <th scope="col">Επώνυμο</th>
-                                <th scope="col">Όνομα</th>
-                                <th scope="col">Όνομα Πατρός</th>
-                                <th scope="col">Ειδικότητα</th>
-                                <th scope="col">Οργανική</th>
-                                <th scope="col">Τύπος</th>
-                                <!-- <th scope="col">Βαθμός Ε'-2</th> -->
-                                <th scope="col">Ετ.Γεν.</th>
-                            </tr>
-                        </thead>
-                        <tbody class="table-group-divider">
-                        {% for employee in employees_paginated %}
-                            <tr class="clickable-table-row" style="cursor: pointer" data-href="{% url goto_target employee.uuid %}">
-                                <td>{{ employee.registry_id|default:""}}</td>
-                                <td>{{ employee.vat_number|default:""}}</td>
-                                <td>{{ employee.last_name|truncatechars:20 }}</td>
-                                <td>{{ employee.first_name }}</td>
-                                <td>{{ employee.father_name }}</td>
-                                <td>{{ employee.specialization.code }} {{ employee.specialization.title|truncatechars:20 }}</td>
-                                <td>{{ employee.current_unit.title|default:"" }}</td>
-                                <td>{{ employee.get_employee_type_display }}</td>
-                                <td>{{ employee.date_of_birth|date:"d-m-Y" }}</td>
-                            </tr>
-                        {% endfor %}
-                        </tbody>
+                    <table id="datatable_employee_list" width="100%" class="table hover table-hover table-striped">
                     </table>
-                    {% if display_paginated_pages %}
-                       {% bootstrap_pagination employees_paginated extra=request.GET.urlencode size="sm" %}
-                    {% endif %}
                 </div>
             </div>
         </div>
@@ -94,6 +33,61 @@ $(document).ready(function($) {
 
     $(".clickable-table-row").click(function() {
         window.document.location = $(this).data("href");
+    });
+
+
+
+    AjaxDatatableViewUtils.initialize_table(
+            $('#datatable_employee_list'),
+            "{% url 'employees:ajax_datatable_employees' %}",
+            {
+                // extra_options (example)
+                processing: false,
+                autoWidth: true,
+                full_row_select: false,
+                scrollX: true,
+                select: true,
+                layout: {
+        top1: 'searchPanes'
+    },
+    searchPanes: {
+        controls: true
+    }
+
+            }, {
+                'goto_target': '{{goto_target}}'
+            },
+        );
+    var datatable_employee_list = $('#datatable_employee_list')
+
+<!--    datatable_employee_list.on('click', 'tbody tr', function () {-->
+<!--        console.log("select event");-->
+<!--    });-->
+
+    table = datatable_employee_list.closest('table.dataTable');
+    datatable_employee_list.on('select.dt', function (e, dt, type, indexes) {
+        console.log("select event");
+        if (type === 'row') {
+            var goto_url = dt.rows(indexes).data().pluck('goto_url');
+            window.open(goto_url[0], '_self');
+        }
+    });
+
+<!--    datatable_employee_list.on('click', 'tbody tr', function () {-->
+<!--      table = datatable_employee_list.closest('table.dataTable');-->
+<!--      let data = table.DataTable().row(this).data();-->
+<!--      console.log(data);   //full row of array data-->
+<!--      console.log(data['goto_url']);   //EmployeeId-->
+<!--      //window.open(data['goto_url'], '_self');-->
+<!--      //var a = document.createElement('a');-->
+<!--      //a.href = data['goto_url'];-->
+<!--      //a.click();-->
+<!--    });-->
+
+
+
+    $('#datatable_employee_list tbody').on('click', 'tr', function() {
+        console.log('clicked: ' + table.row(this).data()[0])
     });
 
 <!--    var table = $('#employee_list_table').DataTable({-->
