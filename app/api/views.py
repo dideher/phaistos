@@ -52,6 +52,13 @@ from leaves.models import (
 from main.models import SchoolYear
 
 
+def is_empty_or_null(value: str) -> bool:
+
+    if value is None:
+        return True
+
+    return len(value.strip()) == 0
+
 class EmployeeList(ListCreateAPIView):
 
     serializer_class = EmployeeSerializer
@@ -856,31 +863,54 @@ class MySchoolEmployeeImportAPIView(APIView):
                                                             legacy_type=employee_legacy_type_code)
 
             # first try to match employee with AM
-            employees: QuerySet[Employee] = Employee.objects.filter(
-                registry_id=employee_registry_id,
-                is_active=True,
-                employee_type=employee_type.legacy_type)
+            employee: Employee = None
 
-            if employees.count() == 1:
-                employee: Employee = employees.first()
-            elif employees.count() > 1:
-                employee: Employee = merge_employee(employees)
-            else:
-                employee = None
+            if not is_empty_or_null(employee_registry_id):
+                employees: QuerySet[Employee] = Employee.objects.filter(
+                    registry_id=employee_registry_id,
+                    is_active=True,
+                    employee_type=employee_type.legacy_type)
+
+                if employees.count() == 0:
+                    # none found, pass
+                    pass
+                elif employees.count() == 1:
+                    # one found, this is good
+                    employee: Employee = employees.first()
+                elif employees.count() == 2:
+                    # two found ! let's merge
+                    logging.warning("found two employee '%s' with registry ID '%s', we are going to merge", employees,
+                                    employee_registry_id)
+                    employee: Employee = merge_employee(employees)
+                    logging.warning("merged to '%s'", employee)
+                else:
+                    # more found ! this is an error
+                    raise RuntimeError(f"found {employees.count()} employees with registry ID '{employee_registry_id}'")
 
             # if we failed to match, then try with AFM
-            if employee is None:
+
+            if employee is None and not is_empty_or_null(employee_vat_number):
 
                 employees: QuerySet[Employee] = Employee.objects.filter(
                     vat_number=employee_vat_number,
                     is_active=True,
                     employee_type=employee_type.legacy_type)
 
-                if employees.count() == 1:
+                if employees.count() == 0:
+                    # none found, pass
+                    pass
+                elif employees.count() == 1:
+                    # one found, this is good
                     employee = employees.first()
-                elif employees.count() > 1:
-                    #employee: Employee = merge_employee(employees)
-                    employee = employees.first()
+                elif employees.count() == 2:
+                    # two found, let's merge
+                    logging.warning("found two employee '%s' with VAT ID '%s', we are going to merge", employees,
+                                    employee_vat_number)
+                    employee: Employee = merge_employee(employees)
+                    logging.warning("merged to '%s'", employee)
+                else:
+                    # more found ! this is an error
+                    raise RuntimeError(f"found {employees.count()} employees with VAT ID '{employee_vat_number}'")
 
             if employee is not None:
 
@@ -1058,30 +1088,41 @@ class MySchoolEmploymentImportAPIView(APIView):
                 employment_unit.save()
 
             # first try to match employee with AM
-            employee = None
+            employee: Employee = None
 
-            if len(employee_am) > 0:
+            if not is_empty_or_null(employee_am):
                 employees: QuerySet[Employee] = Employee.objects.filter(
                     registry_id=employee_am,
                     is_active=True,
                     employee_type=employee_type.legacy_type)
 
-                if employees.count() == 1:
+                if employees.count() == 0:
+                    pass
+                elif employees.count() == 1:
                     employee: Employee = employees.first()
-                elif employees.count() > 1:
+                elif employees.count() == 2:
                     employee: Employee = merge_employee(employees)
+                else:
+                    # more found ! this is an error
+                    raise RuntimeError(f"found {employees.count()} employees with registry ID '{employee_am}'")
 
             # if we failed to match, then try with AFM
-            if employee is None and len(employee_afm) > 0:
+            if employee is None and not is_empty_or_null(employee_afm):
                 employees: QuerySet[Employee] = Employee.objects.filter(
                     vat_number=employee_afm,
                     is_active=True,
                     employee_type=employee_type.legacy_type)
 
-                if employees.count() == 1:
+                if employees.count() == 0:
+                    pass
+                elif employees.count() == 1:
                     employee = employees.first()
-                elif employees.count() > 1:
+                elif employees.count() == 2:
                     employee: Employee = merge_employee(employees)
+                else:
+                    # more found ! this is an error
+                    raise RuntimeError(f"found {employees.count()} employees with VAT ID '{employee_afm}'")
+
 
             today = now()
 
