@@ -9,7 +9,7 @@ from typing import List
 REGULAR_TYPE_LEAVE_TYPES = ["31", "54", "74", ]
 
 # taken directly from minoas code
-MEDICAL_TYPE_LEAVE_TYPES = ["41", "42", "47", "48", "55", "71", ]
+MEDICAL_TYPE_LEAVE_TYPES = ["41", "42", "47", "48", "49", "55", "71", ]
 
 
 def compute_leaves_real_duration(leaves: List[Leave], trim_to_year=None):
