@@ -5,6 +5,7 @@ django-bootstrap5
 django-bootstrap-modal-forms==3.0.3
 django-impersonate
 django-constance==3.1
+django-ajax-datatable==4.5.0
 mysql-connector-python
 openpyxl
 weasyprint
