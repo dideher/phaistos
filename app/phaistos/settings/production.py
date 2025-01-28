@@ -8,7 +8,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'some-secret-key')
 
 DEBUG = False
 
-ALLOWED_HOSTS = ['0.0.0.0', 'localhost', 'phaistos.dide.ira.net']
+ALLOWED_HOSTS = ['0.0.0.0', 'localhost', 'phaistos.dide.ira.net', 'phaistos.dideira.gr']
 
 
 # Database
