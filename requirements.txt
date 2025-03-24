@@ -11,7 +11,7 @@ django-constance==3.1.0
 django-impersonate==1.9.4
 django-picklefield==3.2
 django-registration==3.3
-djangorestframework==3.15.1
+djangorestframework==3.15.2
 et-xmlfile==2.0.0
 fonttools==4.56.0
 iniconfig==2.1.0
