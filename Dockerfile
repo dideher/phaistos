@@ -8,26 +8,23 @@ RUN set -eux; \
 		build-essential \
 		pkg-config \
 		default-libmysqlclient-dev \
+		curl \
+		ca-certificates \
 	; \
 	rm -rf /var/lib/apt/lists/*
 
-## virtualenv
+## install uv
+COPY --from=ghcr.io/astral-sh/uv:0.5.24 /uv /bin/uv
+
+# ## virtualenv
+RUN uv venv --seed /opt/venv
+# Use the virtual environment automatically
 ENV VIRTUAL_ENV=/opt/venv
-RUN python3 -m venv $VIRTUAL_ENV
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
 ## install requirements
-RUN pip install --upgrade pip wheel pip-tools
-
-COPY requirements.txt ./requirements.in
-
-## update requirements file with deployment requirement deps
-RUN echo "gunicorn" >> /requirements.in
-RUN echo "mysqlclient" >> /requirements.in
-
-RUN pip-compile ./requirements.in > ./requirements.txt  &&\
-    pip-sync &&\
-    pip install -r ./requirements.txt
+COPY pyproject.toml .
+RUN uv pip install -r pyproject.toml --extra production --compile-bytecode
 
 FROM python:3.9-slim-bullseye AS runtime-image
 ARG ENVIRONMENT=development
@@ -70,8 +67,8 @@ WORKDIR /app/
 
 
 ENV PYTHONPATH=/app
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
 ENV PATH="/opt/venv/bin:$PATH"
 
 EXPOSE 80

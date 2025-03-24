@@ -1,5 +1,19 @@
 # phaistos
 
+The project is using [uv](https://docs.astral.sh/uv) as package and project 
+manager. So, to get started working you first need to [install uv](https://docs.astral.sh/uv/getting-started/installation/)
+and then issue the following command : 
+
+```commandline
+uv sync --extra dev
+```
+
+or if you still need `pip` compatible env : 
+
+```commandline
+uv pip install -r pyproject.toml --extra dev 
+```
+
 ## Dependencies
 
 Make sure you have a running MySQL database. If not you could 
