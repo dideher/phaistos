@@ -184,3 +184,16 @@ def split(value, key=','):
     """
     return value.split(key)
 
+@register.filter(name='accusative_case', is_safe=True)
+def accusative_case(text):
+    if text[-2:] == 'ΟΣ':
+        return f'{text[:-1]}'
+    elif text[-2:] == 'ΑΣ':
+        return text[:-1]
+    elif text[-2:] == 'ΗΣ':
+        return text[:-1]
+    elif text[-2:] == 'ΩΝ':
+        return f'{text}Α'
+    else:
+        return text
+
