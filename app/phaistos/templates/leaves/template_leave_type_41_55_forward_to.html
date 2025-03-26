@@ -1,4 +1,5 @@
 {% load static %}
+{% load employee_extras %}
 <!DOCTYPE html>
 <html>
 <head>
@@ -161,7 +162,7 @@
               
               <tr>
                 <td style="text-align:right"> Πληροφορίες: </td>
-                <td style="text-align:left"> Μπακοθύμιου Ε.</td>
+                <td style="text-align:left"> Θώμου-Τσουκαλά Ευαγγελία</td>
               </tr>
               <tr>
                 <td style="text-align:right"> Τηλέφωνο: </td>
@@ -214,18 +215,18 @@
     {% comment %} </li> {% endcomment %}
     <li> Τις διατάξεις των άρθρων 54, 55 και 56 του Ν.3528/2007 (ΦΕΚ 26/09-02-2007 τ.Α΄) «Κύρωση του Κώδικα Κατάστασης Δημοσίων Πολιτικών Διοικητικών Υπαλλήλων και Υπαλλήλων Ν.Π.Δ.Δ.» όπως αντικαταστάθηκε από το άρθρο 2, 3 του Ν.4210/2013 (ΦΕΚ 254/21-11-2013 τ.Α’) «Ρυθμίσεις Υπουργείου Διοικητικής Μεταρρύθμισης και Ηλεκτρονικής Διακυβέρνησης και άλλες διατάξεις»</li>
     <li> Την με αρίθμ.Φ.351.5/43/67822/Δ1/5-5-2014 του ΥΠΑΙΘ «Άδειες εκπαιδευτικών Πρωτοβάθμιας και Δευτεροβάθμιας Εκπαίδευσης» </li>
-    <li> Την με αριθμ. Φ.353.1/26/153324/Δ1/25-9-2014 Υ.Α (ΦΕΚ αρ.2648 τ.Β’/7-10-2014) «Τροποποίηση της υπ' αριθμ. Φ.353.1/324/105657/Δ1/8−10−2002 απόφασης: Καθορισμός των ειδικότερων καθηκόντων και αρμοδιοτήτων των προϊσταμένων των περιφερειακών υπηρεσιών πρωτοβάθμιας και δευτεροβάθμιας εκπαίδευσης, των διευθυντών και υποδιευθυντών σχολικών μονάδων και ΣΕΚ και των συλλόγων διδασκόντων». </li>
     <li> Τις διατάξεις του άρθ.6 της Κ.Υ.Α (ΦΕΚ Αρ.6273/τ.Β’/28-12-2021) «Καθήκοντα και αρμοδιότητες Διευθυντών Εκπαίδευσης». </li>
     <li> Την με Αρ. Πρωτ: {{leave.health_committee_protocol}} Γνωμ. της Α/θμιας Υγειονομικής Επιτροπής Περιφερειακής Ενότητας Ηρακλείου που γνωματεύει ότι 
       {% if employee.is_man %} ο {% else %} η {% endif %} <b>{{employee.last_name}} {{employee.first_name}}</b> του <b>{{geniki_father_name}} </b>
       {% if is_administrative %}διοικητικό υπάλληλο{% else %}εκπαιδευτικός{% endif %} κλάδου {{employee.specialization }} του {{employee.current_unit }} έχει ανάγκη αναρρωτικής άδειας <b> {{leave_duration_verbal}} ({{leave.effective_number_of_days}})
-      {% if leave.effective_number_of_days == 1 %} ημέρας{% else %} ημερών{% endif %}</b>, από <b>{{leave.date_from}}</b> έως και <b>{{leave.date_until}}</b>.</li>
+      {% if leave.effective_number_of_days == 1 %} ημέρας{% else %} ημερών{% endif %}</b>, από <b>{{leave.date_from}}</b> έως <b>{{leave.date_until}}</b>.</li>
     </ol> 
     <h3> Αποφασίζουμε </h3>
     <p>
-      Χορηγούμε {% if employee.is_man %} στον {% else %} {{ female_article }} {% endif %} <b>{{employee.last_name}} {{employee.first_name}}</b> του <b>{{geniki_father_name}}</b>, 
-      {% if is_administrative %}διοικητικό υπάλληλο{% else %}εκπαιδευτικός{% endif %} κλάδου {{employee.specialization }} του <b>{{employee.current_unit }}</b>, της Δ/νσης Δ/θμιας Εκπ/σης Ηρακλείου, αναρρωτική άδεια <b>{{leave_duration_verbal}} ({{leave.effective_number_of_days}})
-      {% if leave.effective_number_of_days == 1 %} ημέρας{% else %} ημερών{% endif %}</b> με αποδοχές, από <b>{{leave.date_from}}</b> έως και <b>{{leave.date_until}}</b>.</li>
+      Τη χορήγηση {% if employee.is_man %} στον {% else %} {{ female_article }} {% endif %} <b>{{employee.last_name|accusative_case}} {{employee.first_name|accusative_case}}</b> του <b>{{geniki_father_name}}</b>,
+      {% if is_administrative %}διοικητικό υπάλληλο{% else %}εκπαιδευτικός{% endif %} κλάδου {{employee.specialization }} που υπηρετεί στο <b>{{employee.current_unit }}</b>,
+      της Δ/νσης Δ/θμιας Εκπ/σης Ηρακλείου, αναρρωτικής άδειας, <b>{{leave_duration_verbal}} ({{leave.effective_number_of_days}})
+      {% if leave.effective_number_of_days == 1 %} ημέρας{% else %} ημερών{% endif %}</b>, με αποδοχές, από <b>{{leave.date_from}}</b> έως <b>{{leave.date_until}}</b>.
     </p>
     <br>
     <div class="flex-signature">
