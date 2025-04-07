@@ -1,3 +1,4 @@
+import tempfile
 from datetime import datetime
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from bootstrap_modal_forms.generic import BSModalCreateView, BSModalUpdateView, BSModalReadView
@@ -31,6 +32,9 @@ from employees.models import Employee, LegacyEmployeeType
 from leaves.forms import LeaveForm, DeleteLeaveForm, LeaveSearchForm
 from leaves.models import Leave
 from phaistos.commons.mixins import JsonableResponseMixin
+
+from spire.doc import *
+from spire.doc.common import *
 
 
 class BaseDeleteView(BSModalUpdateView):
@@ -407,3 +411,85 @@ class LeavePrintDecisionToPdfView(LoginRequiredMixin, View):
         filename = (f'{employee.last_name}_{employee.first_name} ([{leave.leave_type.legacy_code}] '
                     f'{leave.date_from} εως {leave.date_until}).pdf')
         return FileResponse(buffer, as_attachment=False, filename=filename)
+
+
+class LeaveExportDecisionView(LoginRequiredMixin, PermissionRequiredMixin, View):
+
+    permission_required = ['leaves.view_leave']
+
+    def get(self, request, *args, **kwargs):
+        
+        # Get data
+        employee: Employee = Employee.objects.get(pk=self.kwargs['employee_pk'])
+        leave: Leave = Leave.objects.get(pk=self.kwargs['pk'])
+        # Select Template
+        if leave.leave_type.legacy_code in ["31", "54"]:
+            template_path = os.path.join(settings.BASE_DIR,
+                                         'templates/leaves/template_leave_type_31_54_forward_to.html')
+        elif leave.leave_type.legacy_code == "42":  # or leave.leave_type.legacy_code == "48"):
+            template_path = os.path.join(settings.BASE_DIR, 'templates/leaves/template_leave_type_42_forward_to.html')
+        elif leave.leave_type.legacy_code == "47":  # or leave.leave_type.legacy_code == "48"):
+            template_path = os.path.join(settings.BASE_DIR, 'templates/leaves/template_leave_type_47_forward_to.html')
+        elif leave.leave_type.legacy_code == "57":  # or leave.leave_type.legacy_code == "48"):
+            template_path = os.path.join(settings.BASE_DIR, 'templates/leaves/template_leave_type_57_forward_to.html')
+        elif leave.leave_type.legacy_code in ['41', '55']:
+            template_path = os.path.join(settings.BASE_DIR,
+                                         'templates/leaves/template_leave_type_41_55_forward_to_v2.html')
+        else:
+            template_path = os.path.join(settings.BASE_DIR, 'templates/leaves/template_leave_type_empty.html')
+
+        is_education_consultant, education_consultant_specialization = employee_is_education_consultant()
+        school_principal_unit = employee.school_principal_unit.title if employee.school_principal_unit else None
+        context = {
+            'employee': employee,
+            'is_principal': employee.is_school_principal,
+            'principal_school_unit': school_principal_unit,
+            'is_education_consultant': is_education_consultant,
+            'education_consultant_specialization': education_consultant_specialization,
+            'leave': leave,
+            'range': range(2),
+            'geniki_father_name': first_name_to_geniki(employee.father_name),
+            'geniki_employee_name': first_name_to_geniki(employee.first_name),
+            'accusative_employee_name': first_name_to_accusative(employee.first_name),
+            'geniki_employee_last_name': last_name_to_geniki(employee.last_name),
+            'accusative_employee_last_name': last_name_to_accusative(employee.last_name),
+            'female_article': remove_last_n_from_female_article(employee.last_name),
+            'leave_duration_verbal': convert_duration_to_words(leave.effective_number_of_days),
+            'charset': 'iso-8859-7',
+            'config': config,
+            'is_administrative': employee.employee_type == LegacyEmployeeType.ADMINISTRATIVE,
+        }
+
+        content_string = render_to_string(template_path, context)  # .encode('iso-8859-7')
+        
+
+        from io import StringIO
+        document = Document()
+        sec = document.AddSection()
+        # Add a paragraph to the section
+        paragraph = sec.AddParagraph()
+        paragraph.AppendHTML(content_string)
+
+        #format = FileFormat.PDF
+        format = FileFormat.Docx2016
+
+        if format == FileFormat.PDF:
+            file_extension = '.pdf'
+            content_type = 'application/pdf'
+        elif format == FileFormat.Docx2016:
+            file_extension = '.docx'
+            content_type = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+        else:
+            raise ValueError("unsuported file format")
+        
+        with tempfile.NamedTemporaryFile() as temp_pdf_path:
+            
+            document.SaveToFile(temp_pdf_path.name, format)
+            document.Close()
+
+            with open(temp_pdf_path.name, "rb") as f:
+                output_stream = io.BytesIO(f.read())
+
+        filename = (f'{employee.last_name}_{employee.first_name} ([{leave.leave_type.legacy_code}] '
+                    f'{leave.date_from} εως {leave.date_until}){file_extension}')
+        return FileResponse(output_stream, content_type=content_type, as_attachment=False, filename=filename)

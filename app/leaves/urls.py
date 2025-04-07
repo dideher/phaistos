@@ -8,7 +8,8 @@ from leaves.views import (
     compute_leave_calendar_duration,
     LeaveSearchListView,
     EmployeeLeavesListView,
-    LeavePrintDecisionToPdfView
+    LeavePrintDecisionToPdfView,
+    LeaveExportDecisionView
 )
 
 app_name = 'leaves'
@@ -23,5 +24,6 @@ urlpatterns = [
     path('<uuid:employee_uuid>/create', LeaveCreateView.as_view(), name='leave-create'),
     path('<int:employee_pk>/create', LeaveCreateView.as_view(), name='leave-create'),
     path('<int:pk>/<int:employee_pk>/pdf', LeavePrintDecisionToPdfView.as_view(), name='leave-print'),
+    path('<int:pk>/<int:employee_pk>/export', LeaveExportDecisionView.as_view(), name='leave-export'),
     path('search', LeaveSearchListView.as_view(), name='leave-search')
 ]
