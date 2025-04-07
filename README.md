@@ -14,6 +14,12 @@ or if you still need `pip` compatible env :
 uv pip install -r pyproject.toml --extra dev 
 ```
 
+Sync `requirements.txt` : 
+
+```commandline
+uv pip compile pyproject.toml -o requirements.txt
+```
+
 ## Dependencies
 
 Make sure you have a running MySQL database. If not you could 
