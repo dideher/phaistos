@@ -223,7 +223,7 @@
   </div>
 
   <h3>
-    ΘΕΜΑ: Χορήγηση αναρρωτικής άδειας με γνωμάτευση ΑΥΕ ΠΕ Ηρακλέιου
+    ΘΕΜΑ: Χορήγηση αναρρωτικής άδειας με γνωμάτευση ΑΥΕ ΠΕ Ηρακλείου
   </h3>
   Έχοντας υπόψη:
   <ol>
@@ -241,7 +241,7 @@
   <h3> Αποφασίζουμε </h3>
   <p>
     τη χορήγηση, {% if employee.is_man %} στον {% else %} {{ female_article }} {% endif %} <b>{{employee.last_name|accusative_case}} {{employee.first_name|accusative_case}}</b> του <b>{{geniki_father_name}}</b>,
-    {% if is_administrative %}διοικητικό υπάλληλο{% else %}εκπαιδευτικός{% endif %} κλάδου {{employee.specialization }} που υπηρετεί στο <b>{{employee.current_unit }}</b>, αναρρωτικής άδειας, <b>{{leave_duration_verbal}} ({{leave.effective_number_of_days}})
+    {% if is_administrative %}διοικητικό υπάλληλο{% else %}εκπαιδευτικό{% endif %} κλάδου {{employee.specialization }} που υπηρετεί στο <b>{{employee.current_unit }}</b>, αναρρωτικής άδειας, <b>{{leave_duration_verbal}} ({{leave.effective_number_of_days}})
     {% if leave.effective_number_of_days == 1 %} ημέρας{% else %} ημερών{% endif %}</b>, με αποδοχές, από <b>{{leave.date_from}}</b> έως <b>{{leave.date_until}}</b>.
   </p>
   <br>
