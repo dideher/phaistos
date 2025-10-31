@@ -425,7 +425,7 @@ class LeaveExportDecisionView(LoginRequiredMixin, PermissionRequiredMixin, View)
         # Select Template
         if leave.leave_type.legacy_code in ["31", "54"]:
             template_path = os.path.join(settings.BASE_DIR,
-                                         'templates/leaves/template_leave_type_31_54_forward_to.html')
+                                         'templates/leaves/template_leave_type_31_54_forward_to_v2.html')
         elif leave.leave_type.legacy_code == "42":  # or leave.leave_type.legacy_code == "48"):
             template_path = os.path.join(settings.BASE_DIR, 'templates/leaves/template_leave_type_42_forward_to.html')
         elif leave.leave_type.legacy_code == "47":  # or leave.leave_type.legacy_code == "48"):
