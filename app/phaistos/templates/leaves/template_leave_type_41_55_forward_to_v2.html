@@ -3,166 +3,171 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- <meta charset="{{charset}}"> -->
-  <meta charset="utf-8">
-<style>
-    @font-face {
-        font-family: DejaVu-Sans;
-        font-size: 12pt;
-        {% comment %} src: url({% static 'main/fonts/Kerkis-Bold.ttf' %}); {% endcomment %}
-    }
-   
-    @page {
-        size: A4 portrait;
-        margin-left: 1.5cm;
-        margin-right: 1.5cm;
-        margin-top:1.5cm;
-        margin-bottom:1.5cm;
-      }
-
-      div.break {
-        page-break-before:always;
-      }
-
-      .break_before {
-        page-break-before: always;
-      }
-
-      .break_after {
-        page-break-after: always;
-      }
-
-      body {
-        font-size: 9pt;
-        font-family:DejaVu-Sans;
-        line-height: 0.5;
-      }
-
-      .greek_flag_image {
-        height: 45px;
-        width: 45px;
-        display: block;
-        margin-left: auto;
-        margin-right: auto;
-        margin-bottom: 5px;
-      }
-
-      .prometopida {
-        /* display: flex; */
-        justify-content: space-between;
-        align-items: baseline;
-        font-family:DejaVu-Sans;
-        padding-bottom: 5px;
-      }
-      
-      #foreas {
-        text-align: center;
-        font-weight: bold;
-      }
-
-      .thin-dashed-line {
-        font-weight: normal;
-      }
-
-      #sender-info {
-        text-align:left;
-      }
-
-      #location-date-protocol {
-        text-align:left;
-        font-family: DejaVu-Sans;
-        padding-top: 25px;
-        padding-bottom: 25px;
-      }
-
-      .address-table {
-        width: auto;
-        font-weight: normal;
-        margin-left: 15px; 
-        margin-right:auto;
-        font-weight: normal;
-        text-align: left;
-        border-spacing: 0px;
-        border-collapse: collapse;
-      }
-
-      table.address-table th, td {
-        padding: 0px 0px;
-        text-align: left;
-      }
-      
-      #recepients {
-        text-align:left;
-        font-family: DejaVu-Sans;
-        padding-bottom: 50px;
-        font-weight: normal;
-      }
-
-      #decision {
-        text-align:left;
-        padding-top: 50px;
-        font-weight: bold;
-      }
-      h3 {
-        text-align:center;
-        font-family: DejaVu-Sans;
-        font-weight: bold;
-      }
-      
-       ol{
-        list-style-position: insdide;
-        padding-left: 2em;
-        text-align: justify;
-        text-justify: inter-word;
+    <!-- <meta charset="{{charset}}"> -->
+    <meta charset="utf-8">
+    <style>
+        @font-face {
+            font-family: DejaVu-Sans;
+            font-size: 12pt; {
+        % comment %
+        } src: url({% static 'main/fonts/Kerkis-Bold.ttf' %}); {
+        % endcomment %
+        }
         }
 
-       ol.l {
-          list-style-type: lower-greek;
-          list-style-position: insdide;
-          padding-left: 2em;
-          text-align: justify;
-          text-justify: inter-word;
-          }
-       
+        @page {
+            size: A4 portrait;
+            margin-left: 1.5cm;
+            margin-right: 1.5cm;
+            margin-top: 1.5cm;
+            margin-bottom: 1.5cm;
+        }
+
+        div.break {
+            page-break-before: always;
+        }
+
+        .break_before {
+            page-break-before: always;
+        }
+
+        .break_after {
+            page-break-after: always;
+        }
+
+        body {
+            font-size: 9pt;
+            font-family: DejaVu-Sans;
+            line-height: 0.5;
+        }
+
+        .greek_flag_image {
+            height: 45px;
+            width: 45px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            margin-bottom: 5px;
+        }
+
+        .prometopida {
+            /* display: flex; */
+            justify-content: space-between;
+            align-items: baseline;
+            font-family: DejaVu-Sans;
+            padding-bottom: 5px;
+        }
+
+        #foreas {
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .thin-dashed-line {
+            font-weight: normal;
+        }
+
+        #sender-info {
+            text-align: left;
+        }
+
+        #location-date-protocol {
+            text-align: left;
+            font-family: DejaVu-Sans;
+            padding-top: 25px;
+            padding-bottom: 25px;
+        }
+
+        .address-table {
+            width: auto;
+            font-weight: normal;
+            margin-left: 15px;
+            margin-right: auto;
+            font-weight: normal;
+            text-align: left;
+            border-spacing: 0px;
+            border-collapse: collapse;
+        }
+
+        table.address-table th, td {
+            padding: 0px 0px;
+            text-align: left;
+        }
+
+        #recepients {
+            text-align: left;
+            font-family: DejaVu-Sans;
+            padding-bottom: 50px;
+            font-weight: normal;
+        }
+
+        #decision {
+            text-align: left;
+            padding-top: 50px;
+            font-weight: bold;
+        }
+
+        h3 {
+            text-align: center;
+            font-family: DejaVu-Sans;
+            font-weight: bold;
+        }
+
+        ol {
+            list-style-position: insdide;
+            padding-left: 2em;
+            text-align: justify;
+            text-justify: inter-word;
+        }
+
+        ol.l {
+            list-style-type: lower-greek;
+            list-style-position: insdide;
+            padding-left: 2em;
+            text-align: justify;
+            text-justify: inter-word;
+        }
+
         .flex-signature {
-          display: flex;
-          justify-content: space-between;
-          align-items: baseline;
-          text-align: center;
-          font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            text-align: center;
+            font-weight: bold;
         }
 
         .signature {
-          justify-content: space-between;
-          align-items: baseline;
-          text-align: center;
-          font-weight: bold;
-          width: 100%;
+            justify-content: space-between;
+            align-items: baseline;
+            text-align: center;
+            font-weight: bold;
+            width: 100%;
         }
-        
+
         table.signature th, td {
-          padding: 0px 0px;
-          text-align: center;
+            padding: 0px 0px;
+            text-align: center;
         }
 
         #vertical-space {
-          margin-top: 0.75cm;
-          }
-        p {
-          text-align: justify;
-          text-justify: inter-word;
-          line-height: 0;
+            margin-top: 0.75cm;
         }
 
-     .data-table, .data-table th, .data-table td {
-          border: 1px solid black;
-          border-collapse: collapse;
-          padding-top: 2px;
-          padding-bottom: 2px;
-          padding-left: 2px;
-          padding-right: 2px;
+        p {
+            text-align: justify;
+            text-justify: inter-word;
+            line-height: 0;
         }
-      </style>
+
+        .data-table, .data-table th, .data-table td {
+            border: 1px solid black;
+            border-collapse: collapse;
+            padding-top: 2px;
+            padding-bottom: 2px;
+            padding-left: 2px;
+            padding-right: 2px;
+        }
+    </style>
 </head>
 
 <body>
