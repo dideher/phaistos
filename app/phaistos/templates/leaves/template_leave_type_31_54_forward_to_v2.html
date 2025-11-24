@@ -1,0 +1,341 @@
+{% load static %}
+{% load employee_extras %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <!-- <meta charset="{{charset}}"> -->
+    <meta charset="utf-8">
+    <style>
+        @font-face {
+            font-family: DejaVu-Sans;
+            font-size: 12pt; {
+        % comment %
+        } src: url({% static 'main/fonts/Kerkis-Bold.ttf' %}); {
+        % endcomment %
+        }
+        }
+
+        @page {
+            size: A4 portrait;
+            margin-left: 1.5cm;
+            margin-right: 1.5cm;
+            margin-top: 1.5cm;
+            margin-bottom: 1.5cm;
+        }
+
+        div.break {
+            page-break-before: always;
+        }
+
+        .break_before {
+            page-break-before: always;
+        }
+
+        .break_after {
+            page-break-after: always;
+        }
+
+        body {
+            font-size: 9pt;
+            font-family: DejaVu-Sans;
+            line-height: 0.5;
+        }
+
+        .greek_flag_image {
+            height: 45px;
+            width: 45px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            margin-bottom: 5px;
+        }
+
+        .prometopida {
+            /* display: flex; */
+            justify-content: space-between;
+            align-items: baseline;
+            font-family: DejaVu-Sans;
+            padding-bottom: 5px;
+        }
+
+        #foreas {
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .thin-dashed-line {
+            font-weight: normal;
+        }
+
+        #sender-info {
+            text-align: left;
+        }
+
+        #location-date-protocol {
+            text-align: left;
+            font-family: DejaVu-Sans;
+            padding-top: 25px;
+            padding-bottom: 25px;
+        }
+
+        .address-table {
+            width: auto;
+            font-weight: normal;
+            margin-left: 15px;
+            margin-right: auto;
+            font-weight: normal;
+            text-align: left;
+            border-spacing: 0px;
+            border-collapse: collapse;
+        }
+
+        table.address-table th, td {
+            padding: 0px 0px;
+            text-align: left;
+        }
+
+        #recepients {
+            text-align: left;
+            font-family: DejaVu-Sans;
+            padding-bottom: 50px;
+            font-weight: normal;
+        }
+
+        #decision {
+            text-align: left;
+            padding-top: 50px;
+            font-weight: bold;
+        }
+
+        h3 {
+            text-align: center;
+            font-family: DejaVu-Sans;
+            font-weight: bold;
+        }
+
+        ol {
+            list-style-position: insdide;
+            padding-left: 2em;
+            text-align: justify;
+            text-justify: inter-word;
+        }
+
+        ol.l {
+            list-style-type: lower-greek;
+            list-style-position: insdide;
+            padding-left: 2em;
+            text-align: justify;
+            text-justify: inter-word;
+        }
+
+        .flex-signature {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .signature {
+            justify-content: space-between;
+            align-items: baseline;
+            text-align: center;
+            font-weight: bold;
+            width: 100%;
+        }
+
+        table.signature th, td {
+            padding: 0px 0px;
+            text-align: center;
+        }
+
+        #vertical-space {
+            margin-top: 0.75cm;
+        }
+
+        p {
+            text-align: justify;
+            text-justify: inter-word;
+            line-height: 0;
+        }
+
+        .data-table, .data-table th, .data-table td {
+            border: 1px solid black;
+            border-collapse: collapse;
+            padding-top: 2px;
+            padding-bottom: 2px;
+            padding-left: 2px;
+            padding-right: 2px;
+        }
+    </style>
+</head>
+  <body>
+
+    {% for i in range %}
+    <div id="prometopida">
+      <table width="100%">
+        <tr>
+          <td style="width: 400px; vertical-align: top;">
+            <div id="foreas">
+              <img src='https://r2.dideira.gr/greek_flag_icon.png' class="greek_flag_image" class="center-flag" alt="Σημαία">
+              ΕΛΛΗΝΙΚΗ ΔΗΜΟΚΡΑΤΙΑ <br>
+              ΥΠΟΥΡΓΕΙΟ ΠΑΙΔΕΙΑΣ, ΘΡΗΣΚΕΥΜΑΤΩΝ ΚΑΙ ΑΘΛΗΤΙΣΜΟΥ<br>
+              <div class="thin-dashed-line"> ----- </div>
+                ΠΕΡΙΦΕΡΕΙΑΚΗ ΔΙΕΥΘΥΝΣΗ Α/ΘΜΙΑΣ & <br>
+                Β/ΘΜΙΑΣ ΕΚΠΑΙΔΕΥΣΗΣ ΚΡΗΤΗΣ <br>
+                Δ/ΝΣΗ Β/ΘΜΙΑΣ ΕΚΠ/ΣΗΣ ΗΡΑΚΛΕΙΟΥ <br>
+                ΤΜΗΜΑ Γ' ΠΡΟΣΩΠΙΚΟΥ <br>
+              <div class="thin-dashed-line"> ----- </div>
+              <table class="address-table">
+                <tr>
+                  <td style="width: 75px;">Ταχ. Δ/νση: </td>
+                  <td style="width: 220px;">Λ. Ικάρου 9 </td>
+                </tr>
+                <tr>
+                  <td>T.K. - Πόλη: </td>
+                  <td>71306 Ηράκλειο </td>
+                </tr>
+                <tr>
+                  <td>Πληροφορίες: </td>
+                  <td>Αυγουστάκη Γ., Θώμου-Τσουκαλά Ευ.</td>
+                </tr>
+                <tr>
+                  <td>Τηλέφωνο: </td>
+                  <td>2810-333772, 333737</td>
+                </tr>
+                <tr>
+                  <td>E-mail: </td>
+                  <td>adeies@dide.ira.sch.gr </td>
+                </tr>
+                <tr>
+                  <td>&nbsp;</td>
+                  <td>&nbsp;</td>
+                </tr>
+              </table>
+            </div>
+          </td>
+          <td style="width: 130px; vertical-align: top;">
+            &nbsp;
+          </td>
+          <td style="vertical-align: top;">
+            <div id="location-date-protocol">
+              Ηράκλειο, {{ leave.issued_on | date:"d-m-Y" }} <br>
+              Αρ. Πρωτ.: {{ leave.incoming_protocol }}
+            </div>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+
+    <h3>
+        ΘΕΜΑ: «Χορήγηση κανονικής άδειας απουσίας»
+    </h3>
+      Λαμβάνοντας υπόψη:
+      <ol>
+        <li>
+          Τις διατάξεις των άρθρων 48 και 49 του Ν.3528/2007 (ΦΕΚ 26/09-02-2007 τ.Α΄) με θέμα «Κύρωση του Κώδικα Κατάστασης Δημοσίων Πολιτικών
+          Διοικητικών Υπαλλήλων και Υπαλλήλων Ν.Π.Δ.Δ. και άλλες διατάξεις» όπως τροποποιήθηκε από τον Ν.4210/2013 (ΦΕΚ 254/21-11-2013 τ.Α’)
+          «Ρυθμίσεις Υπουργείου Διοικητικής Μεταρρύθμισης και Ηλεκτρονικής Διακυβέρνησης και άλλες διατάξεις».
+        </li>
+        {% if employee.employee_type != 'ADMINISTRATIVE' %}
+        <li>
+          Την, με αρίθμ. πρωτ. 74275/Δ2/10.07.2007, εγκύκλιο του ΥΠ.Π.Δ.Β.Μ.Θ. «Άδειες εκπαιδευτικών Πρωτοβάθμιας και Δευτεροβάθμιας Εκπαίδευσης»
+        </li>
+        <li>
+          Τις, με αριθμό Φ.351.5/43/67822/Δ1/05-05-2014 (ΑΔΑ: ΒΙΦΓ9-4ΘΑ) «Άδειες εκπαιδευτικών Πρωτοβάθμιας και Δευτεροβάθμιας Εκπαίδευσης»
+          και Φ.351.5/85/162843/Δ1/08-10-2014 εγκύκλιους του Υ.ΠΑΙ.Θ.
+        </li>
+        {% endif %}
+        <li>
+          Το άρθρο 6 της με αρ. 170405/ΓΓ1 Κοινής Υπουργικής Απόφασης (ΦΕΚ 6273/28-12-2021) με θέμα
+          «Καθορισμός των ειδικότερων καθηκόντων και αρμοδιοτήτων των Δ/ντων Εκπαίδευσης»
+        </li>
+        <li>
+          Την, από <b>{{ leave.incoming_protocol_date }}</b> αίτηση
+          {% if employee.is_man == None %} του/της {% else %} {% if employee.is_man %} του {% else %} της {% endif %} {% endif %}
+          <b> {{ geniki_employee_last_name }} {{ geniki_employee_name }} </b> του <b> {{ geniki_father_name }}, </b>
+          {% if employee.employee_type != 'ADMINISTRATIVE' %}
+          {% if is_principal %}
+            {% if employee.is_man == None %} Διευθυντή/ρια {% else %}  {% if employee.is_man %} Διευθυντή {% else %} Διευθύντρια  {% endif %} {% endif %}
+            του {{ principal_school_unit }}.
+          {% elif is_education_consultant %}
+            <b> ΣΕ ({{ education_consultant_specialization }}). </b>
+          {% else %}
+            εκπαιδευτικό κλάδου {{ employee.specialization }}, που υπηρετεί στην Δ/νση Δ/θμιας Εκπ/σης Ηρακλείου.
+          {% endif %}
+        {% else %}
+          {% if employee.is_man %} διοικητικό {% else %} διοικητική {% endif %}
+            υπάλληλο κλάδου {{ employee.specialization }}, που υπηρετεί στην Δ/νση Δ/θμιας Εκπ/σης Ηρακλείου.
+        {% endif %}
+        </li>
+      </ol>
+      <h3>Αποφασίζουμε</h3>
+      <p>
+        τη χορήγηση
+        {% if employee.is_man == None %} στον/στην {% else %} {% if employee.is_man %} στον {% else %} {{ female_article }} {% endif %} {% endif %}
+        <b> {{ accusative_employee_last_name }} {{ accusative_employee_name }} </b> του <b> {{ geniki_father_name }}</b>,
+        {% if employee.employee_type != 'ADMINISTRATIVE' %}
+          {% if is_principal %}
+            {% if employee.is_man == None %} Διευθυντή/ρια {% else %}  {% if employee.is_man %} Διευθυντή {% else %} Διευθύντρια  {% endif %} {% endif %}
+            του {{ principal_school_unit }}
+          {% elif is_education_consultant %}
+            <b> ΣΕ ({{ education_consultant_specialization }}), </b>
+          {% else %}
+            εκπαιδευτικό κλάδου {{ employee.specialization }}, που υπηρετεί στην Δ/νση Δ/θμιας Εκπ/σης Ηρακλείου,
+          {% endif %}
+        {% else %}
+          {% if employee.is_man %} διοικητικό {% else %} διοικητική {% endif %}
+            υπάλληλο κλάδου {{ employee.specialization }}, που υπηρετεί στην Δ/νση Δ/θμιας Εκπ/σης Ηρακλείου,
+        {% endif %}
+        κανονικής άδεια απουσίας <b> {{ leave_duration_verbal }} ({{ leave.effective_number_of_days }})
+        {% if leave.effective_number_of_days == 1 %} εργάσιμης ημέρας {% else %} εργάσιμων ημερών {% endif %} </b>
+        με τις δικαιούμενες αποδοχές, από <b> {{ leave.date_from }} </b> έως και <b> {{ leave.date_until }} </b> για λόγους που αναφέρει στην αίτησή
+      {% if employee.is_man %} του. {% else %} της. {% endif %}
+    </p>
+  <br>
+
+  <div>
+    <table class="signature">
+      <tr>
+        {% if i == 0 %}
+        <td style="width: 50%;">
+          <div>
+          &nbsp;
+        </div>
+        </td>
+        {% else %}
+          <td style="width: 50%;">
+            <div>
+              {{ config.DIRECTOR_COPY_TITLE|safe }}
+              <br>
+              {{ config.DIRECTOR_COPY_NAME|safe }}
+            </div>
+          </td>
+        {% endif %}
+        <td style="width: 50%;">
+          <div>
+            {{ config.DIRECTOR_TITLE|safe }}
+            <br>
+            {{ config.DIRECTOR_NAME|safe }}
+          </div>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <div id="vertical-space"></div>
+
+  </div>
+      <h4><u>ΚΟΙΝΟΠΟΙΗΣΗ:</u></h4>
+      <ol>
+        <li style="font-weight:normal;"> Ενδιαφερόμενος/η <br/>δια της ΧΧΧΧ</li>
+        <li style="font-weight:normal;"> Α/Φ ΔΔΕ Ηρακλείου </li>
+        <li style="font-weight:normal;"> Θέση Οργανικής </li>
+      </ol>
+  </div>
+
+  <div style="page-break-after: always;"></div>
+{% endfor %}
+</body>
+</html>
