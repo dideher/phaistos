@@ -143,6 +143,10 @@
                                         
                                 
                                         {% if leave.leave_type.legacy_code == '31' or leave.leave_type.legacy_code == '54' %}
+                                            <a id="print-leave-btn" href="{% url 'leaves:leave-export' leave.id  employee.id %}"
+                                            class="print-leave btn btn-sm btn-info" type="button" name="button" target="_blank">
+                                                <i class="bi bi-filetype-doc" aria-hidden="true"></i>
+                                            </a>
                                             <a id="print-leave-btn" href="{% url 'leaves:leave-print' leave.id  employee.id %}"
                                                 class="print-leave btn btn-sm btn-warning" type="button" name="button" target="_blank">
                                                 <i class="bi bi-filetype-pdf" aria-hidden="true"></i>
