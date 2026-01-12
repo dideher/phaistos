@@ -5,7 +5,7 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.9,<3.10"
 dependencies = [
-    "django==4.0.10",
+    "django==4.2.26",
     "django-bootstrap-modal-forms==3.0.3",
     "django-bootstrap5>=24.1",
     "django-constance==3.1",
