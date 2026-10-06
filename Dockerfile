@@ -1,4 +1,4 @@
-FROM python:3.9-slim-bullseye AS compile-image
+FROM python:3.13-slim-bookworm AS compile-image
 ARG ENVIRONMENT=development
 ARG DEBIAN_FRONTEND=noninteractive
 
@@ -26,7 +26,7 @@ ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 COPY pyproject.toml .
 RUN uv pip install -r pyproject.toml --extra production --compile-bytecode
 
-FROM python:3.9-slim-bullseye AS runtime-image
+FROM python:3.13-slim-bookworm AS runtime-image
 ARG ENVIRONMENT=development
 
 # partially inspired from https://github.com/tiangolo/meinheld-gunicorn-docker
