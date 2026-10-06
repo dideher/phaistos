@@ -14,7 +14,7 @@ RUN set -eux; \
 	rm -rf /var/lib/apt/lists/*
 
 ## install uv
-COPY --from=ghcr.io/astral-sh/uv:0.5.24 /uv /bin/uv
+COPY --from=ghcr.io/astral-sh/uv:0.12.23 /uv /bin/uv
 
 # ## virtualenv
 RUN uv venv --seed /opt/venv
