@@ -11,6 +11,10 @@ else
     echo "There is no script $PRE_START_PATH"
 fi
 
+# Apply database migrations
+echo "Running database migrations"
+python /app/manage.py migrate --noinput
+
 # Start Gunicorn
 gunicorn -c "$GUNICORN_CONF" "$APP_MODULE" &
 nginx -g "daemon off;"
