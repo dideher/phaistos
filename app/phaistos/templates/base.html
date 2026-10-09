@@ -34,7 +34,12 @@
                 <li> <a href="{% url 'leaves:leave-search' %}" class="nav-link text-white"> <i class="fa fa-dashboard"></i><span class="ms-2">Αναζήτηση Αδειών</span> </a> </li>
 
                 <hr class="dropdown-divider">
-                <li> <a href="{% url 'logout' %}" class="nav-link text-white"> <i class="fa fa-dashboard"></i><span class="ms-2">Έξοδος</span> </a> </li>
+                <li>
+                    <form method="post" action="{% url 'logout' %}">
+                        {% csrf_token %}
+                        <button type="submit" class="nav-link text-white border-0 bg-transparent"> <i class="fa fa-dashboard"></i><span class="ms-2">Έξοδος</span> </button>
+                    </form>
+                </li>
 <!--                <li> <a href="#" class="nav-link text-white"> <i class="fa fa-cog"></i><span class="ms-2">Settings</span> </a> </li>-->
 <!--                <li> <a href="#" class="nav-link text-white"> <i class="fa fa-bookmark"></i><span class="ms-2">Bookmarks</span> </a> </li>-->
                 <li>

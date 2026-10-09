@@ -1,4 +1,4 @@
-FROM python:3.9-slim-bullseye AS compile-image
+FROM python:3.13-slim-trixie AS compile-image
 ARG ENVIRONMENT=development
 ARG DEBIAN_FRONTEND=noninteractive
 
@@ -14,7 +14,7 @@ RUN set -eux; \
 	rm -rf /var/lib/apt/lists/*
 
 ## install uv
-COPY --from=ghcr.io/astral-sh/uv:0.5.24 /uv /bin/uv
+COPY --from=ghcr.io/astral-sh/uv:0.12.23 /uv /bin/uv
 
 # ## virtualenv
 RUN uv venv --seed /opt/venv
@@ -26,7 +26,7 @@ ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 COPY pyproject.toml .
 RUN uv pip install -r pyproject.toml --extra production --compile-bytecode
 
-FROM python:3.9-slim-bullseye AS runtime-image
+FROM python:3.13-slim-trixie AS runtime-image
 ARG ENVIRONMENT=development
 
 # partially inspired from https://github.com/tiangolo/meinheld-gunicorn-docker
