@@ -11,12 +11,42 @@ jobs:
     strategy:
       max-parallel: 4
       matrix:
-        db: [sqlite, mysql]
+        db: [sqlite, mysql, mariadb]
         python-version: ["3.13", "3.14"]
         include:
           - db: mysql
-            db_user: root
-            db_password: root
+            db_image: mysql:8.0
+            db_health_cmd: "mysqladmin ping -h 127.0.0.1 -uroot -proot"
+          - db: mariadb
+            # keep in sync with the production server (MariaDB 10.11)
+            db_image: mariadb:10.11
+            db_health_cmd: "healthcheck.sh --connect --innodb_initialized"
+
+    services:
+      db:
+        # an empty image (sqlite jobs) skips the service container
+        image: ${{ matrix.db_image }}
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MARIADB_ROOT_PASSWORD: root
+          MYSQL_DATABASE: phaistos_db
+          MARIADB_DATABASE: phaistos_db
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd "${{ matrix.db_health_cmd }}"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
+
+    env:
+      DJANGO_SETTINGS_MODULE: phaistos.settings.test
+      DB_ENGINE: ${{ matrix.db }}
+      DB_HOST: 127.0.0.1
+      DB_PORT: 3306
+      DB_USER: root
+      DB_PASS: root
+
     steps:
     - uses: actions/checkout@v4
     - name: Install uv and set up Python ${{ matrix.python-version }}
@@ -25,11 +55,11 @@ jobs:
         version: "0.12.23"
         python-version: ${{ matrix.python-version }}
         enable-cache: true
-    - name: Start MySQL
-      if: matrix.db == 'mysql'
-      run: sudo systemctl start mysql.service
+    - name: Install MySQL client headers
+      if: matrix.db != 'sqlite'
+      run: sudo apt-get update && sudo apt-get install -y libmysqlclient-dev pkg-config
     - name: Install Dependencies
-      run: uv sync --locked
-    - name: Run Tests
+      run: uv sync --locked ${{ matrix.db != 'sqlite' && '--extra production' || '' }}
+    - name: Run Tests (${{ matrix.db }})
       run: |
-        cd app && uv run python manage.py test
+        cd app && uv run --no-sync python manage.py test --noinput
