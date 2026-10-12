@@ -29,8 +29,29 @@ class SingleActiveModelMixin(models.Model):
         super().save(*args, **kwargs)
 
 
+class Char32UUIDField(models.UUIDField):
+    """
+    UUIDField that always stores the value as a 32 char hex string.
+
+    Since Django 5.0, UUIDField uses the native ``uuid`` column type on MariaDB 10.7+ and sends
+    dashed values in queries. Existing columns were created as ``char(32)`` (hex, no dashes) so
+    lookups no longer match. This field keeps the pre-5.0 behaviour on every backend.
+    See https://docs.djangoproject.com/en/5.0/releases/5.0/#migrating-existing-uuidfield-on-mariadb-10-7
+    """
+
+    def db_type(self, connection):
+        return "char(32)"
+
+    def get_db_prep_value(self, value, connection, prepared=False):
+        if value is None:
+            return None
+        if not isinstance(value, uuid.UUID):
+            value = self.to_python(value)
+        return value.hex
+
+
 class BaseUUIDModel(models.Model):
-    uuid = models.UUIDField(unique=True, default=uuid.uuid4, null=False, editable=False)
+    uuid = Char32UUIDField(unique=True, default=uuid.uuid4, null=False, editable=False)
 
     class Meta:
         abstract = True
