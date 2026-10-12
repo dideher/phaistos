@@ -29,14 +29,14 @@ class LeaveCreateViewTest(TestCase):
         can_add_leave_user.save()
 
         # create some leave types
-        LeaveType.objects.create(legacy_code='1', suitable_for_employee_type=LegacyEmployeeType.REGULAR)
+        cls.leave_type = LeaveType.objects.create(legacy_code='1', suitable_for_employee_type=LegacyEmployeeType.REGULAR)
 
         sp: Specialization = Specialization.objects.create(
                     code='ΠΕ86',
                     title="ΚΑΠΟΙΟΣ ΤΙΤΛΟΣ"
                 )
 
-        employee: Employee = Employee.objects.create(
+        cls.employee = Employee.objects.create(
             first_name="ΔΟΚΙΜΙΟΣ",
             last_name="ΔΟΚΙΜΟΠΟΥΛΟΣ",
             father_name="ΜΠΑΜΠΑΣ",
@@ -46,7 +46,7 @@ class LeaveCreateViewTest(TestCase):
 
     def test_create_leave_view(self):
         login = self.client.login(username='can_add_leave_user', password='pass')
-        employee = Employee.objects.get(id=1)
+        employee = self.employee
 
         # no leaves should be available
         self.assertEqual(Leave.objects.all().count(), 0)
@@ -56,7 +56,7 @@ class LeaveCreateViewTest(TestCase):
             data={
                 'number_of_days': 1,
                 'effective_number_of_days': 1,
-                'leave_type': 1,
+                'leave_type': self.leave_type.pk,
                 'date_from': '2023-12-01',
                 'date_until': '2023-12-20',
                 'comment': ''
@@ -72,8 +72,8 @@ class LeaveCreateViewTest(TestCase):
     def test_delete_leave_view(self):
         login = self.client.login(username='can_add_leave_user', password='pass')
 
-        employee: Employee = Employee.objects.get(id=1)
-        leave_type: LeaveType = LeaveType.objects.get(id=1)
+        employee: Employee = self.employee
+        leave_type: LeaveType = self.leave_type
 
         # add a leave
         leave: Employee = Leave.objects.create(
