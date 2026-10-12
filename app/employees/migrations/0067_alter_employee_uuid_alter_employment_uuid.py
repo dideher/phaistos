@@ -7,8 +7,9 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
     """
-    Switch uuid fields to Char32UUIDField. The columns are already char(32) on every backend,
-    so only the migration state changes (no ALTER TABLE).
+    Switch uuid fields to Char32UUIDField. On databases created before Django 5.0 the columns are
+    already char(32) and this is a no-op rewrite. On MariaDB 10.7+ databases created with Django 5.x
+    the earlier migrations created native uuid columns, which are converted to char(32) here.
     """
 
     dependencies = [
@@ -16,19 +17,14 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.SeparateDatabaseAndState(
-            state_operations=[
-                migrations.AlterField(
-                    model_name='employee',
-                    name='uuid',
-                    field=main.models.Char32UUIDField(default=uuid.uuid4, editable=False, unique=True),
-                ),
-                migrations.AlterField(
-                    model_name='employment',
-                    name='uuid',
-                    field=main.models.Char32UUIDField(default=uuid.uuid4, editable=False, unique=True),
-                ),
-            ],
-            database_operations=[],
+        migrations.AlterField(
+            model_name='employee',
+            name='uuid',
+            field=main.models.Char32UUIDField(default=uuid.uuid4, editable=False, unique=True),
+        ),
+        migrations.AlterField(
+            model_name='employment',
+            name='uuid',
+            field=main.models.Char32UUIDField(default=uuid.uuid4, editable=False, unique=True),
         ),
     ]
