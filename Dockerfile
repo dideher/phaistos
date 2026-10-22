@@ -41,6 +41,7 @@ RUN set -eux; \
         nginx \
         libpango-1.0-0 \
         libpangoft2-1.0-0 \
+        libicu76 \
         vim \
 	; \
 	rm -rf /var/lib/apt/lists/*
